@@ -99,31 +99,37 @@ export function useUsageMetrics(period: number = 30): UseUsageMetricsResult {
       const params = new URLSearchParams()
       params.append('period', period.toString())
 
-      const response = await fetch(`/api/organization/billing/usage?${params.toString()}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      // TODO: Replace with RoutiqAPI call when usage endpoints are available
+      const mockUsageData: UsageData = {
+        period: {
+          days: period,
+          organizationAge: 30
         },
-        credentials: 'include',
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
-        
-        if (response.status === 403) {
-          throw new Error('You do not have permission to view usage metrics')
+        metrics: {
+          users: { total: 2, limit: 10, percentage: 20 },
+          patients: { total: 50, limit: 1000, percentage: 5 },
+          conversations: { total: 150, limit: 5000, percentage: 3 },
+          messages: { total: 800, limit: 10000, percentage: 8 }
+        },
+        warnings: [],
+        plan: {
+          name: 'Standard',
+          status: 'active',
+          limits: {
+            users: 10,
+            patients: 1000,
+            conversations: 5000,
+            messages: 10000
+          }
+        },
+        metadata: {
+          accessedAt: new Date().toISOString(),
+          accessedBy: 'user',
+          organizationId: organizationContext.organizationId
         }
-        
-        throw new Error(errorData.error || `HTTP ${response.status}`)
       }
 
-      const result = await response.json()
-      
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to fetch usage metrics')
-      }
-
-      setUsageData(result.data)
+      setUsageData(mockUsageData)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
       setError(errorMessage)

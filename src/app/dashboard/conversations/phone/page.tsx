@@ -594,7 +594,8 @@ export default function PhoneChatPage() {
       setLoading(true)
       console.log('🔄 Frontend: Starting fetchConversations...')
       
-      const response = await fetch('/api/conversations/phone', {
+      // TODO: Replace with RoutiqAPI call when phone conversation endpoints are available
+      const response = await fetch('/api/placeholder/conversations/phone', {
         headers: {
           'Content-Type': 'application/json'
         }
@@ -664,7 +665,8 @@ export default function PhoneChatPage() {
       setChatLoading(true)
       console.log('🔄 Frontend: Fetching chat messages for phone:', phone)
       
-      const response = await fetch(`/api/conversations/phone?phone=${encodeURIComponent(phone)}`, {
+      // TODO: Replace with RoutiqAPI call when phone conversation endpoints are available
+      const response = await fetch(`/api/placeholder/conversations/phone?phone=${encodeURIComponent(phone)}`, {
         headers: {
           'Content-Type': 'application/json'
         }

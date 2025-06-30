@@ -83,7 +83,7 @@ export function MobileHeader({
           {/* Logo mark only for mobile */}
           <div className="flex items-center">
             <Image
-              src="/routiq-logomark-core.svg"
+              src="/logos/routiq-logomark-core.svg"
               alt="RoutIQ"
               width={32}
               height={32}

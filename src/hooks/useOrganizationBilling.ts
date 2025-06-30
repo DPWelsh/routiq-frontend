@@ -93,31 +93,50 @@ export function useOrganizationBilling(): UseOrganizationBillingResult {
       setIsLoading(true)
       setError(null)
 
-      const response = await fetch('/api/organization/billing', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      // TODO: Replace with RoutiqAPI call when billing endpoints are available
+      const mockBillingData: OrganizationBillingData = {
+        organization: {
+          id: organizationContext.organizationId,
+          name: organizationContext.organizationName || 'Organization',
+          subscriptionStatus: 'active',
+          subscriptionPlan: 'standard',
+          billingEmail: null,
+          billingAddress: {},
+          hasStripeCustomer: true
         },
-        credentials: 'include',
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
-        
-        if (response.status === 403) {
-          throw new Error('You do not have permission to view billing information')
+        trial: {
+          isInTrial: false,
+          trialEndsAt: null,
+          daysRemaining: null
+        },
+        stripe: {
+          customer: {
+            id: 'cus_mock',
+            email: null,
+            created: Date.now() / 1000,
+            defaultSource: null,
+            invoiceSettings: {}
+          },
+          subscription: {
+            id: 'sub_mock',
+            status: 'active',
+            currentPeriodStart: Date.now() / 1000,
+            currentPeriodEnd: (Date.now() + 30 * 24 * 60 * 60 * 1000) / 1000,
+            cancelAtPeriodEnd: false,
+            canceledAt: null,
+            trialStart: null,
+            trialEnd: null,
+            items: []
+          }
+        },
+        metadata: {
+          accessedAt: new Date().toISOString(),
+          accessedBy: 'user',
+          securityLevel: 'standard'
         }
-        
-        throw new Error(errorData.error || `HTTP ${response.status}`)
       }
 
-      const result = await response.json()
-      
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to fetch billing data')
-      }
-
-      setBillingData(result.data)
+      setBillingData(mockBillingData)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
       setError(errorMessage)
@@ -135,28 +154,8 @@ export function useOrganizationBilling(): UseOrganizationBillingResult {
     }
 
     try {
-      const response = await fetch('/api/organization/billing/portal', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ returnUrl }),
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
-        throw new Error(errorData.error || `HTTP ${response.status}`)
-      }
-
-      const result = await response.json()
-      
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to create portal session')
-      }
-
-      // Return the portal URL for the caller to redirect to
-      return result.data.url
+      // TODO: Replace with RoutiqAPI call when billing portal endpoints are available
+      throw new Error('Billing portal not available yet')
     } catch (err) {
       console.error('Failed to open customer portal:', err)
       throw err

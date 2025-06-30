@@ -16,8 +16,10 @@ import {
   MessageSquare, 
   UserCheck,
   Settings,
-  HelpCircle
+  HelpCircle,
+  Building2
 } from "lucide-react"
+import { ClerkOrganizationSwitcher } from "@/components/clerk-organization-switcher"
 
 interface DashboardStats {
   conversations: {
@@ -137,6 +139,16 @@ function ResponsiveDashboardNav() {
   // Mobile Navigation Content
   const MobileNavContent = (
     <>
+      {/* Organization Switcher Section */}
+      <div className="mb-6 pb-4 border-b border-routiq-prompt/20">
+        <p className="text-xs font-semibold text-routiq-core/60 uppercase tracking-wider mb-3">
+          ORGANIZATION
+        </p>
+        <div className="bg-routiq-energy/30 rounded-lg p-3">
+          <ClerkOrganizationSwitcher />
+        </div>
+      </div>
+
       {/* Main Navigation Section */}
       <div className="mb-6">
         <p className="text-xs font-semibold text-routiq-core/60 uppercase tracking-wider mb-4">

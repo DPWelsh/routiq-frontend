@@ -17,6 +17,8 @@ import { LogOut, User, ChevronDown } from "lucide-react"
 import Image from "next/image"
 import { HamburgerMenu } from "@/components/layout/mobile/hamburger-menu"
 import { useMobileNavigationContext } from "@/components/providers/mobile-navigation-provider"
+import { ClerkOrganizationSwitcher } from "@/components/clerk-organization-switcher"
+import { useOrganizationContext } from "@/hooks/useOrganizationContext"
 
 export function DashboardHeader() {
   const { user } = useUser()
@@ -24,6 +26,7 @@ export function DashboardHeader() {
   const router = useRouter()
   const pathname = usePathname()
   const { isOpen, isMobile, toggle } = useMobileNavigationContext()
+  const { organizationName } = useOrganizationContext()
 
   const handleSignOut = async () => {
     try {
@@ -158,8 +161,21 @@ export function DashboardHeader() {
             </div>
           </div>
 
-          {/* Right Section - Actions and User */}
+          {/* Right Section - Organization Switcher, Actions and User */}
           <div className="flex items-center space-x-4">
+            {/* Organization Switcher */}
+            <div className="hidden md:flex items-center space-x-2">
+              <span className="text-sm text-routiq-core/70">Organization:</span>
+              <ClerkOrganizationSwitcher />
+            </div>
+            
+            {/* Mobile Organization Display */}
+            <div className="md:hidden">
+              <Badge variant="secondary" className="text-xs bg-routiq-cloud/10 text-routiq-cloud border-routiq-cloud/20">
+                {organizationName}
+              </Badge>
+            </div>
+
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

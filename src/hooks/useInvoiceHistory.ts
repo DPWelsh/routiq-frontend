@@ -96,31 +96,24 @@ export function useInvoiceHistory(): UseInvoiceHistoryResult {
       if (filters.startingAfter) params.append('starting_after', filters.startingAfter)
       if (filters.status) params.append('status', filters.status)
 
-      const response = await fetch(`/api/organization/billing/invoices?${params.toString()}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
+      // TODO: Replace with RoutiqAPI call when invoice endpoints are available
+      const mockInvoiceData: InvoiceHistoryData = {
+        invoices: [],
+        hasMore: false,
+        totalCount: 0,
+        pagination: {
+          limit: filters.limit || 10,
+          startingAfter: filters.startingAfter,
+          lastInvoiceId: null
         },
-        credentials: 'include',
-      })
-
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
-        
-        if (response.status === 403) {
-          throw new Error('You do not have permission to view invoice history')
+        metadata: {
+          accessedAt: new Date().toISOString(),
+          accessedBy: 'user',
+          organizationId: organizationContext.organizationId
         }
-        
-        throw new Error(errorData.error || `HTTP ${response.status}`)
       }
 
-      const result = await response.json()
-      
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to fetch invoice history')
-      }
-
-      setInvoiceData(result.data)
+      setInvoiceData(mockInvoiceData)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
       setError(errorMessage)
@@ -142,33 +135,9 @@ export function useInvoiceHistory(): UseInvoiceHistoryResult {
       params.append('limit', invoiceData.pagination.limit.toString())
       params.append('starting_after', invoiceData.pagination.lastInvoiceId)
 
-      const response = await fetch(`/api/organization/billing/invoices?${params.toString()}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
-      }
-
-      const result = await response.json()
-      
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to load more invoices')
-      }
-
-      // Append new invoices to existing data
-      setInvoiceData(prevData => {
-        if (!prevData) return result.data
-
-        return {
-          ...result.data,
-          invoices: [...prevData.invoices, ...result.data.invoices]
-        }
-      })
+      // TODO: Replace with RoutiqAPI call when invoice endpoints are available
+      // For now, don't load more since we have no invoices
+      return
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
       setError(errorMessage)

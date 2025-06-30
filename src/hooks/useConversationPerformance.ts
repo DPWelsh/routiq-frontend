@@ -74,38 +74,9 @@ export function useConversationPerformance(
         params.set('chatwootConversationId', chatwootConversationId.toString())
       }
 
-      const response = await fetch(`/api/conversations/performance?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch performance: ${response.statusText}`)
-      }
-
-      const data = await response.json()
-      
-      console.log('🔍 Debug performance API response:', {
-        success: data.success,
-        conversationsLength: data.conversations?.length,
-        firstConversation: data.conversations?.[0],
-        satisfactionScore: data.conversations?.[0]?.satisfactionScore,
-        satisfactionFeedback: data.conversations?.[0]?.satisfactionFeedback,
-        satisfaction_feedback: data.conversations?.[0]?.satisfaction_feedback,
-        rawFirstConversation: JSON.stringify(data.conversations?.[0], null, 2),
-        allFields: data.conversations?.[0] ? Object.keys(data.conversations[0]) : null
-      })
-      
-      if (data.success && data.conversations.length > 0) {
-        console.log('🔍 Setting performance data:', data.conversations[0])
-        setPerformance(data.conversations[0])
-      } else {
-        // No performance record exists yet
-        console.log('🔍 No performance data found, setting to null')
-        setPerformance(null)
-      }
+      // TODO: Replace with RoutiqAPI call when performance endpoints are available
+      console.log('🔍 Using mock performance data')
+      setPerformance(null)
     } catch (err) {
       console.error('Error fetching performance:', err)
       setError(err instanceof Error ? err.message : 'Unknown error')
@@ -132,34 +103,9 @@ export function useConversationPerformance(
         chatwootConversationId
       })
 
-      const response = await fetch('/api/conversations/performance', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      })
-
-      console.log('📡 Performance API response:', {
-        status: response.status,
-        statusText: response.statusText,
-        ok: response.ok
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        console.error('❌ API Error details:', errorText)
-        throw new Error(`Failed to update performance: ${response.statusText}`)
-      }
-
-      const data = await response.json()
-      
-      if (data.success) {
-        setPerformance(data.data)
-        return true
-      }
-      return false
+      // TODO: Replace with RoutiqAPI call when performance endpoints are available
+      console.log('🔄 Mock performance update')
+      return true
     } catch (err) {
       console.error('Error updating performance:', err)
       setError(err instanceof Error ? err.message : 'Update failed')

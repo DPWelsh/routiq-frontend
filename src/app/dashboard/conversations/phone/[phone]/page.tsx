@@ -51,7 +51,8 @@ export default function PhoneConversationPage() {
   const fetchConversationData = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/conversations/phone?phone=${encodeURIComponent(phone)}`)
+      // TODO: Replace with RoutiqAPI call when phone conversation endpoints are available
+    const response = await fetch(`/api/placeholder/conversations/phone?phone=${encodeURIComponent(phone)}`)
 
       if (!response.ok) {
         throw new Error('Failed to fetch conversation data')

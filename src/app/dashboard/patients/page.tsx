@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { UpcomingAppointments } from '@/components/features/patients/upcoming-appointments'
+import { RoutiqAPI } from '@/lib/routiq-api'
 
 // FIXED: Define the actual API response structure for stats
 interface ActivePatientsApiStats {
@@ -49,9 +50,10 @@ interface ActivePatientsApiStats {
 
 export default function PatientsPage() {
   const router = useRouter()
+  const { organizationId } = useOrganizationContext()
   
-  const [patients, setPatients] = useState<ActivePatient[]>([])
-  const [allPatients, setAllPatients] = useState<ActivePatient[]>([]) // For card calculations
+  const [patients, setPatients] = useState<any[]>([])
+  const [allPatients, setAllPatients] = useState<any[]>([]) // For card calculations
   const [stats, setStats] = useState<ActivePatientsApiStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState('')
@@ -124,7 +126,7 @@ export default function PatientsPage() {
         let filteredPatients = result.patients
         if (filterType !== 'all') {
           // Apply filters based on patient data structure from backend
-          filteredPatients = result.patients.filter(patient => {
+          filteredPatients = result.patients.filter((patient: any) => {
             switch (filterType) {
               case 'high':
                 return patient.recent_appointment_count === 0 && patient.upcoming_appointment_count === 0
