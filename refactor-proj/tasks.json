@@ -1,260 +1,200 @@
 {
-    "project": "Routiq Frontend - Backend Integration",
+    "project": "Routiq Frontend - Console Error Fixes",
+    "description": "Systematic resolution of all console errors preventing dashboard from loading",
+    "created": "2024-06-30T12:30:00Z",
+    "priority": "CRITICAL",
+    "total_estimated_hours": 3.0,
+    
+    "error_analysis": {
+      "primary_issues": [
+        "404 on /api/v1/auth/verify - endpoint doesn't exist yet",
+        "Organization context failing due to backend verification",
+        "CSP violations from Clerk workers",
+        "Missing favicon and logo assets causing 404s"
+      ],
+      "impact": "Complete dashboard failure - user can't access any data"
+    },
+
     "phases": [
       {
-        "phase": "1_environment_verification",
-        "title": "Environment & Configuration Verification",
-        "priority": "high",
+        "id": "error_001",
+        "title": "Fix Backend Auth Verification (URGENT)",
+        "status": "pending",
+        "priority": "critical",
+        "estimated_hours": 0.5,
+        "description": "Disable /api/v1/auth/verify calls since endpoint doesn't exist yet",
         "tasks": [
           {
-            "id": "env_001",
-            "title": "Verify Clerk environment variables",
-            "description": "Ensure NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY are properly set",
-            "files": [".env.local", "src/config/env.ts"],
-            "estimated_time": "15m",
-            "dependencies": []
-          },
-          {
-            "id": "env_002", 
-            "title": "Update backend API base URL",
-            "description": "Ensure RoutiqAPI client points to https://routiq-backend-prod.up.railway.app",
-            "files": ["src/lib/routiq-api.ts"],
-            "estimated_time": "10m",
-            "dependencies": []
-          },
-          {
-            "id": "env_003",
-            "title": "Verify CORS configuration",
-            "description": "Check if frontend domain is whitelisted on backend",
-            "files": ["vercel.json"],
-            "estimated_time": "15m",
-            "dependencies": []
-          }
-        ]
-      },
-      {
-        "phase": "2_api_client_enhancement",
-        "title": "API Client Integration Enhancement",
-        "priority": "high", 
-        "tasks": [
-          {
-            "id": "api_001",
-            "title": "Update RoutiqAPI class with all backend endpoints",
-            "description": "Add methods for dashboard, patients, sync operations matching backend API documentation",
-            "files": ["src/lib/routiq-api.ts"],
-            "estimated_time": "45m",
-            "dependencies": ["env_002"]
-          },
-          {
-            "id": "api_002",
-            "title": "Implement organization context in API calls",
-            "description": "Ensure X-Organization-ID header is automatically included in all requests",
-            "files": ["src/lib/routiq-api.ts"],
-            "estimated_time": "30m", 
-            "dependencies": ["api_001"]
-          },
-          {
-            "id": "api_003",
-            "title": "Add comprehensive error handling",
-            "description": "Handle rate limiting, authentication errors, and backend-specific error responses",
-            "files": ["src/lib/routiq-api.ts"],
-            "estimated_time": "30m",
-            "dependencies": ["api_001"]
-          },
-          {
-            "id": "api_004",
-            "title": "Create TypeScript types for backend responses",
-            "description": "Define interfaces for Patient, Dashboard, Sync responses based on API documentation",
-            "files": ["src/types/api.ts", "src/types/backend.ts"],
-            "estimated_time": "45m",
-            "dependencies": []
-          }
-        ]
-      },
-      {
-        "phase": "3_hook_enhancements",
-        "title": "Custom Hooks for Backend Integration",
-        "priority": "medium",
-        "tasks": [
-          {
-            "id": "hook_001",
-            "title": "Create useDashboard hook",
-            "description": "React Query hook for dashboard data with organization context",
-            "files": ["src/hooks/useDashboard.ts"],
-            "estimated_time": "30m",
-            "dependencies": ["api_001", "api_004"]
-          },
-          {
-            "id": "hook_002", 
-            "title": "Create usePatients hook",
-            "description": "Hook for patient management with filtering and pagination",
-            "files": ["src/hooks/usePatients.ts"],
-            "estimated_time": "45m",
-            "dependencies": ["api_001", "api_004"]
-          },
-          {
-            "id": "hook_003",
-            "title": "Create useSyncOperations hook", 
-            "description": "Hook for triggering and monitoring sync operations",
-            "files": ["src/hooks/useSyncOperations.ts"],
-            "estimated_time": "30m",
-            "dependencies": ["api_001", "api_004"]
-          },
-          {
-            "id": "hook_004",
-            "title": "Enhance useOrganizationContext hook",
-            "description": "Add backend integration and organization switching with API updates",
+            "id": "error_001_001",
+            "title": "Disable backend verification in useOrganizationContext",
+            "description": "Comment out api.verifyAuth() call again - backend response doc didn't list this endpoint as ready",
             "files": ["src/hooks/useOrganizationContext.ts"],
-            "estimated_time": "30m",
-            "dependencies": ["api_002"]
+            "type": "code_fix",
+            "estimated_minutes": 15
+          },
+          {
+            "id": "error_001_002", 
+            "title": "Add graceful fallback for missing auth endpoint",
+            "description": "Use pure Clerk-based organization context until auth endpoint is implemented",
+            "files": ["src/hooks/useOrganizationContext.ts"],
+            "type": "code_fix",
+            "estimated_minutes": 15
           }
         ]
       },
+
       {
-        "phase": "4_dashboard_implementation", 
-        "title": "Dashboard Integration Implementation",
+        "id": "error_002",
+        "title": "Fix Missing Assets (404s)",
+        "status": "pending", 
+        "priority": "medium",
+        "estimated_hours": 0.5,
+        "description": "Resolve favicon and logo 404 errors",
+        "tasks": [
+          {
+            "id": "error_002_001",
+            "title": "Create missing favicon files",
+            "description": "Add favicon.ico, favicon.svg, favicon.png to public directory",
+            "files": ["public/favicon.ico", "public/favicon.svg", "public/favicon.png"],
+            "type": "asset_creation",
+            "estimated_minutes": 15
+          },
+          {
+            "id": "error_002_002",
+            "title": "Create missing logo assets", 
+            "description": "Add routiq-logo-core.svg and routiq-logomark-core.svg",
+            "files": ["public/logos/routiq-logo-core.svg", "public/logos/routiq-logomark-core.svg"],
+            "type": "asset_creation",
+            "estimated_minutes": 15
+          }
+        ]
+      },
+
+      {
+        "id": "error_003",
+        "title": "Fix Content Security Policy Issues",
+        "status": "pending",
+        "priority": "medium", 
+        "estimated_hours": 0.5,
+        "description": "Resolve CSP violations preventing Clerk workers",
+        "tasks": [
+          {
+            "id": "error_003_001",
+            "title": "Update CSP headers for Clerk compatibility",
+            "description": "Add worker-src blob: and script-src unsafe-eval for Clerk",
+            "files": ["next.config.js"],
+            "type": "configuration",
+            "estimated_minutes": 20
+          },
+          {
+            "id": "error_003_002",
+            "title": "Configure Clerk CSP settings",
+            "description": "Add proper CSP directives for Clerk workers and fonts",
+            "files": ["src/lib/auth/clerk-config.ts"],
+            "type": "configuration", 
+            "estimated_minutes": 10
+          }
+        ]
+      },
+
+      {
+        "id": "error_004",
+        "title": "Dashboard Data Loading Fix",
+        "status": "pending",
+        "priority": "critical",
+        "estimated_hours": 1.0,
+        "description": "Ensure dashboard loads with working organization context",
+        "tasks": [
+          {
+            "id": "error_004_001",
+            "title": "Test dashboard endpoint directly",
+            "description": "Verify /api/v1/dashboard/{org_id} works with manual curl test",
+            "files": [],
+            "type": "testing",
+            "estimated_minutes": 15
+          },
+          {
+            "id": "error_004_002",
+            "title": "Add comprehensive error handling", 
+            "description": "Better error messages distinguishing auth vs endpoint vs network issues",
+            "files": ["src/hooks/useDashboardData.ts", "src/components/dashboard/unified-dashboard.tsx"],
+            "type": "error_handling",
+            "estimated_minutes": 30
+          },
+          {
+            "id": "error_004_003",
+            "title": "Add debug logging for organization flow",
+            "description": "Trace organization selection -> context -> API calls flow",
+            "files": ["src/hooks/useOrganizationContext.ts", "src/lib/routiq-api.ts"],
+            "type": "debugging",
+            "estimated_minutes": 15
+          }
+        ]
+      },
+
+      {
+        "id": "error_005", 
+        "title": "Endpoint Validation",
+        "status": "pending",
         "priority": "high",
+        "estimated_hours": 0.5,
+        "description": "Verify which backend endpoints are actually working",
         "tasks": [
           {
-            "id": "dash_001",
-            "title": "Update dashboard page with backend data",
-            "description": "Connect existing dashboard to real backend data using new hooks",
-            "files": ["src/app/dashboard/page.tsx"],
-            "estimated_time": "60m", 
-            "dependencies": ["hook_001", "api_004"]
-          },
-          {
-            "id": "dash_002",
-            "title": "Implement patient list component",
-            "description": "Create/update patient listing with backend data integration",
-            "files": ["src/app/dashboard/patients/page.tsx", "src/components/features/patients/"],
-            "estimated_time": "75m",
-            "dependencies": ["hook_002", "api_004"]
-          },
-          {
-            "id": "dash_003",
-            "title": "Add sync management UI",
-            "description": "Create UI for triggering syncs and viewing sync status",
-            "files": ["src/components/features/sync/", "src/app/dashboard/sync/"],
-            "estimated_time": "60m",
-            "dependencies": ["hook_003", "api_004"]
-          },
-          {
-            "id": "dash_004",
-            "title": "Implement real-time dashboard metrics",
-            "description": "Show live metrics from backend with auto-refresh",
-            "files": ["src/components/dashboard/sync-dashboard.tsx"],
-            "estimated_time": "45m",
-            "dependencies": ["dash_001"]
-          }
-        ]
-      },
-      {
-        "phase": "5_authentication_flow",
-        "title": "Authentication Flow Enhancements", 
-        "priority": "medium",
-        "tasks": [
-          {
-            "id": "auth_001",
-            "title": "Add organization selection after sign-up",
-            "description": "Guide new users through organization setup or joining",
-            "files": ["src/app/onboarding/", "src/components/auth/"],
-            "estimated_time": "45m",
-            "dependencies": []
-          },
-          {
-            "id": "auth_002",
-            "title": "Implement organization switching with backend sync",
-            "description": "Ensure organization changes trigger appropriate API calls",
-            "files": ["src/components/layout/header/", "src/hooks/useClerkOrganization.ts"],
-            "estimated_time": "30m",
-            "dependencies": ["hook_004"]
-          },
-          {
-            "id": "auth_003", 
-            "title": "Add authentication error handling",
-            "description": "Handle token expiry, organization access denial, etc.",
-            "files": ["src/components/auth/auth-status.tsx", "src/lib/auth/"],
-            "estimated_time": "30m",
-            "dependencies": ["api_003"]
-          }
-        ]
-      },
-      {
-        "phase": "6_api_routes_alignment",
-        "title": "Frontend API Routes Alignment",
-        "priority": "low", 
-        "tasks": [
-          {
-            "id": "route_001",
-            "title": "Update existing API routes for backend proxy",
-            "description": "Align frontend API routes with backend endpoints where needed",
-            "files": ["src/app/api/"],
-            "estimated_time": "60m",
-            "dependencies": ["api_001"]
-          },
-          {
-            "id": "route_002",
-            "title": "Add health check endpoint",
-            "description": "Create frontend health check that verifies backend connectivity", 
-            "files": ["src/app/api/health/"],
-            "estimated_time": "20m",
-            "dependencies": ["api_001"]
-          }
-        ]
-      },
-      {
-        "phase": "7_testing_validation",
-        "title": "Testing & Validation",
-        "priority": "medium",
-        "tasks": [
-          {
-            "id": "test_001",
-            "title": "Test authentication flow end-to-end",
-            "description": "Verify sign-in, organization selection, and API access",
+            "id": "error_005_001",
+            "title": "Test health endpoint",
+            "description": "Verify GET /health returns 200 OK",
             "files": [],
-            "estimated_time": "30m",
-            "dependencies": ["auth_001", "auth_002"]
+            "type": "api_testing",
+            "estimated_minutes": 5
           },
           {
-            "id": "test_002", 
-            "title": "Test API integration with different user roles",
-            "description": "Verify admin vs member permissions work correctly",
+            "id": "error_005_002", 
+            "title": "Test dashboard endpoint with proper auth",
+            "description": "Manual test of /api/v1/dashboard/org_2xwHiNrj68eaRUlX10anlXGvzX7 with JWT",
             "files": [],
-            "estimated_time": "45m",
-            "dependencies": ["dash_001", "dash_002"]
+            "type": "api_testing", 
+            "estimated_minutes": 15
           },
           {
-            "id": "test_003",
-            "title": "Test error scenarios",
-            "description": "Verify handling of network errors, auth failures, rate limiting",
-            "files": [],
-            "estimated_time": "30m", 
-            "dependencies": ["api_003", "auth_003"]
-          },
-          {
-            "id": "test_004",
-            "title": "Performance testing with real data",
-            "description": "Test dashboard and patient listing with production data volumes",
-            "files": [],
-            "estimated_time": "30m",
-            "dependencies": ["dash_001", "dash_002"]
+            "id": "error_005_003",
+            "title": "Update RoutiqAPI based on working endpoints",
+            "description": "Remove calls to non-existent endpoints, focus on working ones only",
+            "files": ["src/lib/routiq-api.ts"],
+            "type": "code_fix",
+            "estimated_minutes": 10
           }
         ]
       }
     ],
-    "summary": {
-      "total_tasks": 28,
-      "estimated_total_time": "14 hours 30 minutes",
-      "high_priority_tasks": 11,
-      "medium_priority_tasks": 11, 
-      "low_priority_tasks": 6,
-      "critical_path": ["env_001", "env_002", "api_001", "api_002", "api_004", "hook_001", "dash_001"],
-      "immediate_next_steps": [
-        "Verify environment variables are set correctly",
-        "Update RoutiqAPI base URL to production backend",
-        "Enhance API client with all backend endpoints",
-        "Add organization context to API calls"
-      ]
-    }
+
+    "implementation_order": [
+      "error_001 (Fix auth verification - BLOCKING)", 
+      "error_005 (Validate endpoints - CRITICAL)",
+      "error_004 (Dashboard loading - CRITICAL)",
+      "error_002 (Missing assets - MEDIUM)",
+      "error_003 (CSP issues - MEDIUM)"
+    ],
+
+    "success_criteria": [
+      "✅ User can sign in and select organization without errors",
+      "✅ Dashboard loads with organization context", 
+      "✅ Real backend data displays (650 patients, etc.)",
+      "✅ No 404 errors in console for API calls",
+      "✅ No CSP violations in console",
+      "✅ Sync functionality works"
+    ],
+
+    "rollback_plan": {
+      "if_backend_not_ready": "Revert to static mock data with clear backend status message",
+      "if_auth_issues": "Fall back to Clerk-only organization management",
+      "if_csp_problems": "Disable problematic Clerk features temporarily"
+    },
+
+    "notes": [
+      "Backend response doc shows dashboard/patients/sync endpoints ready but NOT auth/verify",
+      "Organization context is the blocking issue - once fixed, dashboard should work",
+      "CSP and asset 404s are cosmetic but should be fixed for production",
+      "Focus on getting basic dashboard working first, then polish"
+    ]
   }

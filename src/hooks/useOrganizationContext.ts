@@ -46,18 +46,25 @@ export function useOrganizationContext(): UseOrganizationContextResult {
   const [error, setError] = useState<string | null>(null)
 
   const fetchOrganizationContext = useCallback(async (): Promise<void> => {
+    console.log('useOrganizationContext: fetchOrganizationContext called')
+    console.log('useOrganizationContext: isClerkLoading:', isClerkLoading, 'user:', user?.id, 'clerkOrgId:', clerkOrgId)
+    
     if (isClerkLoading || !user || !clerkOrgId) {
+      console.log('useOrganizationContext: Missing required data, setting loading to false')
       setIsLoading(false)
       return
     }
 
     try {
+      console.log('useOrganizationContext: Building organization context...')
       setIsLoading(true)
       setError(null)
 
-      // Backend verification now enabled - endpoints are ready!
-      const api = new RoutiqAPI(clerkOrgId)
-      await api.verifyAuth(clerkOrgId)
+      // Backend verification disabled - /api/v1/auth/verify endpoint not implemented yet
+      // According to BACKEND_API_RESPONSE.md, only dashboard/patients/sync endpoints are ready
+      // TODO: Re-enable when backend implements /api/v1/auth/verify endpoint
+      // const api = new RoutiqAPI(clerkOrgId)
+      // await api.verifyAuth(clerkOrgId)
 
       // Build context from Clerk data
       const context: ClientOrganizationContext = {
@@ -71,11 +78,12 @@ export function useOrganizationContext(): UseOrganizationContextResult {
         permissions: {},
       }
 
+      console.log('useOrganizationContext: Built context successfully:', context)
       setOrganizationContext(context)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+      console.error('useOrganizationContext: Error building context:', err)
       setError(errorMessage)
-      console.error('Failed to build organization context:', err)
       setOrganizationContext(null)
     } finally {
       setIsLoading(false)

@@ -16,10 +16,18 @@ export function useDashboardData(organizationId: string | null) {
 
   // Single API call to get all dashboard data - direct to backend via RoutiqAPI
   const getDashboardData = useCallback(async (): Promise<DashboardResponse | null> => {
-    if (!organizationId) return null
+    console.log('useDashboardData: getDashboardData called with organizationId:', organizationId)
     
+    if (!organizationId) {
+      console.log('useDashboardData: No organizationId provided, returning null')
+      return null
+    }
+    
+    console.log('useDashboardData: Creating RoutiqAPI instance and calling dashboard endpoint...')
     const api = new RoutiqAPI(organizationId)
-    return await api.getDashboard(organizationId)
+    const result = await api.getDashboard(organizationId)
+    console.log('useDashboardData: Dashboard API call successful:', result)
+    return result
   }, [organizationId])
 
   // Check if there's an active sync running
