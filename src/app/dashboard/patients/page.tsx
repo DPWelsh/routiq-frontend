@@ -113,52 +113,101 @@ export default function PatientsPage() {
 
   const fetchPatients = useCallback(async () => {
     try {
-      const searchParams = new URLSearchParams()
-      if (filterType !== 'all') {
-        searchParams.append('filter', filterType)
-      }
+      if (!organizationId) return
       
-      const response = await fetch(`/api/active-patients?${searchParams}`)
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+      const api = new RoutiqAPI(organizationId)
+      const result = await api.getPatients(organizationId)
       
-      const data = await response.json()
-      // FIXED: API returns array directly, not wrapped in object
-      setPatients(Array.isArray(data) ? data : [])
+      // Backend returns: { organization_id, patients, total_count }
+      if (result.patients && Array.isArray(result.patients)) {
+        // Apply client-side filtering if needed
+        let filteredPatients = result.patients
+        if (filterType !== 'all') {
+          // Apply filters based on patient data structure from backend
+          filteredPatients = result.patients.filter(patient => {
+            switch (filterType) {
+              case 'high':
+                return patient.recent_appointment_count === 0 && patient.upcoming_appointment_count === 0
+              case 'medium':
+                return patient.upcoming_appointment_count === 0
+              case 'low':
+                return patient.upcoming_appointment_count > 0
+              case 'active':
+                return patient.is_active
+              case 'upcoming':
+                return patient.upcoming_appointment_count > 0
+              default:
+                return true
+            }
+          })
+        }
+        setPatients(filteredPatients)
+      } else {
+        setPatients([])
+      }
     } catch (error) {
       console.error('Error fetching patients:', error)
       setPatients([])
     }
-  }, [filterType])
+  }, [filterType, organizationId])
 
   const fetchAllPatients = useCallback(async () => {
     try {
-      // Always fetch unfiltered patients for card calculations
-      const response = await fetch('/api/active-patients')
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+      if (!organizationId) return
       
-      const data = await response.json()
-      setAllPatients(Array.isArray(data) ? data : [])
+      const api = new RoutiqAPI(organizationId)
+      const result = await api.getPatients(organizationId)
+      
+      if (result.patients && Array.isArray(result.patients)) {
+        setAllPatients(result.patients)
+      } else {
+        setAllPatients([])
+      }
     } catch (error) {
       console.error('Error fetching all patients:', error)
       setAllPatients([])
     }
-  }, [])
+  }, [organizationId])
 
   const fetchStats = useCallback(async () => {
     try {
-      const response = await fetch('/api/active-patients/stats')
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
+      if (!organizationId) return
       
-      const result = await response.json()
-      // FIXED: API returns nested data structure
-      if (result.success && result.data) {
-        setStats(result.data)
+      const api = new RoutiqAPI(organizationId)
+      const result = await api.getDashboard(organizationId)
+      
+      // Transform backend dashboard response to expected stats format
+      if (result.success && result.summary) {
+        const transformedStats = {
+          overview: {
+            totalPatients: result.summary.total_patients,
+            activePatients: result.summary.active_patients,
+            inactivePatients: result.summary.total_patients - result.summary.active_patients,
+            patientsWithRecentActivity: result.summary.patients_with_recent,
+            activityRate: result.summary.engagement_rate
+          },
+          engagement: {
+            totalConversations: 0, // Not available in current backend response
+            averageConversationsPerPatient: 0,
+            patientsWithEscalations: 0,
+            escalationRate: 0
+          },
+          sentiment: {
+            averageScore: null,
+            conversationsAnalyzed: 0
+          },
+          timeframe: {
+            days: 30,
+            includeInactive: false,
+            dateThreshold: new Date().toISOString()
+          },
+          organizationContext: {
+            organizationId: organizationId,
+            userRole: 'user'
+          },
+          lastUpdated: result.summary.last_sync_time || new Date().toISOString()
+        }
+        setStats(transformedStats)
       } else {
         setStats(null)
       }
@@ -166,7 +215,7 @@ export default function PatientsPage() {
       console.error('Error fetching stats:', error)
       setStats(null)
     }
-  }, [])
+  }, [organizationId])
 
   const handleRefresh = async () => {
     if (refreshing || loading) return // Prevent multiple simultaneous refreshes
@@ -183,52 +232,43 @@ export default function PatientsPage() {
 
   const refreshPatientData = async (patientId: number) => {
     try {
-      const response = await fetch(`/api/active-patients/${patientId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'refresh' })
-      })
+      if (!organizationId) return
       
-      if (response.ok) {
-        await fetchPatients()
-      }
+      // Trigger a sync operation instead of individual patient refresh
+      const api = new RoutiqAPI(organizationId)
+      await api.triggerSync(organizationId)
+      
+      // Refresh the local data
+      await fetchPatients()
     } catch (error) {
       console.error('Error refreshing patient data:', error)
     }
   }
 
-  // FIXED: Initial data loading - runs only once on mount
+  // Initial data loading - runs when organization is available
   useEffect(() => {
     const loadInitialData = async () => {
+      if (!organizationId) return
+      
       setLoading(true)
       try {
-        // Fetch stats and all patients (unfiltered) in parallel
-        const [statsResponse, allPatientsResponse] = await Promise.all([
-          fetch('/api/active-patients/stats'),
-          fetch('/api/active-patients')
+        // Load all data in parallel
+        await Promise.all([
+          fetchStats(),
+          fetchAllPatients()
         ])
-
-        if (statsResponse.ok) {
-          const statsData = await statsResponse.json()
-          setStats(statsData)
-        }
-
-        if (allPatientsResponse.ok) {
-          const allPatientsData = await allPatientsResponse.json()
-          // Set both allPatients and initial patients (unfiltered)
-          const patientsArray = Array.isArray(allPatientsData) ? allPatientsData : []
-          setAllPatients(patientsArray)
-          setPatients(patientsArray) // Initially show all patients
-        }
+        
+        // Initial patients load (will be filtered by fetchPatients)
+        await fetchPatients()
       } catch (error) {
         console.error('Error loading initial data:', error)
       } finally {
-      setLoading(false)
+        setLoading(false)
       }
     }
     
     loadInitialData()
-  }, []) // Empty dependency array - runs only once
+  }, [organizationId]) // Runs when organization changes
 
   // FIXED: Handle filter changes - runs whenever filter changes
   useEffect(() => {

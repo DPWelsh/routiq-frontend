@@ -1,14 +1,14 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useUser } from '@clerk/nextjs'
-import { UserRole, UserStatus, OrganizationStatus } from '@/types/organization'
+import { useClerkOrganization } from '@/hooks/useClerkOrganization'
+import { RoutiqAPI } from '@/lib/routiq-api'
 
 export interface ClientOrganizationContext {
   organizationId: string
   organizationName: string
   organizationSlug: string | null
-  userRole: UserRole
-  userStatus: UserStatus
-  organizationStatus: OrganizationStatus
+  userRole: 'admin' | 'member' | null
+  userStatus: 'active' | 'inactive'
+  organizationStatus: 'active' | 'inactive'
   clerkUserId: string
   permissions: Record<string, unknown>
 }
@@ -22,24 +22,31 @@ export interface UseOrganizationContextResult {
   // Convenience accessors
   organizationId: string | null
   organizationName: string | null
-  userRole: UserRole | null
+  userRole: 'admin' | 'member' | null
   isAdmin: boolean
   isOwner: boolean
   canManageUsers: boolean
 }
 
 /**
- * Hook to access organization context from the client side
- * Fetches organization context from the API and provides it to React components
+ * Hook to access organization context from Clerk and backend
+ * Uses Clerk for organization info and backend for verification
  */
 export function useOrganizationContext(): UseOrganizationContextResult {
-  const { user, isLoaded: isUserLoaded } = useUser()
+  const { 
+    user, 
+    organizationId: clerkOrgId, 
+    organizationName: clerkOrgName, 
+    membershipRole, 
+    isLoading: isClerkLoading 
+  } = useClerkOrganization()
+  
   const [organizationContext, setOrganizationContext] = useState<ClientOrganizationContext | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const fetchOrganizationContext = useCallback(async (): Promise<void> => {
-    if (!isUserLoaded || !user) {
+    if (isClerkLoading || !user || !clerkOrgId) {
       setIsLoading(false)
       return
     }
@@ -48,37 +55,34 @@ export function useOrganizationContext(): UseOrganizationContextResult {
       setIsLoading(true)
       setError(null)
 
-      const response = await fetch('/api/organization/context', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include', // Include cookies for authentication
-      })
+      // Use RoutiqAPI to verify organization access with backend
+      const api = new RoutiqAPI(clerkOrgId)
+      await api.verifyAuth(clerkOrgId)
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }))
-        throw new Error(errorData.error || `HTTP ${response.status}`)
+      // Build context from Clerk data
+      const context: ClientOrganizationContext = {
+        organizationId: clerkOrgId,
+        organizationName: clerkOrgName || '',
+        organizationSlug: null,
+        userRole: membershipRole as 'admin' | 'member' | null,
+        userStatus: 'active',
+        organizationStatus: 'active',
+        clerkUserId: user.id,
+        permissions: {},
       }
 
-      const result = await response.json()
-      
-      if (!result.success) {
-        throw new Error(result.error || 'Failed to fetch organization context')
-      }
-
-      setOrganizationContext(result.data)
+      setOrganizationContext(context)
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
       setError(errorMessage)
-      console.error('Failed to fetch organization context:', err)
+      console.error('Failed to verify organization context:', err)
       setOrganizationContext(null)
     } finally {
       setIsLoading(false)
     }
-  }, [isUserLoaded, user])
+  }, [isClerkLoading, user, clerkOrgId, clerkOrgName, membershipRole])
 
-  // Fetch organization context when user is loaded
+  // Fetch organization context when Clerk data is available
   useEffect(() => {
     fetchOrganizationContext()
   }, [fetchOrganizationContext])
@@ -87,13 +91,13 @@ export function useOrganizationContext(): UseOrganizationContextResult {
   const organizationId = organizationContext?.organizationId || null
   const organizationName = organizationContext?.organizationName || null
   const userRole = organizationContext?.userRole || null
-  const isAdmin = userRole === UserRole.ADMIN || userRole === UserRole.OWNER
-  const isOwner = userRole === UserRole.OWNER
-  const canManageUsers = isAdmin || isOwner
+  const isAdmin = userRole === 'admin'
+  const isOwner = userRole === 'admin' // Clerk doesn't have owner role, treat admin as owner
+  const canManageUsers = isAdmin
 
   return {
     organizationContext,
-    isLoading,
+    isLoading: isLoading || isClerkLoading,
     error,
     refetch: fetchOrganizationContext,
     
@@ -119,9 +123,9 @@ export function useOrganizationPermissions() {
     isOwner,
     canManageUsers,
     canViewPatients: userRole !== null,
-    canEditPatients: userRole === UserRole.STAFF || isAdmin,
+    canEditPatients: userRole === 'admin',
     canViewConversations: userRole !== null,
-    canEditConversations: userRole === UserRole.STAFF || isAdmin,
+    canEditConversations: userRole === 'admin',
     canViewAnalytics: isAdmin,
     canManageOrganization: isOwner,
   }
