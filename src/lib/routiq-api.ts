@@ -1,10 +1,21 @@
 /**
  * Routiq API Client
- * Integrates with Cliniko Active Patients Backend
+ * Integrates with Routiq Backend Production API
  */
 
-// Use local Next.js API routes to avoid CORS issues in production
-const API_BASE = typeof window !== 'undefined' ? '' : 'http://localhost:3000';
+// Production backend URL
+const API_BASE = 'https://routiq-backend-prod.up.railway.app';
+
+// Type declaration for Clerk global
+declare global {
+  interface Window {
+    Clerk?: {
+      session?: {
+        getToken(): Promise<string | null>;
+      };
+    };
+  }
+}
 
 // Organization constants
 export const ORGANIZATIONS = {
@@ -119,30 +130,70 @@ export interface SyncDashboardResponse {
 
 export class RoutiqAPI {
   private baseUrl: string;
-  private defaultHeaders: HeadersInit;
+  private organizationId?: string;
 
   constructor(organizationId?: string) {
     this.baseUrl = API_BASE;
-    this.defaultHeaders = {
-      'Content-Type': 'application/json',
-      ...(organizationId && { 'x-organization-id': organizationId })
-    };
+    this.organizationId = organizationId;
+  }
+
+  /**
+   * Get authentication headers with Clerk JWT token
+   */
+  private async getAuthHeaders(): Promise<HeadersInit> {
+    try {
+      // Get Clerk session token (client-side)
+      if (typeof window !== 'undefined' && window.Clerk) {
+        const token = await window.Clerk.session?.getToken();
+        return {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          ...(this.organizationId && { 'X-Organization-ID': this.organizationId })
+        };
+      }
+      
+      // Server-side: headers should be provided by middleware or manually
+      console.warn('Clerk session not available. Ensure proper authentication setup.');
+      return {
+        'Content-Type': 'application/json',
+        ...(this.organizationId && { 'X-Organization-ID': this.organizationId })
+      };
+    } catch (error) {
+      console.error('Failed to get auth token:', error);
+      return {
+        'Content-Type': 'application/json',
+        ...(this.organizationId && { 'X-Organization-ID': this.organizationId })
+      };
+    }
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}, retries = 2): Promise<T> {
     for (let attempt = 0; attempt <= retries; attempt++) {
       try {
+        const authHeaders = await this.getAuthHeaders();
         const response = await fetch(`${this.baseUrl}${endpoint}`, {
-          headers: { ...this.defaultHeaders, ...options.headers },
-          ...options
+          ...options,
+          headers: { ...authHeaders, ...options.headers }
         });
 
         if (!response.ok) {
           const errorText = await response.text();
           
+          // Handle specific error types from backend
+          if (response.status === 401) {
+            throw new Error('Authentication failed. Please sign in again.');
+          }
+          if (response.status === 403) {
+            throw new Error('Access denied. Check organization permissions.');
+          }
+          if (response.status === 429) {
+            const retryAfter = response.headers.get('Retry-After');
+            throw new Error(`Rate limited. Try again in ${retryAfter || '60'} seconds.`);
+          }
+          
           // Check if this is a connection error that might be retryable
           if (response.status === 500 && errorText.includes('connection already closed') && attempt < retries) {
-            console.warn(`Database connection error on attempt ${attempt + 1}, retrying...`);
+            console.warn(`Backend connection error on attempt ${attempt + 1}, retrying...`);
             await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1))); // Exponential backoff
             continue;
           }
@@ -173,40 +224,40 @@ export class RoutiqAPI {
   // ========================================
 
   /**
-   * Trigger Clerk sync for users/organizations
-   * This endpoint works in production right now
-   */
-  async triggerClerkSync(organizationId: string): Promise<SyncTriggerResponse> {
-    return this.request('/api/v1/clerk/sync', {
-      method: 'POST',
-      body: JSON.stringify({ organization_id: organizationId })
-    });
-  }
-
-  /**
-   * Trigger Cliniko sync for organization (legacy method name for backward compatibility)
-   * This endpoint works in production right now
+   * Trigger manual sync for organization
+   * Uses backend sync trigger endpoint
    */
   async triggerSync(organizationId: string): Promise<SyncTriggerResponse> {
-    return this.triggerClerkSync(organizationId);
-  }
-
-  /**
-   * Trigger Cliniko patient sync for organization
-   * Available when backend environment is configured
-   */
-  async triggerClinikoSync(organizationId: string): Promise<SyncTriggerResponse> {
-    return this.request(`/api/v1/cliniko/sync/${organizationId}`, {
+    // Create instance with organization context if not already set
+    const api = this.organizationId ? this : new RoutiqAPI(organizationId);
+    return api.request('/api/v1/sync/trigger', {
       method: 'POST'
     });
   }
 
   /**
-   * Get current sync status
-   * Uses Next.js API proxy to avoid CORS issues
+   * Trigger Cliniko comprehensive sync for organization
+   * Uses dedicated Cliniko sync endpoint
    */
-  async getSyncStatus(): Promise<SyncStatusResponse> {
-    return this.request('/api/clerk/status');
+  async triggerClinikoSync(organizationId: string, mode: 'comprehensive' | 'basic' | 'patients-only' = 'comprehensive'): Promise<SyncTriggerResponse> {
+    return this.request(`/api/v1/cliniko/sync/${organizationId}?mode=${mode}`, {
+      method: 'POST'
+    });
+  }
+
+  /**
+   * Get sync scheduler status for organization
+   * Returns current sync status and last sync time
+   */
+  async getSyncStatus(organizationId?: string): Promise<{
+    organization_id: string;
+    sync_running: boolean;
+    last_sync_time: string;
+    scheduler_active: boolean;
+    message: string;
+  }> {
+    const api = organizationId ? new RoutiqAPI(organizationId) : this;
+    return api.request('/api/v1/sync/scheduler/status');
   }
 
   /**
@@ -225,19 +276,78 @@ export class RoutiqAPI {
   }
 
   /**
-   * Get database summary with user/org counts
-   * This endpoint works in production right now
+   * Verify authentication with backend
+   * Tests if current JWT token and organization access are valid
    */
-  async getDatabaseSummary(): Promise<DatabaseSummaryResponse> {
-    return this.request('/api/v1/clerk/database-summary');
+  async verifyAuth(organizationId?: string): Promise<{
+    authenticated: boolean;
+    organization_id: string;
+    message: string;
+  }> {
+    const api = organizationId ? new RoutiqAPI(organizationId) : this;
+    return api.request('/api/v1/auth/verify');
+  }
+
+  /**
+   * Get dashboard summary for organization
+   * Returns comprehensive dashboard metrics and recent activity
+   */
+  async getDashboard(organizationId: string): Promise<{
+    success: boolean;
+    organization_id: string;
+    summary: {
+      total_patients: number;
+      active_patients: number;
+      patients_with_upcoming: number;
+      patients_with_recent: number;
+      engagement_rate: number;
+      last_sync_time: string;
+      integration_status: string;
+    };
+    recent_activity: Array<{
+      id: string;
+      operation_type: string;
+      status: string;
+      started_at: string;
+      completed_at: string;
+    }>;
+  }> {
+    return this.request(`/api/v1/dashboard/${organizationId}`);
+  }
+
+  /**
+   * Get patients list for organization
+   * Returns paginated list of active patients with appointment details
+   */
+  async getPatients(organizationId: string): Promise<{
+    organization_id: string;
+    patients: Array<{
+      id: string;
+      name: string;
+      phone: string;
+      email: string;
+      is_active: boolean;
+      recent_appointment_count: number;
+      upcoming_appointment_count: number;
+      next_appointment_time?: string;
+      next_appointment_type?: string;
+    }>;
+    total_count: number;
+  }> {
+    return this.request(`/api/v1/patients/${organizationId}/patients`);
   }
 
   /**
    * Basic health check
-   * Uses local health endpoint
+   * Tests backend connectivity
    */
-  async getHealth(): Promise<{ status: string; timestamp: string }> {
-    return this.request('/api/health');
+  async getHealth(): Promise<{ 
+    status: string; 
+    timestamp: string;
+    version: string;
+    environment: object;
+  }> {
+    return this.request('/health');
   }
 
   // ========================================

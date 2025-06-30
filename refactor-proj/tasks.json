@@ -1,0 +1,260 @@
+{
+    "project": "Routiq Frontend - Backend Integration",
+    "phases": [
+      {
+        "phase": "1_environment_verification",
+        "title": "Environment & Configuration Verification",
+        "priority": "high",
+        "tasks": [
+          {
+            "id": "env_001",
+            "title": "Verify Clerk environment variables",
+            "description": "Ensure NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY and CLERK_SECRET_KEY are properly set",
+            "files": [".env.local", "src/config/env.ts"],
+            "estimated_time": "15m",
+            "dependencies": []
+          },
+          {
+            "id": "env_002", 
+            "title": "Update backend API base URL",
+            "description": "Ensure RoutiqAPI client points to https://routiq-backend-prod.up.railway.app",
+            "files": ["src/lib/routiq-api.ts"],
+            "estimated_time": "10m",
+            "dependencies": []
+          },
+          {
+            "id": "env_003",
+            "title": "Verify CORS configuration",
+            "description": "Check if frontend domain is whitelisted on backend",
+            "files": ["vercel.json"],
+            "estimated_time": "15m",
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "phase": "2_api_client_enhancement",
+        "title": "API Client Integration Enhancement",
+        "priority": "high", 
+        "tasks": [
+          {
+            "id": "api_001",
+            "title": "Update RoutiqAPI class with all backend endpoints",
+            "description": "Add methods for dashboard, patients, sync operations matching backend API documentation",
+            "files": ["src/lib/routiq-api.ts"],
+            "estimated_time": "45m",
+            "dependencies": ["env_002"]
+          },
+          {
+            "id": "api_002",
+            "title": "Implement organization context in API calls",
+            "description": "Ensure X-Organization-ID header is automatically included in all requests",
+            "files": ["src/lib/routiq-api.ts"],
+            "estimated_time": "30m", 
+            "dependencies": ["api_001"]
+          },
+          {
+            "id": "api_003",
+            "title": "Add comprehensive error handling",
+            "description": "Handle rate limiting, authentication errors, and backend-specific error responses",
+            "files": ["src/lib/routiq-api.ts"],
+            "estimated_time": "30m",
+            "dependencies": ["api_001"]
+          },
+          {
+            "id": "api_004",
+            "title": "Create TypeScript types for backend responses",
+            "description": "Define interfaces for Patient, Dashboard, Sync responses based on API documentation",
+            "files": ["src/types/api.ts", "src/types/backend.ts"],
+            "estimated_time": "45m",
+            "dependencies": []
+          }
+        ]
+      },
+      {
+        "phase": "3_hook_enhancements",
+        "title": "Custom Hooks for Backend Integration",
+        "priority": "medium",
+        "tasks": [
+          {
+            "id": "hook_001",
+            "title": "Create useDashboard hook",
+            "description": "React Query hook for dashboard data with organization context",
+            "files": ["src/hooks/useDashboard.ts"],
+            "estimated_time": "30m",
+            "dependencies": ["api_001", "api_004"]
+          },
+          {
+            "id": "hook_002", 
+            "title": "Create usePatients hook",
+            "description": "Hook for patient management with filtering and pagination",
+            "files": ["src/hooks/usePatients.ts"],
+            "estimated_time": "45m",
+            "dependencies": ["api_001", "api_004"]
+          },
+          {
+            "id": "hook_003",
+            "title": "Create useSyncOperations hook", 
+            "description": "Hook for triggering and monitoring sync operations",
+            "files": ["src/hooks/useSyncOperations.ts"],
+            "estimated_time": "30m",
+            "dependencies": ["api_001", "api_004"]
+          },
+          {
+            "id": "hook_004",
+            "title": "Enhance useOrganizationContext hook",
+            "description": "Add backend integration and organization switching with API updates",
+            "files": ["src/hooks/useOrganizationContext.ts"],
+            "estimated_time": "30m",
+            "dependencies": ["api_002"]
+          }
+        ]
+      },
+      {
+        "phase": "4_dashboard_implementation", 
+        "title": "Dashboard Integration Implementation",
+        "priority": "high",
+        "tasks": [
+          {
+            "id": "dash_001",
+            "title": "Update dashboard page with backend data",
+            "description": "Connect existing dashboard to real backend data using new hooks",
+            "files": ["src/app/dashboard/page.tsx"],
+            "estimated_time": "60m", 
+            "dependencies": ["hook_001", "api_004"]
+          },
+          {
+            "id": "dash_002",
+            "title": "Implement patient list component",
+            "description": "Create/update patient listing with backend data integration",
+            "files": ["src/app/dashboard/patients/page.tsx", "src/components/features/patients/"],
+            "estimated_time": "75m",
+            "dependencies": ["hook_002", "api_004"]
+          },
+          {
+            "id": "dash_003",
+            "title": "Add sync management UI",
+            "description": "Create UI for triggering syncs and viewing sync status",
+            "files": ["src/components/features/sync/", "src/app/dashboard/sync/"],
+            "estimated_time": "60m",
+            "dependencies": ["hook_003", "api_004"]
+          },
+          {
+            "id": "dash_004",
+            "title": "Implement real-time dashboard metrics",
+            "description": "Show live metrics from backend with auto-refresh",
+            "files": ["src/components/dashboard/sync-dashboard.tsx"],
+            "estimated_time": "45m",
+            "dependencies": ["dash_001"]
+          }
+        ]
+      },
+      {
+        "phase": "5_authentication_flow",
+        "title": "Authentication Flow Enhancements", 
+        "priority": "medium",
+        "tasks": [
+          {
+            "id": "auth_001",
+            "title": "Add organization selection after sign-up",
+            "description": "Guide new users through organization setup or joining",
+            "files": ["src/app/onboarding/", "src/components/auth/"],
+            "estimated_time": "45m",
+            "dependencies": []
+          },
+          {
+            "id": "auth_002",
+            "title": "Implement organization switching with backend sync",
+            "description": "Ensure organization changes trigger appropriate API calls",
+            "files": ["src/components/layout/header/", "src/hooks/useClerkOrganization.ts"],
+            "estimated_time": "30m",
+            "dependencies": ["hook_004"]
+          },
+          {
+            "id": "auth_003", 
+            "title": "Add authentication error handling",
+            "description": "Handle token expiry, organization access denial, etc.",
+            "files": ["src/components/auth/auth-status.tsx", "src/lib/auth/"],
+            "estimated_time": "30m",
+            "dependencies": ["api_003"]
+          }
+        ]
+      },
+      {
+        "phase": "6_api_routes_alignment",
+        "title": "Frontend API Routes Alignment",
+        "priority": "low", 
+        "tasks": [
+          {
+            "id": "route_001",
+            "title": "Update existing API routes for backend proxy",
+            "description": "Align frontend API routes with backend endpoints where needed",
+            "files": ["src/app/api/"],
+            "estimated_time": "60m",
+            "dependencies": ["api_001"]
+          },
+          {
+            "id": "route_002",
+            "title": "Add health check endpoint",
+            "description": "Create frontend health check that verifies backend connectivity", 
+            "files": ["src/app/api/health/"],
+            "estimated_time": "20m",
+            "dependencies": ["api_001"]
+          }
+        ]
+      },
+      {
+        "phase": "7_testing_validation",
+        "title": "Testing & Validation",
+        "priority": "medium",
+        "tasks": [
+          {
+            "id": "test_001",
+            "title": "Test authentication flow end-to-end",
+            "description": "Verify sign-in, organization selection, and API access",
+            "files": [],
+            "estimated_time": "30m",
+            "dependencies": ["auth_001", "auth_002"]
+          },
+          {
+            "id": "test_002", 
+            "title": "Test API integration with different user roles",
+            "description": "Verify admin vs member permissions work correctly",
+            "files": [],
+            "estimated_time": "45m",
+            "dependencies": ["dash_001", "dash_002"]
+          },
+          {
+            "id": "test_003",
+            "title": "Test error scenarios",
+            "description": "Verify handling of network errors, auth failures, rate limiting",
+            "files": [],
+            "estimated_time": "30m", 
+            "dependencies": ["api_003", "auth_003"]
+          },
+          {
+            "id": "test_004",
+            "title": "Performance testing with real data",
+            "description": "Test dashboard and patient listing with production data volumes",
+            "files": [],
+            "estimated_time": "30m",
+            "dependencies": ["dash_001", "dash_002"]
+          }
+        ]
+      }
+    ],
+    "summary": {
+      "total_tasks": 28,
+      "estimated_total_time": "14 hours 30 minutes",
+      "high_priority_tasks": 11,
+      "medium_priority_tasks": 11, 
+      "low_priority_tasks": 6,
+      "critical_path": ["env_001", "env_002", "api_001", "api_002", "api_004", "hook_001", "dash_001"],
+      "immediate_next_steps": [
+        "Verify environment variables are set correctly",
+        "Update RoutiqAPI base URL to production backend",
+        "Enhance API client with all backend endpoints",
+        "Add organization context to API calls"
+      ]
+    }
+  }

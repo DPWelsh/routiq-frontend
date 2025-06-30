@@ -1,14 +1,16 @@
 import { ClientDashboardLayout } from "@/components/layout/client-dashboard-layout"
+import { AuthGuard } from "@/components/auth/auth-guard"
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  // Middleware handles authentication - if we reach here, user is authenticated
   return (
-    <ClientDashboardLayout>
-      {children}
-    </ClientDashboardLayout>
+    <AuthGuard>
+      <ClientDashboardLayout>
+        {children}
+      </ClientDashboardLayout>
+    </AuthGuard>
   )
 } 
