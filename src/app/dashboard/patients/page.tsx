@@ -2,26 +2,29 @@
 
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { 
   Users, 
-  Calendar, 
+  UserCheck, 
   Activity, 
+  TrendingUp,
   Phone, 
   Mail, 
-  RefreshCw, 
-  Loader2, 
+  Calendar, 
+  Clock, 
   AlertCircle,
-  UserCheck,
-  TrendingUp,
-  Clock
-} from 'lucide-react'
-import { useUser } from '@clerk/nextjs'
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+  RefreshCw,
+  Loader2,
+  Search,
+  Grid3X3,
+  List,
+  Filter
+} from "lucide-react"
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { UpcomingAppointments } from '@/components/features/patients/upcoming-appointments'
 import { usePatientsData } from '@/hooks/useDashboardData'
@@ -87,7 +90,9 @@ export default function PatientsPage() {
   // Local state for filtering and search
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
-  
+  const [viewMode, setViewMode] = useState<'card' | 'table'>('card')
+  const [showCount, setShowCount] = useState(10)
+
   // Extract patients data from response - use correct API structure
   const allPatients = patientsResponse?.patient_details || []
   const totalCount = patientsResponse?.total_active_patients || 0
@@ -130,8 +135,8 @@ export default function PatientsPage() {
       })
     }
     
-    return filtered
-  }, [allPatients, searchTerm, filterType])
+    return filtered.slice(0, showCount)
+  }, [allPatients, searchTerm, filterType, showCount])
 
   // Create stats from patients data
   const stats = useMemo(() => {
@@ -148,27 +153,7 @@ export default function PatientsPage() {
         inactivePatients: totalCount - activePatients,
         patientsWithRecentActivity: patientsWithRecent,
         activityRate: totalCount > 0 ? (activePatients / totalCount) * 100 : 0
-      },
-      engagement: {
-        totalConversations: 0,
-        averageConversationsPerPatient: 0,
-        patientsWithEscalations: 0,
-        escalationRate: 0
-      },
-      sentiment: {
-        averageScore: null,
-        conversationsAnalyzed: 0
-      },
-      timeframe: {
-        days: 30,
-        includeInactive: false,
-        dateThreshold: new Date().toISOString()
-      },
-      organizationContext: {
-        organizationId: organizationId || '',
-        userRole: 'user'
-      },
-      lastUpdated: new Date().toISOString()
+      }
     }
   }, [allPatients, totalCount, organizationId])
 
@@ -193,109 +178,246 @@ export default function PatientsPage() {
     return phone
   }
 
+  const PatientCard = ({ patient }: { patient: Patient }) => {
+    const engagement = getEngagementLevel(patient)
+    const EngagementIcon = engagement.icon
+    
+    return (
+      <div
+        className="border rounded-lg p-4 hover:shadow-md transition-all cursor-pointer bg-white"
+        onClick={() => handlePatientClick(patient.phone)}
+      >
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <h3 className="font-semibold text-gray-900">{patient.name}</h3>
+              <Badge className={`${engagement.color} text-xs`}>
+                <EngagementIcon className="h-3 w-3 mr-1" />
+                {engagement.level}
+              </Badge>
+              {patient.is_active && (
+                <Badge variant="outline" className="text-green-600 border-green-200 text-xs">
+                  Active
+                </Badge>
+              )}
+            </div>
+            
+            <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
+              <div className="flex items-center gap-1">
+                <Phone className="h-3 w-3" />
+                {formatPhoneNumber(patient.phone)}
+              </div>
+              <div className="flex items-center gap-1">
+                <Mail className="h-3 w-3" />
+                {patient.email || 'No email'}
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4 text-sm">
+              <div className="flex items-center gap-1">
+                <Calendar className="h-3 w-3 text-blue-500" />
+                <span>{patient.upcoming_appointment_count} upcoming</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock className="h-3 w-3 text-orange-500" />
+                <span>{patient.recent_appointment_count} recent</span>
+              </div>
+            </div>
+            
+            {patient.next_appointment_time && (
+              <div className="mt-2 text-sm text-gray-600">
+                Next: {new Date(patient.next_appointment_time).toLocaleDateString()}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  const PatientTable = () => (
+    <div className="bg-white rounded-lg border overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead className="bg-gray-50 border-b">
+            <tr>
+              <th className="text-left py-3 px-4 font-medium text-gray-900">Patient</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-900">Contact</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-900">Appointments</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-900">Priority</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-900">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredPatients.map((patient) => {
+              const engagement = getEngagementLevel(patient)
+              const EngagementIcon = engagement.icon
+              
+              return (
+                <tr 
+                  key={patient.id}
+                  className="border-b hover:bg-gray-50 cursor-pointer transition-colors"
+                  onClick={() => handlePatientClick(patient.phone)}
+                >
+                  <td className="py-3 px-4">
+                    <div>
+                      <div className="font-medium text-gray-900">{patient.name}</div>
+                      <div className="text-sm text-gray-500">{patient.cliniko_patient_id}</div>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="text-sm">
+                      <div className="text-gray-900">{formatPhoneNumber(patient.phone)}</div>
+                      <div className="text-gray-500">{patient.email || 'No email'}</div>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <div className="flex gap-4 text-sm">
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3 text-blue-500" />
+                        {patient.upcoming_appointment_count}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3 text-orange-500" />
+                        {patient.recent_appointment_count}
+                      </span>
+                    </div>
+                  </td>
+                  <td className="py-3 px-4">
+                    <Badge className={`${engagement.color} text-xs`}>
+                      <EngagementIcon className="h-3 w-3 mr-1" />
+                      {engagement.level}
+                    </Badge>
+                  </td>
+                  <td className="py-3 px-4">
+                    {patient.is_active ? (
+                      <Badge variant="outline" className="text-green-600 border-green-200 text-xs">
+                        Active
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline" className="text-gray-600 border-gray-200 text-xs">
+                        Inactive
+                      </Badge>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Patient Management</h1>
-          <p className="text-gray-600">
-            Manage and view patient engagement levels and appointment status
-          </p>
+      <div className="max-w-7xl mx-auto px-6 py-6">
+        {/* Compact Header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Patient Management</h1>
+            <p className="text-gray-600 text-sm">Manage patient engagement and appointments</p>
+          </div>
+          {patientsError && (
+            <Alert className="max-w-md border-red-200 bg-red-50">
+              <AlertCircle className="h-4 w-4 text-red-600" />
+              <AlertDescription className="text-red-800 text-sm">
+                Error loading patients. <Button onClick={handleRefresh} variant="link" className="p-0 h-auto text-red-800">Retry</Button>
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
 
-        {/* Error State */}
-        {patientsError && (
-          <Alert className="mb-6 border-red-200 bg-red-50">
-            <AlertCircle className="h-4 w-4 text-red-600" />
-            <AlertDescription className="text-red-800">
-              Error loading patients: {patientsError.message}
-              <Button 
-                onClick={handleRefresh} 
-                variant="outline" 
-                size="sm" 
-                className="ml-4"
-              >
-                Retry
-              </Button>
-            </AlertDescription>
-          </Alert>
-        )}
-
-        {/* Stats Cards */}
+        {/* Compact Stats Cards - 2x2 Grid */}
         {stats && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card>
-              <CardContent className="p-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <Card className="bg-white">
+              <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Patients</p>
-                    <p className="text-2xl font-bold">{stats.overview.totalPatients}</p>
+                    <p className="text-sm font-medium text-gray-600">Total</p>
+                    <p className="text-xl font-bold">{stats.overview.totalPatients}</p>
                   </div>
-                  <Users className="h-8 w-8 text-blue-500" />
+                  <Users className="h-6 w-6 text-blue-500" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardContent className="p-6">
+            <Card className="bg-white">
+              <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Active Patients</p>
-                    <p className="text-2xl font-bold text-green-600">{stats.overview.activePatients}</p>
+                    <p className="text-sm font-medium text-gray-600">Active</p>
+                    <p className="text-xl font-bold text-green-600">{stats.overview.activePatients}</p>
                   </div>
-                  <Activity className="h-8 w-8 text-green-500" />
+                  <Activity className="h-6 w-6 text-green-500" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardContent className="p-6">
+            <Card className="bg-white">
+              <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">With Recent Activity</p>
-                    <p className="text-2xl font-bold text-orange-600">{stats.overview.patientsWithRecentActivity}</p>
+                    <p className="text-sm font-medium text-gray-600">Recent Activity</p>
+                    <p className="text-xl font-bold text-orange-600">{stats.overview.patientsWithRecentActivity}</p>
                   </div>
-                  <TrendingUp className="h-8 w-8 text-orange-500" />
+                  <TrendingUp className="h-6 w-6 text-orange-500" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardContent className="p-6">
+            <Card className="bg-white">
+              <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Activity Rate</p>
-                    <p className="text-2xl font-bold text-purple-600">{stats.overview.activityRate.toFixed(1)}%</p>
+                    <p className="text-xl font-bold text-purple-600">{stats.overview.activityRate.toFixed(1)}%</p>
                   </div>
-                  <UserCheck className="h-8 w-8 text-purple-500" />
+                  <UserCheck className="h-6 w-6 text-purple-500" />
                 </div>
               </CardContent>
             </Card>
           </div>
         )}
 
-        {/* Upcoming Appointments */}
-        <div className="mb-8">
-          <UpcomingAppointments />
+        {/* Compact Upcoming Appointments Alert */}
+        <div className="mb-6">
+          <Alert className="border-orange-200 bg-orange-50">
+            <AlertCircle className="h-4 w-4 text-orange-600" />
+            <AlertDescription className="text-orange-800 text-sm">
+              Integration with backend pending - organization context required
+            </AlertDescription>
+          </Alert>
         </div>
 
-        {/* Patients List */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Patient List</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="flex-1">
-                <Input
-                  placeholder="Search patients by name, phone, or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-              <div className="flex gap-2">
+        {/* Patient List Section */}
+        <Card className="bg-white">
+          <CardHeader className="pb-3">
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+              <CardTitle className="text-lg">Patients ({filteredPatients.length})</CardTitle>
+              
+              <div className="flex items-center gap-2">
+                {/* View Toggle */}
+                <div className="flex items-center border rounded-lg p-1">
+                  <Button
+                    variant={viewMode === 'card' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('card')}
+                    className="h-7 px-2"
+                  >
+                    <Grid3X3 className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant={viewMode === 'table' ? 'default' : 'ghost'}
+                    size="sm"
+                    onClick={() => setViewMode('table')}
+                    className="h-7 px-2"
+                  >
+                    <List className="h-3 w-3" />
+                  </Button>
+                </div>
+                
                 <Button
                   onClick={handleRefresh}
                   disabled={isLoading}
@@ -303,102 +425,75 @@ export default function PatientsPage() {
                   size="sm"
                 >
                   {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Refreshing...
-                    </>
+                    <Loader2 className="h-3 w-3 animate-spin" />
                   ) : (
-                    <>
-                      <RefreshCw className="mr-2 h-4 w-4" />
-                      Refresh
-                    </>
+                    <RefreshCw className="h-3 w-3" />
                   )}
                 </Button>
               </div>
             </div>
+          </CardHeader>
+          
+          <CardContent className="pt-0">
+            {/* Search and Filters */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-4">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search patients by name, phone, or email..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10"
+                />
+              </div>
+              
+              <Tabs value={filterType} onValueChange={setFilterType} className="w-auto">
+                <TabsList className="grid grid-cols-3 lg:grid-cols-6 w-auto">
+                  <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
+                  <TabsTrigger value="active" className="text-xs">Active</TabsTrigger>
+                  <TabsTrigger value="upcoming" className="text-xs">Upcoming</TabsTrigger>
+                  <TabsTrigger value="high" className="text-xs">High Priority</TabsTrigger>
+                  <TabsTrigger value="medium" className="text-xs">Medium</TabsTrigger>
+                  <TabsTrigger value="low" className="text-xs">Low Priority</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </div>
 
-            {/* Filter Tabs */}
-            <Tabs value={filterType} onValueChange={setFilterType} className="mb-6">
-              <TabsList>
-                <TabsTrigger value="all">All Patients</TabsTrigger>
-                <TabsTrigger value="high">High Priority</TabsTrigger>
-                <TabsTrigger value="medium">Medium Priority</TabsTrigger>
-                <TabsTrigger value="low">Low Priority</TabsTrigger>
-                <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="upcoming">Has Upcoming</TabsTrigger>
-              </TabsList>
-            </Tabs>
-
-            {/* Patients List */}
+            {/* Patient List */}
             {isLoading ? (
-              <div className="text-center py-8">
+              <div className="text-center py-12">
                 <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600" />
                 <p className="mt-2 text-gray-600">Loading patients...</p>
               </div>
             ) : filteredPatients.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-12 text-gray-500">
                 {searchTerm ? 'No patients found matching your search.' : 'No patients available.'}
               </div>
             ) : (
-              <div className="grid gap-4">
-                {filteredPatients.map((patient) => {
-                  const engagement = getEngagementLevel(patient)
-                  const EngagementIcon = engagement.icon
-                  
-                  return (
-                    <div
-                      key={patient.id}
-                      className="border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
-                      onClick={() => handlePatientClick(patient.phone)}
+              <>
+                {viewMode === 'card' ? (
+                  <div className="grid gap-3">
+                    {filteredPatients.map((patient) => (
+                      <PatientCard key={patient.id} patient={patient} />
+                    ))}
+                  </div>
+                ) : (
+                  <PatientTable />
+                )}
+                
+                {/* Show More Button */}
+                {filteredPatients.length === showCount && allPatients.length > showCount && (
+                  <div className="text-center mt-6">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setShowCount(prev => prev + 10)}
+                      className="w-full sm:w-auto"
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <h3 className="font-semibold text-gray-900">{patient.name}</h3>
-                            <Badge className={engagement.color}>
-                              <EngagementIcon className="h-3 w-3 mr-1" />
-                              {engagement.level}
-                            </Badge>
-                            {patient.is_active && (
-                              <Badge variant="outline" className="text-green-600 border-green-200">
-                                Active
-                              </Badge>
-                            )}
-                          </div>
-                          
-                          <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
-                            <div className="flex items-center gap-1">
-                              <Phone className="h-4 w-4" />
-                              {formatPhoneNumber(patient.phone)}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Mail className="h-4 w-4" />
-                              {patient.email || 'No email'}
-                            </div>
-                          </div>
-                          
-                          <div className="flex items-center gap-6 text-sm">
-                            <div className="flex items-center gap-1">
-                              <Calendar className="h-4 w-4 text-blue-500" />
-                              <span>{patient.upcoming_appointment_count} upcoming</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-4 w-4 text-orange-500" />
-                              <span>{patient.recent_appointment_count} recent</span>
-                            </div>
-                          </div>
-                          
-                          {patient.next_appointment_time && (
-                            <div className="mt-2 text-sm text-gray-600">
-                              Next: {new Date(patient.next_appointment_time).toLocaleDateString()}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
+                      Show More Patients
+                    </Button>
+                  </div>
+                )}
+              </>
             )}
           </CardContent>
         </Card>

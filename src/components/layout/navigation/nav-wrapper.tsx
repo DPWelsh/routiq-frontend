@@ -53,7 +53,7 @@ const navigation = [
     icon: MessageSquare, 
     roles: ["ADMIN", "USER"],
     description: "Phone chat interface",
-    badge: "dynamic:conversations"
+    badge: null
   },
   { 
     name: "Patients", 
@@ -61,7 +61,7 @@ const navigation = [
     icon: UserCheck, 
     roles: ["ADMIN", "USER"],
     description: "Patient management",
-    badge: "dynamic:activePatients"
+    badge: null
   },
   { 
     name: "Settings", 
