@@ -55,7 +55,7 @@ export function useOrganizationContext(): UseOrganizationContextResult {
       setIsLoading(true)
       setError(null)
 
-      // Use RoutiqAPI to verify organization access with backend
+      // Backend verification now enabled - endpoints are ready!
       const api = new RoutiqAPI(clerkOrgId)
       await api.verifyAuth(clerkOrgId)
 
@@ -75,7 +75,7 @@ export function useOrganizationContext(): UseOrganizationContextResult {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
       setError(errorMessage)
-      console.error('Failed to verify organization context:', err)
+      console.error('Failed to build organization context:', err)
       setOrganizationContext(null)
     } finally {
       setIsLoading(false)

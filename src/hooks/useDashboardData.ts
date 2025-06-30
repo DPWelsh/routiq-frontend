@@ -1,68 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useCallback } from 'react'
+import { RoutiqAPI, SyncTriggerResponse } from '@/lib/routiq-api'
 
-// Types based on architecture document
-export interface DashboardResponse {
-  success: boolean
-  organization_id: string
-  summary: {
-    total_patients: number
-    active_patients: number
-    patients_with_upcoming: number
-    patients_with_recent: number
-    total_upcoming_appointments: number
-    total_recent_appointments: number
-    total_all_appointments: number
-    avg_upcoming_per_patient: number
-    avg_recent_per_patient: number
-    avg_total_per_patient: number
-    last_sync_time: string
-    synced_patients: number
-    sync_percentage: number
-    integration_status: string
-    activity_status: string
-    engagement_rate: number
-    generated_at: string
-  }
-  recent_activity: Array<{
-    id: string
-    source_system: string
-    operation_type: string
-    status: string
-    records_processed: number
-    records_success: number
-    records_failed: number
-    started_at: string
-    completed_at: string | null
-    activity_type: string
-    description: string
-    minutes_ago: number
-  }>
-  timestamp: string
-}
-
-export interface PatientsResponse {
-  organization_id: string
-  patients: Array<{
-    id: string
-    name: string
-    phone: string
-    email: string
-    is_active: boolean
-    recent_appointment_count: number
-    upcoming_appointment_count: number
-    next_appointment_time?: string
-    next_appointment_type?: string
-  }>
-  total_count: number
-}
-
-export interface SyncResponse {
-  success: boolean
-  sync_id: string
-  status: string
-  message: string
-}
+// Use actual RoutiqAPI response types
+type DashboardResponse = Awaited<ReturnType<RoutiqAPI['getDashboard']>>
+type PatientsResponse = Awaited<ReturnType<RoutiqAPI['getPatients']>>
+type SyncResponse = SyncTriggerResponse
 
 /**
  * Hook for unified dashboard data fetching
@@ -71,21 +14,18 @@ export interface SyncResponse {
 export function useDashboardData(organizationId: string | null) {
   const queryClient = useQueryClient()
 
-  // Single API call to get all dashboard data
+  // Single API call to get all dashboard data - direct to backend via RoutiqAPI
   const getDashboardData = useCallback(async (): Promise<DashboardResponse | null> => {
     if (!organizationId) return null
     
-    const response = await fetch(`/api/dashboard/${organizationId}`)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch dashboard data: ${response.status}`)
-    }
-    
-    return await response.json()
+    const api = new RoutiqAPI(organizationId)
+    return await api.getDashboard(organizationId)
   }, [organizationId])
 
   // Check if there's an active sync running
-  const hasActiveSyncs = useCallback((recentActivity: DashboardResponse['recent_activity']) => {
-    return recentActivity.some(activity => activity.status === 'running')
+  const hasActiveSyncs = useCallback((dashboardData: DashboardResponse | null | undefined) => {
+    if (!dashboardData?.recent_activity) return false
+    return dashboardData.recent_activity.some(activity => activity.status === 'running')
   }, [])
 
   // Main dashboard data query with intelligent caching
@@ -103,7 +43,7 @@ export function useDashboardData(organizationId: string | null) {
   })
 
   // Dynamically adjust refetch interval based on active syncs
-  const currentActiveSyncs = dashboardData ? hasActiveSyncs(dashboardData.recent_activity) : false
+  const currentActiveSyncs = hasActiveSyncs(dashboardData)
 
   return {
     dashboardData,
@@ -124,12 +64,8 @@ export function usePatientsData(organizationId: string | null) {
   const getPatientsData = useCallback(async (): Promise<PatientsResponse | null> => {
     if (!organizationId) return null
     
-    const response = await fetch(`/api/patients/${organizationId}`)
-    if (!response.ok) {
-      throw new Error(`Failed to fetch patients data: ${response.status}`)
-    }
-    
-    return await response.json()
+    const api = new RoutiqAPI(organizationId)
+    return await api.getPatients(organizationId)
   }, [organizationId])
 
   return useQuery({
@@ -150,13 +86,8 @@ export function useSyncMutation(organizationId: string | null) {
     mutationFn: async (): Promise<SyncResponse> => {
       if (!organizationId) throw new Error('Organization ID required')
       
-      const response = await fetch(`/api/sync/${organizationId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-      })
-      
-      if (!response.ok) throw new Error(`Sync failed: ${response.status}`)
-      return await response.json()
+      const api = new RoutiqAPI(organizationId)
+      return await api.triggerSync(organizationId)
     },
     onSuccess: () => {
       // Trigger multiple refreshes to catch sync appearing

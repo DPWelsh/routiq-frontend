@@ -86,8 +86,33 @@ export function UnifiedDashboard() {
     )
   }
 
-  // Error State
+  // Error State - Check if it's a 404 (backend not ready)
   if (dashboardError) {
+    const isBackendNotReady = dashboardError.message.includes('404') || 
+                             dashboardError.message.includes('Not Found') ||
+                             dashboardError.message.includes('Cannot resolve')
+
+    if (isBackendNotReady) {
+      return (
+        <div className="p-6">
+          <Alert className="border-blue-200 bg-blue-50">
+            <AlertTriangle className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800">
+              <div className="space-y-2">
+                <p className="font-semibold">Backend Endpoints Not Ready</p>
+                <p>The dashboard requires backend API endpoints that are being implemented.</p>
+                <p className="text-sm">
+                  ✅ Organization: <span className="font-medium">{organizationName}</span><br/>
+                  ⏳ Waiting for: Dashboard data endpoints<br/>
+                  📋 See: <code>FRONTEND_API_REQUIREMENTS.md</code> for implementation details
+                </p>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </div>
+      )
+    }
+
     return (
       <div className="p-6">
         <Alert className="border-red-200 bg-red-50">

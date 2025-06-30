@@ -148,7 +148,7 @@ export class RoutiqAPI {
         return {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
-          ...(this.organizationId && { 'X-Organization-ID': this.organizationId })
+          ...(this.organizationId && { 'x-organization-id': this.organizationId })
         };
       }
       
@@ -156,13 +156,13 @@ export class RoutiqAPI {
       console.warn('Clerk session not available. Ensure proper authentication setup.');
       return {
         'Content-Type': 'application/json',
-        ...(this.organizationId && { 'X-Organization-ID': this.organizationId })
+        ...(this.organizationId && { 'x-organization-id': this.organizationId })
       };
     } catch (error) {
       console.error('Failed to get auth token:', error);
       return {
         'Content-Type': 'application/json',
-        ...(this.organizationId && { 'X-Organization-ID': this.organizationId })
+        ...(this.organizationId && { 'x-organization-id': this.organizationId })
       };
     }
   }
