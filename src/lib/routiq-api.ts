@@ -316,25 +316,50 @@ export class RoutiqAPI {
   }
 
   /**
-   * Get patients list for organization
-   * Returns paginated list of active patients with appointment details
+   * Get patients statistics for organization
+   * Returns active patient stats and optionally detailed patient data
    */
-  async getPatients(organizationId: string): Promise<{
+  async getPatients(organizationId: string, params?: {
+    include_details?: boolean;
+    limit?: number;
+    with_appointments_only?: boolean;
+  }): Promise<{
+    total_active_patients: number;
+    avg_recent_appointments: number;
+    avg_upcoming_appointments: number;
+    avg_total_appointments: number;
     organization_id: string;
-    patients: Array<{
+    filters: {
+      with_appointments_only: boolean;
+      include_details: boolean;
+    };
+    timestamp: string;
+    patient_details?: Array<{
       id: string;
       name: string;
       phone: string;
       email: string;
+      cliniko_patient_id: string;
       is_active: boolean;
       recent_appointment_count: number;
       upcoming_appointment_count: number;
+      total_appointment_count: number;
       next_appointment_time?: string;
-      next_appointment_type?: string;
+      last_appointment_date?: string;
     }>;
-    total_count: number;
+    patient_details_count?: number;
   }> {
-    return this.request(`/api/v1/patients/${organizationId}/patients`);
+    let url = `/api/v1/cliniko/patients/${organizationId}/stats`;
+    
+    if (params) {
+      const searchParams = new URLSearchParams();
+      if (params.include_details !== undefined) searchParams.append('include_details', params.include_details.toString());
+      if (params.limit !== undefined) searchParams.append('limit', params.limit.toString());
+      if (params.with_appointments_only !== undefined) searchParams.append('with_appointments_only', params.with_appointments_only.toString());
+      if (searchParams.toString()) url += `?${searchParams.toString()}`;
+    }
+    
+    return this.request(url);
   }
 
   /**

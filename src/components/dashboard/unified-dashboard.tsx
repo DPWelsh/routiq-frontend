@@ -366,11 +366,33 @@ export function UnifiedDashboard() {
             <CardTitle>Patients Overview</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">{patientsData.total_count}</p>
-                <p className="text-gray-600">Total patients in system</p>
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-2xl font-bold">{patientsData.total_active_patients}</p>
+                  <p className="text-gray-600">Active patients</p>
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{patientsData.patient_details_count || 0}</p>
+                  <p className="text-gray-600">Detailed records</p>
+                </div>
               </div>
+              
+              <div className="grid grid-cols-3 gap-4 text-sm">
+                <div>
+                  <p className="font-medium">{patientsData.avg_recent_appointments.toFixed(1)}</p>
+                  <p className="text-gray-500">Avg recent appointments</p>
+                </div>
+                <div>
+                  <p className="font-medium">{patientsData.avg_upcoming_appointments.toFixed(1)}</p>
+                  <p className="text-gray-500">Avg upcoming appointments</p>
+                </div>
+                <div>
+                  <p className="font-medium">{patientsData.avg_total_appointments.toFixed(1)}</p>
+                  <p className="text-gray-500">Avg total appointments</p>
+                </div>
+              </div>
+              
               {isPatientsLoading && (
                 <LoadingSpinner />
               )}

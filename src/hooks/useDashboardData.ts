@@ -72,8 +72,11 @@ export function usePatientsData(organizationId: string | null) {
   const getPatientsData = useCallback(async (): Promise<PatientsResponse | null> => {
     if (!organizationId) return null
     
+    console.log('useDashboardData: getPatientsData called with organizationId:', organizationId)
     const api = new RoutiqAPI(organizationId)
-    return await api.getPatients(organizationId)
+    const result = await api.getPatients(organizationId, { include_details: true, limit: 50 })
+    console.log('useDashboardData: Patients API call successful:', result)
+    return result
   }, [organizationId])
 
   return useQuery({

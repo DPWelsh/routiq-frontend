@@ -7,6 +7,8 @@ import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { useOrganizationContext } from "@/hooks/useOrganizationContext"
+import { RoutiqAPI } from "@/lib/routiq-api"
 import { 
   BarChart3, 
   MessageSquare, 
@@ -73,28 +75,47 @@ export function DashboardNav() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // Fetch dashboard stats on component mount
+  // Get organization context and fetch dashboard stats
+  const { organizationId } = useOrganizationContext()
+
   useEffect(() => {
     const fetchStats = async () => {
+      if (!organizationId) {
+        setLoading(false)
+        return
+      }
+
       try {
-            // TODO: Update to use RoutiqAPI instead of removed proxy route
-    console.warn('Navigation stats temporarily disabled - updating to use RoutiqAPI')
-    return { success: false, message: 'Stats temporarily unavailable' }
-        if (response.ok) {
-          const data = await response.json()
-          if (data.success) {
-            setStats(data.data)
-          }
+        const api = new RoutiqAPI(organizationId)
+        const dashboardData = await api.getDashboard(organizationId)
+        
+        // Transform backend data to match expected DashboardStats interface
+        const transformedStats: DashboardStats = {
+          conversations: {
+            total: 0, // No conversation data yet
+            label: "0"
+          },
+          activePatients: {
+            total: dashboardData.summary.active_patients,
+            label: dashboardData.summary.active_patients.toString()
+          },
+          messages: {
+            total: 0 // No message data yet
+          },
+          lastUpdated: dashboardData.summary.last_sync_time
         }
+        
+        setStats(transformedStats)
       } catch (error) {
-        console.error('Failed to fetch dashboard stats:', error)
+        console.error('Failed to fetch navigation stats:', error)
+        setStats(null)
       } finally {
         setLoading(false)
       }
     }
 
     fetchStats()
-  }, [])
+  }, [organizationId])
 
   // Helper function to get dynamic badge value
   const getBadgeValue = (badgeConfig: string | null): string | null => {
