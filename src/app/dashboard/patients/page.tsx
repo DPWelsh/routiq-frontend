@@ -32,11 +32,13 @@ interface Patient {
   name: string
   phone: string
   email: string
+  cliniko_patient_id: string
   is_active: boolean
   recent_appointment_count: number
   upcoming_appointment_count: number
+  total_appointment_count: number
   next_appointment_time?: string
-  next_appointment_type?: string
+  last_appointment_date?: string
 }
 
 // Stats interface
@@ -86,9 +88,9 @@ export default function PatientsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
   
-  // Extract patients data from response
-  const allPatients = patientsResponse?.patients || []
-  const totalCount = patientsResponse?.total_count || 0
+  // Extract patients data from response - use correct API structure
+  const allPatients = patientsResponse?.patient_details || []
+  const totalCount = patientsResponse?.total_active_patients || 0
 
   const handlePatientClick = (phone: string) => {
     router.push(`/dashboard/conversations/phone/${encodeURIComponent(phone)}`)
@@ -388,8 +390,7 @@ export default function PatientsPage() {
                           
                           {patient.next_appointment_time && (
                             <div className="mt-2 text-sm text-gray-600">
-                              Next: {new Date(patient.next_appointment_time).toLocaleDateString()} 
-                              {patient.next_appointment_type && ` - ${patient.next_appointment_type}`}
+                              Next: {new Date(patient.next_appointment_time).toLocaleDateString()}
                             </div>
                           )}
                         </div>

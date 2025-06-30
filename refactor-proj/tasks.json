@@ -39,8 +39,8 @@
             "type": "asset_creation",
             "estimated_minutes": 10,
             "console_error": "GET https://routiq-frontend.vercel.app/site.webmanifest 404"
-          },
-          {
+      },
+      {
             "id": "polish_001_002",
             "title": "Fix remaining logo asset references",
             "description": "Some logo references still causing 404s - verify all paths correct",
@@ -123,9 +123,9 @@
             "estimated_minutes": 15
           }
         ]
-      },
+          },
 
-      {
+          {
         "id": "polish_004",
         "title": "Optimize Organization Context",
         "status": "pending",
