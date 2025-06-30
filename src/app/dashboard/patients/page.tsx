@@ -90,7 +90,7 @@ export default function PatientsPage() {
   // Local state for filtering and search
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
-  const [viewMode, setViewMode] = useState<'card' | 'table'>('card')
+  const [viewMode, setViewMode] = useState<'card' | 'table'>('table')
   const [showCount, setShowCount] = useState(10)
 
   // Extract patients data from response - use correct API structure
@@ -328,58 +328,60 @@ export default function PatientsPage() {
           )}
         </div>
 
-        {/* Compact Stats Cards - 2x2 Grid */}
-        {stats && (
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <Card className="bg-white">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Total</p>
-                    <p className="text-xl font-bold">{stats.overview.totalPatients}</p>
-                  </div>
-                  <Users className="h-6 w-6 text-blue-500" />
+        {/* Reengagement-Focused Stats Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <Card className="bg-white border-l-4 border-l-red-500">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">🚨 Action Required</p>
+                  <p className="text-xl font-bold text-red-600">12</p>
+                  <p className="text-xs text-gray-500">Immediate contact needed</p>
                 </div>
-              </CardContent>
-            </Card>
+                <AlertCircle className="h-6 w-6 text-red-500" />
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card className="bg-white">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Active</p>
-                    <p className="text-xl font-bold text-green-600">{stats.overview.activePatients}</p>
-                  </div>
-                  <Activity className="h-6 w-6 text-green-500" />
+          <Card className="bg-white border-l-4 border-l-orange-500">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">📞 This Week&apos;s Target</p>
+                  <p className="text-xl font-bold text-orange-600">25</p>
+                  <p className="text-xs text-gray-500">Patients to recontact</p>
                 </div>
-              </CardContent>
-            </Card>
+                <Phone className="h-6 w-6 text-orange-500" />
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card className="bg-white">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Recent Activity</p>
-                    <p className="text-xl font-bold text-orange-600">{stats.overview.patientsWithRecentActivity}</p>
-                  </div>
-                  <TrendingUp className="h-6 w-6 text-orange-500" />
+          <Card className="bg-white border-l-4 border-l-green-500">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">✅ Success Rate</p>
+                  <p className="text-xl font-bold text-green-600">67.2%</p>
+                  <p className="text-xs text-gray-500">Contact → appointment</p>
                 </div>
-              </CardContent>
-            </Card>
+                <UserCheck className="h-6 w-6 text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card className="bg-white">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm font-medium text-gray-600">Activity Rate</p>
-                    <p className="text-xl font-bold text-purple-600">{stats.overview.activityRate.toFixed(1)}%</p>
-                  </div>
-                  <UserCheck className="h-6 w-6 text-purple-500" />
+          <Card className="bg-white border-l-4 border-l-blue-500">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">📈 Trend</p>
+                  <p className="text-xl font-bold text-blue-600">+8%</p>
+                  <p className="text-xs text-gray-500">vs last month</p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
+                <TrendingUp className="h-6 w-6 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Compact Upcoming Appointments Alert */}
         <div className="mb-6">
