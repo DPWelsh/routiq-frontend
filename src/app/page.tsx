@@ -10,12 +10,14 @@ export default function HomePage() {
   const router = useRouter()
 
   useEffect(() => {
+    console.log('🔍 Root page - Auth state:', { isLoaded, isSignedIn })
+    
     if (isLoaded) {
       if (isSignedIn) {
-        // Redirect authenticated users to dashboard
+        console.log('✅ User authenticated, redirecting to dashboard')
         router.push('/dashboard')
       } else {
-        // Redirect unauthenticated users to sign-in
+        console.log('❌ User not authenticated, redirecting to sign-in')
         router.push('/sign-in')
       }
     }

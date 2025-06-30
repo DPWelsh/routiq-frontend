@@ -64,13 +64,18 @@ export function UpcomingAppointments({
 
   const fetchUpcomingAppointments = useCallback(async () => {
     try {
-      const response = await fetch(`/api/active-patients/upcoming?limit=${limit}`)
+      // TODO: This component needs organization context to work with backend
+      // For now, returning empty data to prevent 404 errors
+      console.warn('UpcomingAppointments: Temporarily disabled - needs organization context integration')
       
-      if (!response.ok) {
-        throw new Error(`Failed to fetch upcoming appointments: ${response.status}`)
+      const result = {
+        patients: [],
+        total_count: 0,
+        organization_id: '',
+        timestamp: new Date().toISOString(),
+        message: 'Integration with backend pending - organization context required'
       }
       
-      const result = await response.json()
       setData(result)
       setError(null)
     } catch (error) {

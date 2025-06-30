@@ -81,17 +81,9 @@ function ResponsiveDashboardNav() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/dashboard/stats', {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
-        if (response.ok) {
-          const data = await response.json()
-          if (data.success) {
-            setStats(data.data)
-          }
-        }
+        // TODO: Update to use RoutiqAPI instead of removed proxy route
+        console.warn('Navigation stats temporarily disabled - updating to use RoutiqAPI')
+        setStats(null) // Clear stats until RoutiqAPI integration
       } catch (error) {
         console.error('Failed to fetch dashboard stats:', error)
       } finally {

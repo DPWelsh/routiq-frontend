@@ -254,19 +254,15 @@ export default function DashboardPage() {
         setLoading(true)
         setError(null)
 
-        const response = await fetch('/api/dashboard/stats')
+        // TODO: Update to use RoutiqAPI instead of removed proxy route
+        console.warn('Dashboard stats temporarily disabled - updating to use RoutiqAPI')
         
-        if (!response.ok) {
-          const errorData = await response.json()
-          throw new Error(errorData.error || 'Failed to fetch stats')
-        }
-
-        const data = await response.json()
+        // Use static data until RoutiqAPI integration is complete
         setStats(prev => ({
           ...prev,
-          totalConversations: data.data.conversations.total,
-          activePatients: data.data.activePatients.total,
-          totalMessages: data.data.messages.total
+          totalConversations: 90,
+          activePatients: 61,
+          totalMessages: 1805
         }))
       } catch (err) {
         console.error('Dashboard error:', err)

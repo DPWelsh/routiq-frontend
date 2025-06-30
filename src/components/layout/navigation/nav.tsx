@@ -77,11 +77,9 @@ export function DashboardNav() {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch('/api/dashboard/stats', {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        })
+            // TODO: Update to use RoutiqAPI instead of removed proxy route
+    console.warn('Navigation stats temporarily disabled - updating to use RoutiqAPI')
+    return { success: false, message: 'Stats temporarily unavailable' }
         if (response.ok) {
           const data = await response.json()
           if (data.success) {
