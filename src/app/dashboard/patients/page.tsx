@@ -15,7 +15,20 @@ import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { UpcomingAppointments } from '@/components/features/patients/upcoming-appointments'
-import { RoutiqAPI } from '@/lib/routiq-api'
+import { usePatientsData } from '@/hooks/useDashboardData'
+
+// Patient interface for TypeScript
+interface Patient {
+  id: string
+  name: string
+  phone: string
+  email: string
+  is_active: boolean
+  recent_appointment_count: number
+  upcoming_appointment_count: number
+  next_appointment_time?: string
+  next_appointment_type?: string
+}
 
 // FIXED: Define the actual API response structure for stats
 interface ActivePatientsApiStats {
@@ -52,16 +65,21 @@ export default function PatientsPage() {
   const router = useRouter()
   const { organizationId } = useOrganizationContext()
   
-  const [patients, setPatients] = useState<any[]>([])
-  const [allPatients, setAllPatients] = useState<any[]>([]) // For card calculations
-  const [stats, setStats] = useState<ActivePatientsApiStats | null>(null)
-  const [loading, setLoading] = useState(true)
+  // Use the unified data flow architecture
+  const { 
+    data: patientsResponse, 
+    isLoading, 
+    error: patientsError,
+    refetch: refetchPatients 
+  } = usePatientsData(organizationId)
+  
+  // Local state for filtering and search
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
-  const [refreshing, setRefreshing] = useState(false)
-
-  // CRITICAL: Add request deduplication to prevent multiple simultaneous calls
-  const [pendingRequests, setPendingRequests] = useState(new Set<string>())
+  
+  // Extract patients data from response
+  const allPatients = patientsResponse?.patients || []
+  const totalCount = patientsResponse?.total_count || 0
 
   const handlePatientClick = (phone: string) => {
     // Navigate to the same conversation page as "View Conversation"
@@ -113,111 +131,81 @@ export default function PatientsPage() {
     }
   }
 
-  const fetchPatients = useCallback(async () => {
-    try {
-      if (!organizationId) return
-      
-      const api = new RoutiqAPI(organizationId)
-      const result = await api.getPatients(organizationId)
-      
-      // Backend returns: { organization_id, patients, total_count }
-      if (result.patients && Array.isArray(result.patients)) {
-        // Apply client-side filtering if needed
-        let filteredPatients = result.patients
-        if (filterType !== 'all') {
-          // Apply filters based on patient data structure from backend
-          filteredPatients = result.patients.filter((patient: any) => {
-            switch (filterType) {
-              case 'high':
-                return patient.recent_appointment_count === 0 && patient.upcoming_appointment_count === 0
-              case 'medium':
-                return patient.upcoming_appointment_count === 0
-              case 'low':
-                return patient.upcoming_appointment_count > 0
-              case 'active':
-                return patient.is_active
-              case 'upcoming':
-                return patient.upcoming_appointment_count > 0
-              default:
-                return true
-            }
-          })
+  // Apply client-side filtering based on filter type
+  const filteredPatients = useMemo(() => {
+    let filtered = allPatients
+    
+    // Apply search filter
+    if (searchTerm) {
+      const searchLower = searchTerm.toLowerCase()
+      filtered = filtered.filter(patient => 
+        patient.name?.toLowerCase().includes(searchLower) ||
+        patient.phone?.toLowerCase().includes(searchLower) ||
+        patient.email?.toLowerCase().includes(searchLower)
+      )
+    }
+    
+    // Apply type filter
+    if (filterType !== 'all') {
+      filtered = filtered.filter((patient: Patient) => {
+        switch (filterType) {
+          case 'high':
+            return patient.recent_appointment_count === 0 && patient.upcoming_appointment_count === 0
+          case 'medium':
+            return patient.upcoming_appointment_count === 0
+          case 'low':
+            return patient.upcoming_appointment_count > 0
+          case 'active':
+            return patient.is_active
+          case 'upcoming':
+            return patient.upcoming_appointment_count > 0
+          default:
+            return true
         }
-        setPatients(filteredPatients)
-      } else {
-        setPatients([])
-      }
-    } catch (error) {
-      console.error('Error fetching patients:', error)
-      setPatients([])
+      })
     }
-  }, [filterType, organizationId])
+    
+    return filtered
+  }, [allPatients, searchTerm, filterType])
 
-  const fetchAllPatients = useCallback(async () => {
-    try {
-      if (!organizationId) return
-      
-      const api = new RoutiqAPI(organizationId)
-      const result = await api.getPatients(organizationId)
-      
-      if (result.patients && Array.isArray(result.patients)) {
-        setAllPatients(result.patients)
-      } else {
-        setAllPatients([])
-      }
-    } catch (error) {
-      console.error('Error fetching all patients:', error)
-      setAllPatients([])
+  // Create mock stats from patients data
+  const stats = useMemo(() => {
+    if (!allPatients.length) return null
+    
+    const activePatients = allPatients.filter((p: Patient) => p.is_active).length
+    const patientsWithUpcoming = allPatients.filter((p: Patient) => p.upcoming_appointment_count > 0).length
+    const patientsWithRecent = allPatients.filter((p: Patient) => p.recent_appointment_count > 0).length
+    
+    return {
+      overview: {
+        totalPatients: totalCount,
+        activePatients,
+        inactivePatients: totalCount - activePatients,
+        patientsWithRecentActivity: patientsWithRecent,
+        activityRate: totalCount > 0 ? (activePatients / totalCount) * 100 : 0
+      },
+      engagement: {
+        totalConversations: 0,
+        averageConversationsPerPatient: 0,
+        patientsWithEscalations: 0,
+        escalationRate: 0
+      },
+      sentiment: {
+        averageScore: null,
+        conversationsAnalyzed: 0
+      },
+      timeframe: {
+        days: 30,
+        includeInactive: false,
+        dateThreshold: new Date().toISOString()
+      },
+      organizationContext: {
+        organizationId: organizationId || '',
+        userRole: 'user'
+      },
+      lastUpdated: new Date().toISOString()
     }
-  }, [organizationId])
-
-  const fetchStats = useCallback(async () => {
-    try {
-      if (!organizationId) return
-      
-      const api = new RoutiqAPI(organizationId)
-      const result = await api.getDashboard(organizationId)
-      
-      // Transform backend dashboard response to expected stats format
-      if (result.success && result.summary) {
-        const transformedStats = {
-          overview: {
-            totalPatients: result.summary.total_patients,
-            activePatients: result.summary.active_patients,
-            inactivePatients: result.summary.total_patients - result.summary.active_patients,
-            patientsWithRecentActivity: result.summary.patients_with_recent,
-            activityRate: result.summary.engagement_rate
-          },
-          engagement: {
-            totalConversations: 0, // Not available in current backend response
-            averageConversationsPerPatient: 0,
-            patientsWithEscalations: 0,
-            escalationRate: 0
-          },
-          sentiment: {
-            averageScore: null,
-            conversationsAnalyzed: 0
-          },
-          timeframe: {
-            days: 30,
-            includeInactive: false,
-            dateThreshold: new Date().toISOString()
-          },
-          organizationContext: {
-            organizationId: organizationId,
-            userRole: 'user'
-          },
-          lastUpdated: result.summary.last_sync_time || new Date().toISOString()
-        }
-        setStats(transformedStats)
-      } else {
-        setStats(null)
-      }
-    } catch (error) {
-      console.error('Error fetching stats:', error)
-      setStats(null)
-    }
-  }, [organizationId])
+  }, [allPatients, totalCount, organizationId])
 
   const handleRefresh = async () => {
     if (refreshing || loading) return // Prevent multiple simultaneous refreshes
