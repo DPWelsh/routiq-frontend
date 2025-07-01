@@ -163,6 +163,25 @@ export interface PatientsAtRiskResponse {
   timestamp: string;
 }
 
+export interface RiskMetricsResponse {
+  organization_id: string;
+  risk_summary: {
+    critical_risk: number;        // 45+ days no contact
+    high_risk: number;            // 30-44 days no contact  
+    medium_risk: number;          // 14-29 days no contact
+    low_risk: number;             // 7-13 days no contact
+    engaged: number;              // Recent contact
+  };
+  alerts: {
+    missed_appointments_14d: number;
+    failed_communications: number;
+    overdue_followups: number;
+    no_future_appointments: number;
+  };
+  immediate_actions_required: number;
+  last_updated: string;
+}
+
 export class RoutiqAPI {
   private baseUrl: string;
   private organizationId?: string;
@@ -416,7 +435,7 @@ export class RoutiqAPI {
 
   /**
    * Get active patients list for organization
-   * Uses Next.js API proxy to avoid CORS issues
+   * Uses direct backend API call
    */
   async getActivePatients(organizationId: string, params?: {
     page?: number;
@@ -430,7 +449,7 @@ export class RoutiqAPI {
     total_count: number;
     timestamp: string;
   }> {
-    let url = `/api/patients/${organizationId}/active`;
+    let url = `/api/v1/cliniko/patients/${organizationId}/active`;
     
     if (params) {
       const searchParams = new URLSearchParams();
@@ -453,7 +472,7 @@ export class RoutiqAPI {
 
   /**
    * Get active patients summary for organization
-   * Uses Next.js API proxy to avoid CORS issues
+   * Uses direct backend API call
    */
   async getActivePatientsummary(organizationId: string): Promise<{
     organization_id: string;
@@ -463,7 +482,7 @@ export class RoutiqAPI {
     last_sync_date: string | null;
     timestamp: string;
   }> {
-    const response = await this.request(`/api/patients/${organizationId}/active/summary`);
+    const response = await this.request(`/api/v1/cliniko/patients/${organizationId}/active/summary`);
     return response as {
       organization_id: string;
       total_active_patients: number;
@@ -575,6 +594,13 @@ export class RoutiqAPI {
     
     const query = params.toString() ? `?${params.toString()}` : '';
     return this.request(`/api/v1/reengagement/${organizationId}/patients/at-risk${query}`);
+  }
+
+  /**
+   * Get risk assessment metrics with alerts and risk stratification
+   */
+  async getRiskMetrics(organizationId: string): Promise<RiskMetricsResponse> {
+    return this.request(`/api/v1/reengagement/${organizationId}/risk-metrics`);
   }
 }
 

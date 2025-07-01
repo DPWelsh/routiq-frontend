@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { RoutiqAPI, ReengagementDashboard, PatientsAtRiskResponse } from '@/lib/routiq-api';
+import { RoutiqAPI, ReengagementDashboard, PatientsAtRiskResponse, RiskMetricsResponse } from '@/lib/routiq-api';
 
 /**
  * Hook to fetch reengagement dashboard data with risk metrics
@@ -58,4 +58,20 @@ export function useHighRiskPatients(organizationId: string) {
     risk_level: 'high',
     limit: 25
   });
-} 
+}
+
+/**
+ * Hook to fetch risk assessment metrics with alerts and risk stratification
+ */
+export function useRiskMetrics(organizationId: string) {
+  return useQuery({
+    queryKey: ['risk-metrics', organizationId],
+    queryFn: async () => {
+      const api = new RoutiqAPI(organizationId);
+      return api.getRiskMetrics(organizationId);
+    },
+    enabled: !!organizationId,
+    staleTime: 1 * 60 * 1000, // 1 minute
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
+  });
+}
