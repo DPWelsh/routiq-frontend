@@ -414,28 +414,7 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
       ),
       enableSorting: false,
     },
-    {
-      accessorKey: 'recommended_action',
-      header: 'Recommended Action',
-      cell: ({ row }) => (
-        <div className="min-w-[280px] max-w-[320px]">
-          <div className="text-sm font-medium text-gray-900 whitespace-nowrap overflow-hidden text-ellipsis">
-            {row.original.recommended_action}
-          </div>
-          <div className="flex items-center gap-1 mt-1 flex-wrap">
-            <Badge variant="outline" className="text-xs whitespace-nowrap">
-              Priority {row.original.action_priority}
-            </Badge>
-            {row.original.contact_success_prediction && (
-              <Badge variant="outline" className="text-xs whitespace-nowrap">
-                {row.original.contact_success_prediction.replace('_', ' ')}
-              </Badge>
-            )}
-          </div>
-        </div>
-      ),
-      enableSorting: false,
-    },
+
     {
       id: 'actions',
       header: 'Action',
@@ -457,11 +436,8 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
                 <Button
                   disabled={isLoading}
                   size="sm"
-                  className={`w-full text-xs ${
-                    patient.action_priority === 1 
-                      ? 'bg-red-600 hover:bg-red-700 text-white' 
-                      : 'bg-orange-600 hover:bg-orange-700 text-white'
-                  }`}
+                  variant="outline"
+                  className="w-full text-xs border-gray-300 hover:bg-gray-50 hover:text-gray-900"
                 >
                   {isLoading ? (
                     <>
@@ -471,7 +447,7 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
                   ) : (
                     <>
                       <Zap className="h-3 w-3 mr-1" />
-                      {patient.action_priority === 1 ? 'URGENT' : 'Take Action'}
+                      n8n workflows
                       <ChevronDown className="h-3 w-3 ml-1" />
                     </>
                   )}
@@ -485,7 +461,7 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
                     <DropdownMenuItem
                       key={action.id}
                       onClick={() => handlePatientAction(patient, action.id)}
-                      className={`cursor-pointer ${!isAvailable ? 'opacity-60' : ''}`}
+                      className={`cursor-pointer hover:bg-gray-50 ${!isAvailable ? 'opacity-60' : ''}`}
                       disabled={!isAvailable}
                     >
                       <IconComponent className={`h-4 w-4 mr-2 ${action.color}`} />
