@@ -3,12 +3,14 @@
  * This integrates with Clerk to get organization membership information
  */
 
+import { UserRole, UserStatus, OrganizationStatus } from '@/types/organization'
+
 interface OrganizationContextResult {
   organizationId: string
   organizationName: string
-  userRole: 'admin' | 'member'
-  userStatus: 'active' | 'inactive'
-  organizationStatus: 'active' | 'inactive'
+  userRole: UserRole
+  userStatus: UserStatus
+  organizationStatus: OrganizationStatus
 }
 
 /**
@@ -28,9 +30,9 @@ export async function getOrganizationContext(userId: string): Promise<Organizati
     return {
       organizationId: 'org_default',
       organizationName: 'Default Organization', 
-      userRole: 'admin',
-      userStatus: 'active',
-      organizationStatus: 'active'
+      userRole: UserRole.ADMIN,
+      userStatus: UserStatus.ACTIVE,
+      organizationStatus: OrganizationStatus.ACTIVE
     }
   } catch (error) {
     console.error('getOrganizationContext: Error getting context:', error)

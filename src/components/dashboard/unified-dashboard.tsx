@@ -55,6 +55,8 @@ export function UnifiedDashboard() {
 
       return () => clearInterval(interval)
     }
+    
+    return undefined
   }, [hasActiveSyncs, refetchDashboard])
 
   const handleManualRefresh = async () => {
