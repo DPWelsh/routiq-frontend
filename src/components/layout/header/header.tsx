@@ -125,20 +125,11 @@ export function DashboardHeader() {
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <Image
-                  src="/logos/routiq-logomark-core.svg"
+                  src="/logos/routiq_print_cmyk_routiq_primary%20logo_core.svg"
                   alt="Routiq"
-                  width={40}
-                  height={40}
-                  className="w-10 h-10"
-                />
-              </div>
-              <div className="hidden sm:block">
-                <Image
-                  src="/logos/routiq-logo-core.svg"
-                  alt="Routiq"
-                  width={120}
-                  height={32}
-                  className="h-8 w-auto"
+                  width={160}
+                  height={64}
+                  className="h-10 w-auto"
                 />
               </div>
             </div>

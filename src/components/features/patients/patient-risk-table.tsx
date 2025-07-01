@@ -462,14 +462,14 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
                     <DropdownMenuItem
                       key={action.id}
                       onClick={() => handlePatientAction(patient, action.id)}
-                      className={`cursor-pointer hover:bg-gray-50 hover:text-gray-900 ${!isAvailable ? 'opacity-60' : ''}`}
+                      className={`cursor-pointer ${!isAvailable ? 'opacity-60' : ''}`}
                       disabled={!isAvailable}
                     >
                       <IconComponent className={`h-4 w-4 mr-2 ${action.color}`} />
                       <div className="flex flex-col flex-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-sm text-gray-900">{action.label}</span>
-                          <span className="text-xs text-gray-700">{action.status}</span>
+                          <span className="font-medium text-sm">{action.label}</span>
+                          <span className="text-xs">{action.status}</span>
                         </div>
                         <span className="text-xs text-gray-500">{action.description}</span>
                       </div>

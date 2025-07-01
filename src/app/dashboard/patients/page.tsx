@@ -11,18 +11,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { 
   Users, 
   UserCheck, 
-  Activity, 
-  TrendingUp,
-  Phone, 
-  Mail, 
-  Calendar, 
   Clock, 
   AlertCircle,
   RefreshCw,
   Loader2,
   Search,
-  Grid3X3,
-  List,
   Filter
 } from "lucide-react"
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
@@ -89,7 +82,6 @@ export default function PatientsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [riskFilter, setRiskFilter] = useState('all')
-  const [viewMode, setViewMode] = useState<'card' | 'table'>('table')
 
 
   // Extract patients data from risk metrics API - include all patients now
@@ -151,10 +143,7 @@ export default function PatientsPage() {
     return filtered
   }, [allPatients, searchTerm, statusFilter, riskFilter])
 
-  // Get displayed patients for card view only
-  const displayedPatients = useMemo(() => {
-    return filteredPatients.slice(0, 20) // Fixed limit for card view
-  }, [filteredPatients])
+
 
   // Create stats from patients data
   const stats = useMemo(() => {
@@ -194,89 +183,9 @@ export default function PatientsPage() {
     setSearchTerm('')
   }
 
-  const getEngagementLevel = (patient: Patient) => {
-    // Combine risk level and engagement status for priority display
-    if (patient.engagement_status === 'stale') {
-      return { level: 'Stale', color: 'bg-gray-100 text-gray-800', icon: Clock }
-    }
-    
-    switch (patient.risk_level) {
-      case 'high':
-        return { level: 'High Risk', color: 'bg-red-100 text-red-800', icon: AlertCircle }
-      case 'medium':
-        return { level: 'Medium Risk', color: 'bg-yellow-100 text-yellow-800', icon: Clock }
-      case 'low':
-        return { level: 'Low Risk', color: 'bg-green-100 text-green-800', icon: UserCheck }
-      default:
-        return { level: 'Unknown', color: 'bg-gray-100 text-gray-800', icon: Clock }
-    }
-  }
 
-  const formatPhoneNumber = (phone: string) => {
-    if (!phone) return 'No phone'
-    const cleaned = phone.replace(/\D/g, '')
-    if (cleaned.length === 10) {
-      return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
-    }
-    return phone
-  }
 
-  const PatientCard = ({ patient }: { patient: Patient }) => {
-    const engagement = getEngagementLevel(patient)
-    const EngagementIcon = engagement.icon
-    
-    return (
-      <div
-        className="border rounded-lg p-4 hover:shadow-md transition-all cursor-pointer bg-white"
-        onClick={() => handlePatientClick(patient.phone)}
-      >
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-semibold text-gray-900">{patient.patient_name}</h3>
-              <Badge className={`${engagement.color} text-xs`}>
-                <EngagementIcon className="h-3 w-3 mr-1" />
-                {engagement.level}
-              </Badge>
-              {patient.is_active && (
-                <Badge variant="outline" className="text-green-600 border-green-200 text-xs">
-                  Active
-                </Badge>
-              )}
-            </div>
-            
-            <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
-              <div className="flex items-center gap-1">
-                <Phone className="h-3 w-3" />
-                {formatPhoneNumber(patient.phone)}
-              </div>
-              <div className="flex items-center gap-1">
-                <Mail className="h-3 w-3" />
-                {patient.email || 'No email'}
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1">
-                <Calendar className="h-3 w-3 text-blue-500" />
-                <span>{patient.upcoming_appointment_count} upcoming</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="h-3 w-3 text-orange-500" />
-                <span>{patient.recent_appointment_count} recent</span>
-              </div>
-            </div>
-            
-            {patient.next_appointment_time && (
-              <div className="mt-2 text-sm text-gray-600">
-                Next: {new Date(patient.next_appointment_time).toLocaleDateString()}
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    )
-  }
+
 
 
 
@@ -506,26 +415,6 @@ export default function PatientsPage() {
               </CardTitle>
               
               <div className="flex items-center gap-2">
-                {/* View Toggle */}
-                <div className="flex items-center border rounded-lg p-1">
-                  <Button
-                    variant={viewMode === 'card' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('card')}
-                    className="h-7 px-2"
-                  >
-                    <Grid3X3 className="h-3 w-3" />
-                  </Button>
-                  <Button
-                    variant={viewMode === 'table' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setViewMode('table')}
-                    className="h-7 px-2"
-                  >
-                    <List className="h-3 w-3" />
-                  </Button>
-                </div>
-                
                 <Button
                   onClick={handleRefresh}
                   disabled={isLoading}
@@ -644,21 +533,10 @@ export default function PatientsPage() {
                 {searchTerm ? 'No patients found matching your search.' : 'No patients available.'}
                           </div>
             ) : (
-              <>
-                {viewMode === 'card' ? (
-                  <div className="grid gap-3">
-                    {displayedPatients.map((patient) => (
-                      <PatientCard key={patient.patient_id} patient={patient} />
-                    ))}
-                  </div>
-                ) : (
-                  <PatientRiskTable 
-                    data={filteredPatients}
-                    onPatientClick={handlePatientClick}
-                  />
-                )}
-
-              </>
+              <PatientRiskTable 
+                data={filteredPatients}
+                onPatientClick={handlePatientClick}
+              />
             )}
                         </CardContent>
                       </Card>

@@ -83,11 +83,11 @@ export function MobileHeader({
           {/* Logo mark only for mobile */}
           <div className="flex items-center">
             <Image
-              src="/logos/routiq-logomark-core.svg"
-              alt="RoutIQ"
-              width={32}
-              height={32}
-              className="h-8 w-8"
+              src="/logos/routiq_print_cmyk_routiq_primary%20logo_core.svg"
+              alt="Routiq"
+              width={120}
+              height={48}
+              className="h-8 w-auto"
               priority
             />
           </div>
