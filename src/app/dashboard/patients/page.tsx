@@ -86,13 +86,13 @@ export default function PatientsPage() {
   
   // Local state for filtering and search
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterType, setFilterType] = useState('all')
+  const [filterType, setFilterType] = useState('active')
   const [viewMode, setViewMode] = useState<'card' | 'table'>('table')
   const [showCount, setShowCount] = useState(10)
 
-  // Extract patients data from risk metrics API
+  // Extract patients data from risk metrics API - include all patients now
   const allPatients = riskMetricsData?.patients || []
-  const totalCount = riskMetricsData?.summary?.total_patients || 0
+  const totalCount = allPatients.length
 
   const handlePatientClick = (phone: string) => {
     router.push(`/dashboard/conversations/phone/${encodeURIComponent(phone)}`)
@@ -112,18 +112,20 @@ export default function PatientsPage() {
       )
     }
     
-    // Apply type filter
+    // Apply type filter based on risk levels and status
     if (filterType !== 'all') {
       filtered = filtered.filter((patient: Patient) => {
         switch (filterType) {
-          case 'high':
-            return patient.recent_appointment_count === 0 && patient.upcoming_appointment_count === 0
-          case 'medium':
-            return patient.upcoming_appointment_count === 0
-          case 'low':
-            return patient.upcoming_appointment_count > 0
           case 'active':
             return patient.is_active
+          case 'low':
+            return patient.risk_level === 'low'
+          case 'medium':
+            return patient.risk_level === 'medium' 
+          case 'high':
+            return patient.risk_level === 'high' || patient.risk_level === 'critical'
+          case 'stale':
+            return patient.risk_level === 'stale'
           case 'upcoming':
             return patient.upcoming_appointment_count > 0
           default:
@@ -164,11 +166,20 @@ export default function PatientsPage() {
   }
 
   const getEngagementLevel = (patient: Patient) => {
-    const totalAppointments = patient.recent_appointment_count + patient.upcoming_appointment_count
-    
-    if (totalAppointments === 0) return { level: 'High Priority', color: 'bg-red-100 text-red-800', icon: AlertCircle }
-    if (patient.upcoming_appointment_count === 0) return { level: 'Medium Priority', color: 'bg-yellow-100 text-yellow-800', icon: Clock }
-    return { level: 'Low Priority', color: 'bg-green-100 text-green-800', icon: UserCheck }
+    switch (patient.risk_level) {
+      case 'critical':
+        return { level: 'Critical', color: 'bg-red-100 text-red-800', icon: AlertCircle }
+      case 'high':
+        return { level: 'High Priority', color: 'bg-orange-100 text-orange-800', icon: AlertCircle }
+      case 'medium':
+        return { level: 'Medium Priority', color: 'bg-yellow-100 text-yellow-800', icon: Clock }
+      case 'low':
+        return { level: 'Low Priority', color: 'bg-green-100 text-green-800', icon: UserCheck }
+      case 'stale':
+        return { level: 'Stale', color: 'bg-gray-100 text-gray-800', icon: Clock }
+      default:
+        return { level: 'Unknown', color: 'bg-gray-100 text-gray-800', icon: Clock }
+    }
   }
 
   const formatPhoneNumber = (phone: string) => {
@@ -482,12 +493,12 @@ export default function PatientsPage() {
               
               <Tabs value={filterType} onValueChange={setFilterType} className="w-auto">
                 <TabsList className="grid grid-cols-3 lg:grid-cols-6 w-auto">
-                  <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
                   <TabsTrigger value="active" className="text-xs">Active</TabsTrigger>
-                  <TabsTrigger value="upcoming" className="text-xs">Upcoming</TabsTrigger>
-                  <TabsTrigger value="high" className="text-xs">High Priority</TabsTrigger>
-                  <TabsTrigger value="medium" className="text-xs">Medium</TabsTrigger>
                   <TabsTrigger value="low" className="text-xs">Low Priority</TabsTrigger>
+                  <TabsTrigger value="medium" className="text-xs">Medium Priority</TabsTrigger>
+                  <TabsTrigger value="high" className="text-xs">High Priority</TabsTrigger>
+                  <TabsTrigger value="stale" className="text-xs">Stale</TabsTrigger>
+                  <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
                 </TabsList>
               </Tabs>
                           </div>
