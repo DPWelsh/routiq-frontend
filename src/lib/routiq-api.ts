@@ -42,6 +42,14 @@ export interface SyncStatusResponse {
   sync_in_progress: boolean;
 }
 
+export interface SchedulerStatusResponse {
+  organization_id: string;
+  sync_running: boolean;           // ✅ Backend actual property name
+  last_sync_time: string | null;   // ✅ Backend actual property name
+  scheduler_active: boolean;
+  message: string;
+}
+
 export interface DatabaseSummaryResponse {
   users: {
     total_users: number;
@@ -165,21 +173,52 @@ export interface PatientsAtRiskResponse {
 
 export interface RiskMetricsResponse {
   organization_id: string;
-  risk_summary: {
-    critical_risk: number;        // 45+ days no contact
-    high_risk: number;            // 30-44 days no contact  
-    medium_risk: number;          // 14-29 days no contact
-    low_risk: number;             // 7-13 days no contact
-    engaged: number;              // Recent contact
+  summary: {
+    total_patients: number;
+    risk_distribution: {
+      critical: number;
+      high: number;
+      medium: number;
+      low: number;
+      stale: number;                // ✅ Backend uses "stale" not "engaged"
+    };
+    stale_patients: number;
+    avg_risk_score: number;
   };
-  alerts: {
-    missed_appointments_14d: number;
-    failed_communications: number;
-    overdue_followups: number;
-    no_future_appointments: number;
-  };
-  immediate_actions_required: number;
-  last_updated: string;
+  patients: PatientRiskData[];
+  view_version: string;            // "v1.3-simplified-risk"
+  calculated_at: string;
+  timestamp: string;
+}
+
+export interface PatientRiskData {
+  patient_id: string;
+  patient_name: string;
+  email: string;
+  phone: string;
+  is_active: boolean;
+  activity_status: string;
+  risk_score: number;              // 0-100
+  risk_level: "critical" | "high" | "medium" | "low" | "stale";
+  days_since_last_contact: number | null;
+  days_to_next_appointment: number | null;
+  last_appointment_date: string | null;
+  next_appointment_time: string | null;
+  last_communication_date: string | null;
+  recent_appointment_count: number;
+  upcoming_appointment_count: number;
+  total_appointment_count: number;
+  missed_appointments_90d: number;
+  scheduled_appointments_90d: number;
+  attendance_rate_percent: number | null;
+  conversations_90d: number;
+  last_conversation_sentiment: string;
+  action_priority: number;         // 1-5 (1=most urgent)
+  is_stale: boolean;
+  recommended_action: string;
+  contact_success_prediction: "very_high" | "high" | "medium" | "low" | "very_low";
+  attendance_benchmark: "above_industry_avg" | "at_industry_avg" | "below_industry_avg";
+  engagement_benchmark: "good_engagement" | "average_engagement" | "poor_engagement";
 }
 
 export class RoutiqAPI {
@@ -301,17 +340,11 @@ export class RoutiqAPI {
 
   /**
    * Get sync scheduler status for organization
-   * Returns current sync status and last sync time
+   * Returns current sync status and last sync time - Updated to match backend
    */
-  async getSyncStatus(organizationId?: string): Promise<{
-    organization_id: string;
-    sync_running: boolean;
-    last_sync_time: string;
-    scheduler_active: boolean;
-    message: string;
-  }> {
+  async getSyncStatus(organizationId?: string): Promise<SchedulerStatusResponse> {
     const api = organizationId ? new RoutiqAPI(organizationId) : this;
-    return api.request('/api/v1/sync/scheduler/status');
+    return api.request('/api/v1/sync-manager/scheduler/status');
   }
 
   /**
@@ -601,6 +634,13 @@ export class RoutiqAPI {
    */
   async getRiskMetrics(organizationId: string): Promise<RiskMetricsResponse> {
     return this.request(`/api/v1/reengagement/${organizationId}/risk-metrics`);
+  }
+
+  /**
+   * Get database summary - Clerk admin endpoint
+   */
+  async getDatabaseSummary(): Promise<DatabaseSummaryResponse> {
+    return this.request('/api/v1/clerk-admin/database-summary');
   }
 }
 

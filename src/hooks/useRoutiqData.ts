@@ -36,7 +36,7 @@ export function useClerkSync(organizationId: string = ORGANIZATIONS.SURF_REHAB) 
 
   // Trigger Clerk sync mutation
   const triggerSync = useMutation({
-    mutationFn: () => api.triggerClerkSync(organizationId),
+    mutationFn: () => api.triggerSync(organizationId),
     onSuccess: (data: SyncTriggerResponse) => {
       console.log('Clerk sync triggered:', data);
       // Immediately start polling for status and refresh data
@@ -53,9 +53,9 @@ export function useClerkSync(organizationId: string = ORGANIZATIONS.SURF_REHAB) 
   return {
     // Status data
     syncStatus: syncStatus.data,
-    isSyncing: syncStatus.data?.sync_in_progress || false,
-    lastSync: syncStatus.data?.last_sync,
-    isConnected: syncStatus.data?.clerk_api_connected || false,
+    isSyncing: syncStatus.data?.sync_running || false,
+    lastSync: syncStatus.data?.last_sync_time,
+    isConnected: syncStatus.data?.scheduler_active || false, // Use scheduler_active as connection indicator
     
     // Loading states
     isLoadingStatus: syncStatus.isLoading,
@@ -305,9 +305,9 @@ export function useSyncProgress(organizationId: string = ORGANIZATIONS.SURF_REHA
     // Current status
     isSyncing,
     isLoadingStatus,
-    lastSyncTime: syncStatus?.last_sync ? new Date(syncStatus.last_sync) : null,
-    databaseCounts: syncStatus?.database_counts,
-    isConnected: syncStatus?.clerk_api_connected,
+    lastSyncTime: syncStatus?.last_sync_time ? new Date(syncStatus.last_sync_time) : null,
+    databaseCounts: undefined, // Not available in SchedulerStatusResponse
+    isConnected: syncStatus?.scheduler_active,
     
     // Progress indicator
     syncProgress: isSyncing ? 'syncing' : 'idle',
@@ -316,8 +316,8 @@ export function useSyncProgress(organizationId: string = ORGANIZATIONS.SURF_REHA
     refresh: () => queryClient.invalidateQueries({ queryKey: ['sync-status'] }),
     
     // Formatted timestamps
-    lastSyncFormatted: syncStatus?.last_sync ? 
-      new Date(syncStatus.last_sync).toLocaleString() : 
+    lastSyncFormatted: syncStatus?.last_sync_time ? 
+      new Date(syncStatus.last_sync_time).toLocaleString() : 
       'Never',
   };
 }
