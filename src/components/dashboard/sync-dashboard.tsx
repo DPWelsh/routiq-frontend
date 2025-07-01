@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react'
-import { useDashboardData, useActivePatients } from '../../hooks/useRoutiqData'
+import { useDashboardData, useActivePatients } from '@/hooks/useRoutiqData'
 import { ORGANIZATIONS } from '../../lib/routiq-api'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -112,9 +112,9 @@ export function SyncDashboard({ defaultOrganizationId = ORGANIZATIONS.SURF_REHAB
 
   const apiStatus = getApiStatusDetails()
   
-  // Clerk organization data
-  const clerkUsers = clerkSync.status?.database_counts?.users || 0
-  const clerkOrganizations = clerkSync.status?.database_counts?.organizations || 1
+  // Clerk organization data - Note: database_counts not available in SchedulerStatusResponse
+  const clerkUsers = 0 // TODO: Get from separate Clerk admin endpoint
+  const clerkOrganizations = 1 // TODO: Get from separate Clerk admin endpoint  
   const isClerkConnected = clerkSync.isConnected
   
   // Cliniko data

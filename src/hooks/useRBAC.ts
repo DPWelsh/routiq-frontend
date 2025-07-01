@@ -21,6 +21,20 @@ import {
 import { UserRole } from '@/types/organization'
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 
+// Map organization context roles to UserRole enum
+function mapOrgRoleToUserRole(orgRole: 'admin' | 'member' | null): UserRole | null {
+  if (!orgRole) return null
+  
+  switch (orgRole) {
+    case 'admin':
+      return UserRole.ADMIN  // Treat Clerk admin as ADMIN role
+    case 'member':
+      return UserRole.STAFF  // Treat Clerk member as STAFF role
+    default:
+      return null
+  }
+}
+
 // =====================================================
 // TYPES
 // =====================================================
@@ -76,8 +90,8 @@ export function useRBAC(): RBACHookResult {
     if (!isUserLoaded || !user) return null
     if (isOrgLoading || orgError) return null
     
-    // Use real organization context role
-    return orgUserRole
+    // Map organization context role to UserRole enum
+    return mapOrgRoleToUserRole(orgUserRole)
   }, [isUserLoaded, user, isOrgLoading, orgError, orgUserRole])
 
   const permissions = useMemo(() => {
@@ -99,10 +113,10 @@ export function useRBAC(): RBACHookResult {
       canAll: (permissions: Permission[]) => userRole ? hasAllPermissions(userRole, permissions) : false,
       
       // Role checking functions
-      isViewer: userRole === UserRole.VIEWER,
-      isStaff: userRole === UserRole.STAFF,
-      isAdmin: userRole === UserRole.ADMIN,
-      isOwner: userRole === UserRole.OWNER,
+      isViewer: userRole === 'viewer',
+      isStaff: userRole === 'staff',
+      isAdmin: userRole === 'admin',
+      isOwner: userRole === 'owner',
       
       // UI helpers
       roleDisplayName: userRole ? getRoleDisplayName(userRole) : 'Unknown',
@@ -189,11 +203,11 @@ export function useRoleOrHigher(minRole: UserRole): boolean {
   
   if (!userRole) return false
   
-  const roleHierarchy: Record<UserRole, number> = {
-    [UserRole.VIEWER]: 1,
-    [UserRole.STAFF]: 2,
-    [UserRole.ADMIN]: 3,
-    [UserRole.OWNER]: 4,
+  const roleHierarchy: Record<string, number> = {
+    'viewer': 1,
+    'staff': 2,
+    'admin': 3,
+    'owner': 4,
   }
   
   return roleHierarchy[userRole] >= roleHierarchy[minRole]

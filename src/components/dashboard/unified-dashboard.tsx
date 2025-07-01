@@ -202,7 +202,7 @@ export function UnifiedDashboard() {
                 </p>
                 <div className="flex items-center gap-2 mt-1">
                   <Badge variant="outline" className="text-xs">
-                    {summary?.sync_percentage || 0}% synced
+                    {summary?.integration_status || 'Active'}
                   </Badge>
                   {summary?.last_sync_time && (
                     <p className="text-xs text-gray-500">
@@ -245,7 +245,7 @@ export function UnifiedDashboard() {
                   Upcoming Appointments
                 </p>
                 <p className="text-2xl font-bold text-blue-600">
-                  {summary?.total_upcoming_appointments || 0}
+                  {summary?.patients_with_upcoming || 0}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
                   {summary?.patients_with_upcoming || 0} patients
@@ -264,7 +264,7 @@ export function UnifiedDashboard() {
                   Recent Appointments
                 </p>
                 <p className="text-2xl font-bold text-orange-600">
-                  {summary?.total_recent_appointments || 0}
+                  {summary?.patients_with_recent || 0}
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
                   {summary?.patients_with_recent || 0} patients
@@ -275,33 +275,6 @@ export function UnifiedDashboard() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Sync Progress */}
-      {summary?.sync_percentage !== undefined && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Data Synchronization</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-gray-600">Sync Progress</span>
-                <span className="text-sm font-medium">{summary.sync_percentage}%</span>
-              </div>
-              <Progress value={summary.sync_percentage} className="h-2" />
-              <div className="flex items-center justify-between text-xs text-gray-500">
-                <span>{summary.synced_patients} patients synced</span>
-                <span>
-                  Last sync: {summary.last_sync_time ? 
-                    formatDistanceToNow(new Date(summary.last_sync_time), { addSuffix: true }) : 
-                    'Never'
-                  }
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Recent Activity */}
       <Card>
@@ -328,14 +301,9 @@ export function UnifiedDashboard() {
                     getStatusColor(activity.status)
                   )} />
                   <div className="flex-1">
-                    <p className="font-medium">{activity.description}</p>
+                    <p className="font-medium">{activity.operation_type}</p>
                     <p className="text-sm text-gray-600">
-                      {activity.records_success} / {activity.records_processed} processed
-                      {activity.records_failed > 0 && (
-                        <span className="text-red-600 ml-2">
-                          • {activity.records_failed} failed
-                        </span>
-                      )}
+                      Started: {formatDistanceToNow(new Date(activity.started_at), { addSuffix: true })}
                     </p>
                   </div>
                   <div className="text-right">
@@ -349,7 +317,7 @@ export function UnifiedDashboard() {
                       {activity.status}
                     </Badge>
                     <p className="text-xs text-gray-500 mt-1">
-                      {activity.minutes_ago} min ago
+                      {activity.completed_at ? formatDistanceToNow(new Date(activity.completed_at), { addSuffix: true }) : 'In progress'}
                     </p>
                   </div>
                 </div>
