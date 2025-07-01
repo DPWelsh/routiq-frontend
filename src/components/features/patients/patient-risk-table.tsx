@@ -251,43 +251,20 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
       accessorKey: 'recommended_action',
       header: 'Recommended Action',
       cell: ({ row }) => (
-        <div className="max-w-[200px]">
-          <div className="text-sm font-medium text-gray-900 line-clamp-2">
+        <div className="min-w-[280px] max-w-[320px]">
+          <div className="text-sm font-medium text-gray-900 whitespace-nowrap overflow-hidden text-ellipsis">
             {row.original.recommended_action}
           </div>
-          <div className="flex items-center gap-1 mt-1">
-            <Badge variant="outline" className="text-xs">
+          <div className="flex items-center gap-1 mt-1 flex-wrap">
+            <Badge variant="outline" className="text-xs whitespace-nowrap">
               Priority {row.original.action_priority}
             </Badge>
             {row.original.contact_success_prediction && (
-              <Badge variant="outline" className="text-xs">
+              <Badge variant="outline" className="text-xs whitespace-nowrap">
                 {row.original.contact_success_prediction.replace('_', ' ')}
               </Badge>
             )}
           </div>
-        </div>
-      ),
-      enableSorting: false,
-    },
-    {
-      accessorKey: 'is_active',
-      header: 'Status',
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-1">
-          <Badge 
-            variant={row.original.is_active ? "default" : "secondary"}
-            className={row.original.is_active 
-              ? "bg-green-100 text-green-800 border-green-200" 
-              : "bg-gray-100 text-gray-800 border-gray-200"
-            }
-          >
-            {row.original.is_active ? 'Active' : 'Inactive'}
-          </Badge>
-          {!row.original.is_stale && (
-            <Badge variant="outline" className="text-xs">
-              Current
-            </Badge>
-          )}
         </div>
       ),
       enableSorting: false,
