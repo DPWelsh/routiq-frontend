@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useCallback } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -42,6 +42,34 @@ import {
 } from "lucide-react"
 import { PatientRiskData } from '@/lib/routiq-api'
 import { formatDistanceToNow } from 'date-fns'
+
+// Move actionOptions outside component to prevent re-creation
+const actionOptions = [
+  {
+    id: 'patient_followup',
+    label: 'Send Follow-up Campaign',
+    icon: Send,
+    description: '📧 Automated patient follow-up workflow',
+    color: 'text-blue-600',
+    status: '✅ Active'
+  },
+  {
+    id: 'reengagement_campaign',
+    label: 'Reengagement Campaign',
+    icon: Zap,
+    description: '🎯 Dormant patient reactivation workflow',
+    color: 'text-orange-600',
+    status: '⚙️ Setup Required'
+  },
+  {
+    id: 'appointment_reminder',
+    label: 'Appointment Reminder',
+    icon: CalendarPlus,
+    description: '📅 Automated appointment reminders',
+    color: 'text-green-600',
+    status: '⚙️ Setup Required'
+  }
+]
 
 interface PatientRiskTableProps {
   data: PatientRiskData[]
@@ -114,7 +142,7 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
     }).format(amount)
   }
 
-  const handlePatientAction = async (patient: PatientRiskData, actionType: string) => {
+  const handlePatientAction = useCallback(async (patient: PatientRiskData, actionType: string) => {
     const patientId = patient.patient_id
     // Hardcoded for testing - will replace with org context later
     const organizationId = "org_2xwiHJY6BaRUIX1DanXG6ZX7"
@@ -172,34 +200,7 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
         return next
       })
     }
-  }
-
-  const actionOptions = [
-    {
-      id: 'patient_followup',
-      label: 'Send Follow-up Campaign',
-      icon: Send,
-      description: '📧 Automated patient follow-up workflow',
-      color: 'text-blue-600',
-      status: '✅ Active'
-    },
-    {
-      id: 'reengagement_campaign',
-      label: 'Reengagement Campaign',
-      icon: Zap,
-      description: '🎯 Dormant patient reactivation workflow',
-      color: 'text-orange-600',
-      status: '⚙️ Setup Required'
-    },
-    {
-      id: 'appointment_reminder',
-      label: 'Appointment Reminder',
-      icon: CalendarPlus,
-      description: '📅 Automated appointment reminders',
-      color: 'text-green-600',
-      status: '⚙️ Setup Required'
-    }
-  ]
+  }, [setLoadingActions])
 
   const getRiskBadge = (riskLevel: string, engagementStatus: string, riskScore: number) => {
     const riskColors = {
@@ -461,14 +462,14 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
                     <DropdownMenuItem
                       key={action.id}
                       onClick={() => handlePatientAction(patient, action.id)}
-                      className={`cursor-pointer hover:bg-gray-50 ${!isAvailable ? 'opacity-60' : ''}`}
+                      className={`cursor-pointer hover:bg-gray-50 hover:text-gray-900 ${!isAvailable ? 'opacity-60' : ''}`}
                       disabled={!isAvailable}
                     >
                       <IconComponent className={`h-4 w-4 mr-2 ${action.color}`} />
                       <div className="flex flex-col flex-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-sm">{action.label}</span>
-                          <span className="text-xs">{action.status}</span>
+                          <span className="font-medium text-sm text-gray-900">{action.label}</span>
+                          <span className="text-xs text-gray-700">{action.status}</span>
                         </div>
                         <span className="text-xs text-gray-500">{action.description}</span>
                       </div>
@@ -490,7 +491,7 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
       },
       enableSorting: false,
     },
-  ], [onPatientClick, loadingActions, handlePatientAction, actionOptions])
+  ], [onPatientClick, loadingActions, handlePatientAction])
 
   const table = useReactTable({
     data,
