@@ -175,18 +175,26 @@ export interface RiskMetricsResponse {
   organization_id: string;
   summary: {
     total_patients: number;
+    engagement_distribution: {
+      active: number;
+      dormant: number;
+      stale: number;
+    };
     risk_distribution: {
-      critical: number;
       high: number;
       medium: number;
       low: number;
-      stale: number;                // ✅ Backend uses "stale" not "engaged"
     };
-    stale_patients: number;
+    action_priorities: {
+      urgent: number;
+      important: number;
+      monitor: number;
+      maintain: number;
+    };
     avg_risk_score: number;
   };
   patients: PatientRiskData[];
-  view_version: string;            // "v1.3-simplified-risk"
+  view_version: string;            // "v1.4-cleaner-business-logic"
   calculated_at: string;
   timestamp: string;
 }
@@ -199,7 +207,8 @@ export interface PatientRiskData {
   is_active: boolean;
   activity_status: string;
   risk_score: number;              // 0-100
-  risk_level: "critical" | "high" | "medium" | "low" | "stale";
+  risk_level: "high" | "medium" | "low";
+  engagement_status: "active" | "dormant" | "stale";
   days_since_last_contact: number | null;
   days_to_next_appointment: number | null;
   last_appointment_date: string | null;

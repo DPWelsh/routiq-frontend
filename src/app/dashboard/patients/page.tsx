@@ -30,6 +30,7 @@ import { UpcomingAppointments } from '@/components/features/patients/upcoming-ap
 import { usePatientsData } from '@/hooks/useDashboardData'
 import { useRiskMetrics } from '@/hooks/useReengagementData'
 import { PatientRiskData } from '@/lib/routiq-api'
+import { PatientRiskTable } from '@/components/features/patients/patient-risk-table'
 
 // Use PatientRiskData from the API
 type Patient = PatientRiskData
@@ -88,7 +89,7 @@ export default function PatientsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('active')
   const [viewMode, setViewMode] = useState<'card' | 'table'>('table')
-  const [showCount, setShowCount] = useState(10)
+
 
   // Extract patients data from risk metrics API - include all patients now
   const allPatients = riskMetricsData?.patients || []
@@ -112,20 +113,22 @@ export default function PatientsPage() {
       )
     }
     
-    // Apply type filter based on risk levels and status
+    // Apply type filter based on engagement status and risk levels
     if (filterType !== 'all') {
       filtered = filtered.filter((patient: Patient) => {
         switch (filterType) {
           case 'active':
-            return patient.is_active
+            return patient.engagement_status === 'active'
+          case 'dormant':
+            return patient.engagement_status === 'dormant'
+          case 'stale':
+            return patient.engagement_status === 'stale'
           case 'low':
             return patient.risk_level === 'low'
           case 'medium':
             return patient.risk_level === 'medium' 
           case 'high':
-            return patient.risk_level === 'high' || patient.risk_level === 'critical'
-          case 'stale':
-            return patient.risk_level === 'stale'
+            return patient.risk_level === 'high'
           case 'upcoming':
             return patient.upcoming_appointment_count > 0
           default:
@@ -137,10 +140,10 @@ export default function PatientsPage() {
     return filtered
   }, [allPatients, searchTerm, filterType])
 
-  // Get displayed patients (limited by showCount)
+  // Get displayed patients for card view only
   const displayedPatients = useMemo(() => {
-    return filteredPatients.slice(0, showCount)
-  }, [filteredPatients, showCount])
+    return filteredPatients.slice(0, 20) // Fixed limit for card view
+  }, [filteredPatients])
 
   // Create stats from patients data
   const stats = useMemo(() => {
@@ -166,17 +169,18 @@ export default function PatientsPage() {
   }
 
   const getEngagementLevel = (patient: Patient) => {
+    // Combine risk level and engagement status for priority display
+    if (patient.engagement_status === 'stale') {
+      return { level: 'Stale', color: 'bg-gray-100 text-gray-800', icon: Clock }
+    }
+    
     switch (patient.risk_level) {
-      case 'critical':
-        return { level: 'Critical', color: 'bg-red-100 text-red-800', icon: AlertCircle }
       case 'high':
-        return { level: 'High Priority', color: 'bg-orange-100 text-orange-800', icon: AlertCircle }
+        return { level: 'High Risk', color: 'bg-red-100 text-red-800', icon: AlertCircle }
       case 'medium':
-        return { level: 'Medium Priority', color: 'bg-yellow-100 text-yellow-800', icon: Clock }
+        return { level: 'Medium Risk', color: 'bg-yellow-100 text-yellow-800', icon: Clock }
       case 'low':
-        return { level: 'Low Priority', color: 'bg-green-100 text-green-800', icon: UserCheck }
-      case 'stale':
-        return { level: 'Stale', color: 'bg-gray-100 text-gray-800', icon: Clock }
+        return { level: 'Low Risk', color: 'bg-green-100 text-green-800', icon: UserCheck }
       default:
         return { level: 'Unknown', color: 'bg-gray-100 text-gray-800', icon: Clock }
     }
@@ -248,79 +252,7 @@ export default function PatientsPage() {
     )
   }
 
-  const PatientTable = () => (
-    <div className="bg-white rounded-lg border overflow-hidden">
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead className="bg-gray-50 border-b">
-            <tr>
-              <th className="text-left py-3 px-4 font-medium text-gray-900">Patient</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-900">Contact</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-900">Appointments</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-900">Priority</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-900">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayedPatients.map((patient) => {
-              const engagement = getEngagementLevel(patient)
-              const EngagementIcon = engagement.icon
-              
-              return (
-                <tr 
-                  key={patient.patient_id}
-                  className="border-b hover:bg-gray-50 cursor-pointer transition-colors"
-                  onClick={() => handlePatientClick(patient.phone)}
-                >
-                  <td className="py-3 px-4">
-                    <div>
-                      <div className="font-medium text-gray-900">{patient.patient_name}</div>
-                      <div className="text-sm text-gray-500">Risk: {patient.risk_score}/100 ({patient.risk_level})</div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="text-sm">
-                      <div className="text-gray-900">{formatPhoneNumber(patient.phone)}</div>
-                      <div className="text-gray-500">{patient.email || 'No email'}</div>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex gap-4 text-sm">
-                      <span className="flex items-center gap-1">
-                        <Calendar className="h-3 w-3 text-blue-500" />
-                        {patient.upcoming_appointment_count}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3 text-orange-500" />
-                        {patient.recent_appointment_count}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <Badge className={`${engagement.color} text-xs`}>
-                      <EngagementIcon className="h-3 w-3 mr-1" />
-                      {engagement.level}
-                    </Badge>
-                  </td>
-                  <td className="py-3 px-4">
-                    {patient.is_active ? (
-                      <Badge variant="outline" className="text-green-600 border-green-200 text-xs">
-                        Active
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="text-gray-600 border-gray-200 text-xs">
-                        Inactive
-                      </Badge>
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  )
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -349,7 +281,7 @@ export default function PatientsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">🚨 Action Required</p>
                   <p className="text-xl font-bold text-red-600">
-                    {riskMetricsData?.summary?.risk_distribution?.critical || 0}
+                    {riskMetricsData?.summary?.action_priorities?.urgent || 0}
                   </p>
                   <p className="text-xs text-gray-500">Immediate contact needed</p>
                 </div>
@@ -364,9 +296,9 @@ export default function PatientsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">📞 This Week&apos;s Target</p>
                   <p className="text-xl font-bold text-orange-600">
-                    {riskMetricsData?.summary?.risk_distribution?.high || 0}
+                    {riskMetricsData?.summary?.action_priorities?.important || 0}
                   </p>
-                  <p className="text-xs text-gray-500">Patients to recontact</p>
+                  <p className="text-xs text-gray-500">Important follow-ups</p>
                 </div>
                 <Phone className="h-6 w-6 text-orange-500" />
               </div>
@@ -380,7 +312,7 @@ export default function PatientsPage() {
                   <p className="text-sm font-medium text-gray-600">✅ Engaged Patients</p>
                   <p className="text-xl font-bold text-green-600">
                     {riskMetricsData?.summary ? 
-                      (((riskMetricsData.summary.total_patients - riskMetricsData.summary.stale_patients) / riskMetricsData.summary.total_patients) * 100).toFixed(1) 
+                      (((riskMetricsData.summary.engagement_distribution.active + riskMetricsData.summary.engagement_distribution.dormant) / riskMetricsData.summary.total_patients) * 100).toFixed(1) 
                       : '0'}%
                   </p>
                   <p className="text-xs text-gray-500">Recently active</p>
@@ -434,11 +366,6 @@ export default function PatientsPage() {
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
               <CardTitle className="text-lg">
                 Patients ({filteredPatients.length})
-                {showCount < filteredPatients.length && (
-                  <span className="text-sm font-normal text-gray-500 ml-2">
-                    (showing {Math.min(showCount, filteredPatients.length)})
-                  </span>
-                )}
               </CardTitle>
               
               <div className="flex items-center gap-2">
@@ -492,12 +419,13 @@ export default function PatientsPage() {
                   </div>
               
               <Tabs value={filterType} onValueChange={setFilterType} className="w-auto">
-                <TabsList className="grid grid-cols-3 lg:grid-cols-6 w-auto">
+                <TabsList className="grid grid-cols-3 lg:grid-cols-7 w-auto">
                   <TabsTrigger value="active" className="text-xs">Active</TabsTrigger>
-                  <TabsTrigger value="low" className="text-xs">Low Priority</TabsTrigger>
-                  <TabsTrigger value="medium" className="text-xs">Medium Priority</TabsTrigger>
-                  <TabsTrigger value="high" className="text-xs">High Priority</TabsTrigger>
+                  <TabsTrigger value="dormant" className="text-xs">Dormant</TabsTrigger>
                   <TabsTrigger value="stale" className="text-xs">Stale</TabsTrigger>
+                  <TabsTrigger value="high" className="text-xs">High Risk</TabsTrigger>
+                  <TabsTrigger value="medium" className="text-xs">Medium Risk</TabsTrigger>
+                  <TabsTrigger value="low" className="text-xs">Low Risk</TabsTrigger>
                   <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
                 </TabsList>
               </Tabs>
@@ -522,21 +450,12 @@ export default function PatientsPage() {
                     ))}
                   </div>
                 ) : (
-                  <PatientTable />
+                  <PatientRiskTable 
+                    data={filteredPatients}
+                    onPatientClick={handlePatientClick}
+                  />
                 )}
-                
-                {/* Show More Button */}
-                {showCount < filteredPatients.length && (
-                  <div className="text-center mt-6">
-                                  <Button
-                      variant="outline" 
-                      onClick={() => setShowCount(prev => prev + 10)}
-                      className="w-full sm:w-auto"
-                    >
-                      Show More Patients ({filteredPatients.length - showCount} remaining)
-                                  </Button>
-                  </div>
-                )}
+
               </>
             )}
                         </CardContent>
