@@ -179,6 +179,29 @@ export default function PatientsPage() {
     await refetchPatients()
   }
 
+  // Handle card clicks to filter patients
+  const handleCardFilter = (type: 'high-risk' | 'medium-risk' | 'engaged' | 'all') => {
+    switch (type) {
+      case 'high-risk':
+        setRiskFilter('high')
+        setStatusFilter('all')
+        break
+      case 'medium-risk':
+        setRiskFilter('medium')
+        setStatusFilter('all')
+        break
+      case 'engaged':
+        setRiskFilter('all')
+        setStatusFilter('active')
+        break
+      case 'all':
+        setRiskFilter('all')
+        setStatusFilter('all')
+        setSearchTerm('')
+        break
+    }
+  }
+
   const getEngagementLevel = (patient: Patient) => {
     // Combine risk level and engagement status for priority display
     if (patient.engagement_status === 'stale') {
@@ -284,69 +307,190 @@ export default function PatientsPage() {
           )}
       </div>
 
-        {/* Reengagement-Focused Stats Cards - Using Real API Data */}
+        {/* Interactive Filter Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <Card className="bg-white border-l-4 border-l-red-500">
+          {/* High Risk Card */}
+          <Card 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-l-4 ${
+              riskFilter === 'high' ? 'border-l-red-500 bg-red-50 ring-2 ring-red-200' : 'border-l-red-500 bg-white hover:bg-red-50'
+            }`}
+            onClick={() => handleCardFilter('high-risk')}
+          >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">🚨 Action Required</p>
-                  <p className="text-xl font-bold text-red-600">
-                    {riskMetricsData?.summary?.action_priorities?.urgent || 0}
+                  <p className="text-sm font-medium text-gray-700">🚨 High Risk</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {allPatients.filter(p => p.risk_level === 'high').length}
                   </p>
-                  <p className="text-xs text-gray-500">Immediate contact needed</p>
+                  <p className="text-xs text-gray-600">
+                    Need immediate attention
+                  </p>
+                  <p className="text-xs text-red-600 font-medium mt-1">
+                    Click to filter →
+                  </p>
                 </div>
-                <AlertCircle className="h-6 w-6 text-red-500" />
+                <AlertCircle className="h-7 w-7 text-red-500" />
               </div>
-              </CardContent>
-            </Card>
+            </CardContent>
+          </Card>
                     
-          <Card className="bg-white border-l-4 border-l-orange-500">
+          {/* Medium Risk Card */}
+          <Card 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-l-4 ${
+              riskFilter === 'medium' ? 'border-l-orange-500 bg-orange-50 ring-2 ring-orange-200' : 'border-l-orange-500 bg-white hover:bg-orange-50'
+            }`}
+            onClick={() => handleCardFilter('medium-risk')}
+          >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">📞 This Week&apos;s Target</p>
-                  <p className="text-xl font-bold text-orange-600">
-                    {riskMetricsData?.summary?.action_priorities?.important || 0}
+                  <p className="text-sm font-medium text-gray-700">📞 Medium Risk</p>
+                  <p className="text-2xl font-bold text-orange-600">
+                    {allPatients.filter(p => p.risk_level === 'medium').length}
                   </p>
-                  <p className="text-xs text-gray-500">Important follow-ups</p>
+                  <p className="text-xs text-gray-600">
+                    Important follow-ups
+                  </p>
+                  <p className="text-xs text-orange-600 font-medium mt-1">
+                    Click to filter →
+                  </p>
                 </div>
-                <Phone className="h-6 w-6 text-orange-500" />
+                <Clock className="h-7 w-7 text-orange-500" />
               </div>
-              </CardContent>
-            </Card>
+            </CardContent>
+          </Card>
                     
-          <Card className="bg-white border-l-4 border-l-green-500">
+          {/* Active Patients Card */}
+          <Card 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-l-4 ${
+              statusFilter === 'active' ? 'border-l-green-500 bg-green-50 ring-2 ring-green-200' : 'border-l-green-500 bg-white hover:bg-green-50'
+            }`}
+            onClick={() => handleCardFilter('engaged')}
+          >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">✅ Engaged Patients</p>
-                  <p className="text-xl font-bold text-green-600">
-                    {riskMetricsData?.summary ? 
-                      (((riskMetricsData.summary.engagement_distribution.active + riskMetricsData.summary.engagement_distribution.dormant) / riskMetricsData.summary.total_patients) * 100).toFixed(1) 
-                      : '0'}%
+                  <p className="text-sm font-medium text-gray-700">✅ Active Patients</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {allPatients.filter(p => p.engagement_status === 'active').length}
                   </p>
-                  <p className="text-xs text-gray-500">Recently active</p>
+                  <p className="text-xs text-gray-600">
+                    Recently engaged
+                  </p>
+                  <p className="text-xs text-green-600 font-medium mt-1">
+                    Click to filter →
+                  </p>
                 </div>
-                <UserCheck className="h-6 w-6 text-green-500" />
+                <UserCheck className="h-7 w-7 text-green-500" />
               </div>
-              </CardContent>
-            </Card>
+            </CardContent>
+          </Card>
 
-          <Card className="bg-white border-l-4 border-l-blue-500">
+          {/* Total Patients Card */}
+          <Card 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-l-4 ${
+              statusFilter === 'all' && riskFilter === 'all' ? 'border-l-blue-500 bg-blue-50 ring-2 ring-blue-200' : 'border-l-blue-500 bg-white hover:bg-blue-50'
+            }`}
+            onClick={() => handleCardFilter('all')}
+          >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">📊 Total Patients</p>
-                  <p className="text-xl font-bold text-blue-600">
-                    {riskMetricsData?.summary?.total_patients || totalCount}
+                  <p className="text-sm font-medium text-gray-700">📊 All Patients</p>
+                  <p className="text-2xl font-bold text-blue-600">
+                    {totalCount}
                   </p>
-                  <p className="text-xs text-gray-500">In system</p>
+                  <p className="text-xs text-gray-600">
+                    Total in system
+                  </p>
+                  <p className="text-xs text-blue-600 font-medium mt-1">
+                    Click to show all →
+                  </p>
                 </div>
-                <Users className="h-6 w-6 text-blue-500" />
+                <Users className="h-7 w-7 text-blue-500" />
               </div>
-              </CardContent>
-            </Card>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Status Breakdown Cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+          <Card 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-md border ${
+              statusFilter === 'active' ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-white hover:bg-green-25'
+            }`}
+            onClick={() => setStatusFilter('active')}
+          >
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Active</p>
+                  <p className="text-lg font-bold text-green-600">
+                    {allPatients.filter(p => p.engagement_status === 'active').length}
+                  </p>
+                </div>
+                <div className="h-2 w-2 rounded-full bg-green-500"></div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-md border ${
+              statusFilter === 'dormant' ? 'border-orange-300 bg-orange-50' : 'border-gray-200 bg-white hover:bg-orange-25'
+            }`}
+            onClick={() => setStatusFilter('dormant')}
+          >
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Dormant</p>
+                  <p className="text-lg font-bold text-orange-600">
+                    {allPatients.filter(p => p.engagement_status === 'dormant').length}
+                  </p>
+                </div>
+                <div className="h-2 w-2 rounded-full bg-orange-500"></div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-md border ${
+              statusFilter === 'stale' ? 'border-gray-400 bg-gray-50' : 'border-gray-200 bg-white hover:bg-gray-25'
+            }`}
+            onClick={() => setStatusFilter('stale')}
+          >
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Stale</p>
+                  <p className="text-lg font-bold text-gray-600">
+                    {allPatients.filter(p => p.engagement_status === 'stale').length}
+                  </p>
+                </div>
+                <div className="h-2 w-2 rounded-full bg-gray-500"></div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card 
+            className={`cursor-pointer transition-all duration-200 hover:shadow-md border ${
+              riskFilter === 'low' ? 'border-blue-300 bg-blue-50' : 'border-gray-200 bg-white hover:bg-blue-25'
+            }`}
+            onClick={() => setRiskFilter('low')}
+          >
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Low Risk</p>
+                  <p className="text-lg font-bold text-blue-600">
+                    {allPatients.filter(p => p.risk_level === 'low').length}
+                  </p>
+                </div>
+                <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Show risk metrics loading state */}
@@ -417,17 +561,65 @@ export default function PatientsPage() {
           </CardHeader>
 
           <CardContent className="pt-0">
-        {/* Search and Filters */}
+            {/* Active Filters Indicator */}
+            {(statusFilter !== 'all' || riskFilter !== 'all' || searchTerm) && (
+              <div className="flex flex-wrap items-center gap-2 mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <span className="text-sm font-medium text-blue-800">Active filters:</span>
+                {statusFilter !== 'all' && (
+                  <Badge variant="outline" className="bg-white border-blue-300 text-blue-700">
+                    Status: {statusFilter}
+                    <button 
+                      onClick={() => setStatusFilter('all')} 
+                      className="ml-1 text-blue-500 hover:text-blue-700"
+                    >
+                      ×
+                    </button>
+                  </Badge>
+                )}
+                {riskFilter !== 'all' && (
+                  <Badge variant="outline" className="bg-white border-blue-300 text-blue-700">
+                    Risk: {riskFilter}
+                    <button 
+                      onClick={() => setRiskFilter('all')} 
+                      className="ml-1 text-blue-500 hover:text-blue-700"
+                    >
+                      ×
+                    </button>
+                  </Badge>
+                )}
+                {searchTerm && (
+                  <Badge variant="outline" className="bg-white border-blue-300 text-blue-700">
+                    Search: &ldquo;{searchTerm}&rdquo;
+                    <button 
+                      onClick={() => setSearchTerm('')} 
+                      className="ml-1 text-blue-500 hover:text-blue-700"
+                    >
+                      ×
+                    </button>
+                  </Badge>
+                )}
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleCardFilter('all')}
+                  className="ml-auto h-6 px-2 text-xs border-blue-300 text-blue-700 hover:bg-blue-100"
+                >
+                  Clear all
+                </Button>
+              </div>
+            )}
+
+            {/* Search and Manual Filters */}
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input
+                <Input
                   placeholder="Search patients by name, phone, or email..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
-                    />
-                  </div>
+                />
+              </div>
               
               <div className="flex gap-2">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
