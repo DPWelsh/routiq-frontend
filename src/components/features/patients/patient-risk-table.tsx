@@ -32,6 +32,8 @@ import {
   ChevronLeft,
   ChevronRight,
   DollarSign,
+  Zap,
+  Loader2,
 } from "lucide-react"
 import { PatientRiskData } from '@/lib/routiq-api'
 import { formatDistanceToNow } from 'date-fns'
@@ -47,6 +49,7 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
   ])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [loadingActions, setLoadingActions] = useState<Set<string>>(new Set())
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Never'
@@ -60,9 +63,38 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
   const formatPhoneNumber = (phone: string) => {
     if (!phone) return 'No phone'
     const cleaned = phone.replace(/\D/g, '')
+    
+    // Handle different international formats
     if (cleaned.length === 10) {
+      // US/Canada format: (123) 456-7890
       return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
+    } else if (cleaned.length === 11 && cleaned.startsWith('1')) {
+      // US/Canada with country code: +1 (123) 456-7890
+      return `+1 (${cleaned.slice(1, 4)}) ${cleaned.slice(4, 7)}-${cleaned.slice(7)}`
+    } else if (cleaned.length === 11 && cleaned.startsWith('61')) {
+      // Australia: +61 4XX XXX XXX
+      return `+61 ${cleaned.slice(2, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8)}`
+    } else if (cleaned.length === 12 && cleaned.startsWith('971')) {
+      // UAE: +971 XX XXX XXXX
+      return `+971 ${cleaned.slice(3, 5)} ${cleaned.slice(5, 8)} ${cleaned.slice(8)}`
+    } else if (cleaned.length === 13 && cleaned.startsWith('62')) {
+      // Indonesia: +62 XXX XXXX XXXX
+      return `+62 ${cleaned.slice(2, 5)} ${cleaned.slice(5, 9)} ${cleaned.slice(9)}`
+    } else if (cleaned.length === 12 && cleaned.startsWith('44')) {
+      // UK: +44 XXXX XXX XXX
+      return `+44 ${cleaned.slice(2, 6)} ${cleaned.slice(6, 9)} ${cleaned.slice(9)}`
+    } else if (cleaned.length >= 11) {
+      // Generic international format: +XXX XXX XXX XXXX
+      const countryCode = cleaned.slice(0, cleaned.length - 10)
+      const number = cleaned.slice(-10)
+      return `+${countryCode} ${number.slice(0, 3)} ${number.slice(3, 6)} ${number.slice(6)}`
     }
+    
+    // Fallback: add + and space every 3-4 digits
+    if (cleaned.length > 10) {
+      return `+${cleaned.slice(0, -10)} ${cleaned.slice(-10, -7)} ${cleaned.slice(-7, -4)} ${cleaned.slice(-4)}`
+    }
+    
     return phone
   }
 
@@ -74,6 +106,53 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount)
+  }
+
+  const handlePatientAction = async (patient: PatientRiskData) => {
+    const patientId = patient.patient_id
+    
+    // Add to loading set
+    setLoadingActions(prev => new Set(prev).add(patientId))
+    
+    try {
+      const response = await fetch('/api/patients/action', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          patient_id: patient.patient_id,
+          patient_name: patient.patient_name,
+          phone: patient.phone,
+          email: patient.email,
+          risk_level: patient.risk_level,
+          engagement_status: patient.engagement_status,
+          recommended_action: patient.recommended_action,
+          action_priority: patient.action_priority,
+          lifetime_value_aud: patient.lifetime_value_aud,
+          action_type: 'urgent_call'
+        })
+      })
+
+      if (response.ok) {
+        // TODO: Add success notification (toast)
+        console.log('Action triggered successfully for patient:', patient.patient_name)
+      } else {
+        const error = await response.text()
+        console.error('Failed to trigger action:', error)
+        // TODO: Add error notification
+      }
+    } catch (error) {
+      console.error('Error triggering patient action:', error)
+      // TODO: Add error notification
+    } finally {
+      // Remove from loading set
+      setLoadingActions(prev => {
+        const next = new Set(prev)
+        next.delete(patientId)
+        return next
+      })
+    }
   }
 
   const getRiskBadge = (riskLevel: string, engagementStatus: string, riskScore: number) => {
@@ -311,7 +390,53 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
       ),
       enableSorting: false,
     },
-  ], [onPatientClick])
+    {
+      id: 'actions',
+      header: 'Action',
+      cell: ({ row }) => {
+        const patient = row.original
+        const isLoading = loadingActions.has(patient.patient_id)
+        
+        // Only show action button for high priority patients
+        const shouldShowAction = patient.action_priority <= 2 || patient.risk_level === 'high'
+        
+        if (!shouldShowAction) {
+          return <div className="text-sm text-gray-400">No action needed</div>
+        }
+
+        return (
+          <div className="min-w-[140px]">
+            <Button
+              onClick={() => handlePatientAction(patient)}
+              disabled={isLoading}
+              size="sm"
+              className={`w-full text-xs ${
+                patient.action_priority === 1 
+                  ? 'bg-red-600 hover:bg-red-700 text-white' 
+                  : 'bg-orange-600 hover:bg-orange-700 text-white'
+              }`}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Zap className="h-3 w-3 mr-1" />
+                  {patient.action_priority === 1 ? 'URGENT' : 'Take Action'}
+                </>
+              )}
+            </Button>
+            <div className="text-xs text-gray-500 mt-1 text-center">
+              Priority {patient.action_priority}
+            </div>
+          </div>
+        )
+      },
+      enableSorting: false,
+    },
+  ], [onPatientClick, loadingActions, handlePatientAction])
 
   const table = useReactTable({
     data,
