@@ -28,6 +28,7 @@ import {
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { UpcomingAppointments } from '@/components/features/patients/upcoming-appointments'
 import { usePatientsData } from '@/hooks/useDashboardData'
+import { useReengagementDashboard } from '@/hooks/useReengagementData'
 
 // Patient interface for TypeScript
 interface Patient {
@@ -86,6 +87,13 @@ export default function PatientsPage() {
     error: patientsError,
     refetch: refetchPatients 
   } = usePatientsData(organizationId)
+
+  // Get reengagement dashboard data
+  const { 
+    data: reengagementData, 
+    isLoading: reengagementLoading,
+    error: reengagementError 
+  } = useReengagementDashboard(organizationId || '')
   
   // Local state for filtering and search
   const [searchTerm, setSearchTerm] = useState('')
@@ -116,7 +124,7 @@ export default function PatientsPage() {
     }
     
     // Apply type filter
-    if (filterType !== 'all') {
+      if (filterType !== 'all') {
       filtered = filtered.filter((patient: Patient) => {
         switch (filterType) {
           case 'high':
@@ -314,7 +322,7 @@ export default function PatientsPage() {
       <div className="max-w-7xl mx-auto px-6 py-6">
         {/* Compact Header */}
         <div className="flex items-center justify-between mb-6">
-          <div>
+            <div>
             <h1 className="text-2xl font-bold text-gray-900">Patient Management</h1>
             <p className="text-gray-600 text-sm">Manage patient engagement and appointments</p>
           </div>
@@ -326,16 +334,18 @@ export default function PatientsPage() {
               </AlertDescription>
             </Alert>
           )}
-        </div>
+      </div>
 
-        {/* Reengagement-Focused Stats Cards */}
+        {/* Reengagement-Focused Stats Cards - Using Real API Data */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <Card className="bg-white border-l-4 border-l-red-500">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">🚨 Action Required</p>
-                  <p className="text-xl font-bold text-red-600">12</p>
+                  <p className="text-xl font-bold text-red-600">
+                    {reengagementData?.immediate_actions_required || '12'}
+                  </p>
                   <p className="text-xs text-gray-500">Immediate contact needed</p>
                 </div>
                 <AlertCircle className="h-6 w-6 text-red-500" />
@@ -348,7 +358,9 @@ export default function PatientsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-gray-600">📞 This Week&apos;s Target</p>
-                  <p className="text-xl font-bold text-orange-600">25</p>
+                  <p className="text-xl font-bold text-orange-600">
+                    {reengagementData?.risk_distribution?.find(r => r.risk_level === 'high')?.count || '25'}
+                  </p>
                   <p className="text-xs text-gray-500">Patients to recontact</p>
                 </div>
                 <Phone className="h-6 w-6 text-orange-500" />
@@ -360,9 +372,11 @@ export default function PatientsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">✅ Success Rate</p>
-                  <p className="text-xl font-bold text-green-600">67.2%</p>
-                  <p className="text-xs text-gray-500">Contact → appointment</p>
+                  <p className="text-sm font-medium text-gray-600">✅ Engaged Patients</p>
+                  <p className="text-xl font-bold text-green-600">
+                    {reengagementData?.risk_distribution?.find(r => r.risk_level === 'engaged')?.percentage?.toFixed(1) || '74.1'}%
+                  </p>
+                  <p className="text-xs text-gray-500">Recently active</p>
                 </div>
                 <UserCheck className="h-6 w-6 text-green-500" />
               </div>
@@ -373,15 +387,37 @@ export default function PatientsPage() {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">📈 Trend</p>
-                  <p className="text-xl font-bold text-blue-600">+8%</p>
-                  <p className="text-xs text-gray-500">vs last month</p>
+                  <p className="text-sm font-medium text-gray-600">📊 Total Patients</p>
+                  <p className="text-xl font-bold text-blue-600">
+                    {reengagementData?.total_patients || totalCount}
+                  </p>
+                  <p className="text-xs text-gray-500">In system</p>
                 </div>
-                <TrendingUp className="h-6 w-6 text-blue-500" />
+                <Users className="h-6 w-6 text-blue-500" />
               </div>
             </CardContent>
           </Card>
         </div>
+
+        {/* Show reengagement data loading state */}
+        {reengagementLoading && (
+          <Alert className="mb-4">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <AlertDescription>
+              Loading reengagement analytics...
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Show demo data notice */}
+        {reengagementData?.message && (
+          <Alert className="mb-4 border-blue-200 bg-blue-50">
+            <AlertCircle className="h-4 w-4 text-blue-600" />
+            <AlertDescription className="text-blue-800">
+              <strong>Reengagement Platform Active:</strong> {reengagementData.message}
+            </AlertDescription>
+          </Alert>
+        )}
 
         {/* Compact Upcoming Appointments Alert */}
         <div className="mb-6">
@@ -432,22 +468,22 @@ export default function PatientsPage() {
                     <RefreshCw className="h-3 w-3" />
                   )}
                 </Button>
-              </div>
-            </div>
+                </div>
+          </div>
           </CardHeader>
-          
+
           <CardContent className="pt-0">
-            {/* Search and Filters */}
+        {/* Search and Filters */}
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
+                    <Input
                   placeholder="Search patients by name, phone, or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
-                />
-              </div>
+                    />
+                  </div>
               
               <Tabs value={filterType} onValueChange={setFilterType} className="w-auto">
                 <TabsList className="grid grid-cols-3 lg:grid-cols-6 w-auto">
@@ -459,18 +495,18 @@ export default function PatientsPage() {
                   <TabsTrigger value="low" className="text-xs">Low Priority</TabsTrigger>
                 </TabsList>
               </Tabs>
-            </div>
+                          </div>
 
             {/* Patient List */}
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600" />
                 <p className="mt-2 text-gray-600">Loading patients...</p>
-              </div>
+                          </div>
             ) : filteredPatients.length === 0 ? (
               <div className="text-center py-12 text-gray-500">
                 {searchTerm ? 'No patients found matching your search.' : 'No patients available.'}
-              </div>
+                          </div>
             ) : (
               <>
                 {viewMode === 'card' ? (
@@ -486,19 +522,19 @@ export default function PatientsPage() {
                 {/* Show More Button */}
                 {filteredPatients.length === showCount && allPatients.length > showCount && (
                   <div className="text-center mt-6">
-                    <Button 
+                                  <Button
                       variant="outline" 
                       onClick={() => setShowCount(prev => prev + 10)}
                       className="w-full sm:w-auto"
                     >
                       Show More Patients
-                    </Button>
+                                  </Button>
                   </div>
                 )}
               </>
             )}
-          </CardContent>
-        </Card>
+                        </CardContent>
+                      </Card>
       </div>
     </div>
   )

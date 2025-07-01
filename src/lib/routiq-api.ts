@@ -128,6 +128,41 @@ export interface SyncDashboardResponse {
   };
 }
 
+// Reengagement API Types
+export interface ReengagementDashboard {
+  organization_id: string;
+  total_patients: number;
+  immediate_actions_required: number;
+  risk_distribution: Array<{
+    risk_level: 'critical' | 'high' | 'medium' | 'low' | 'engaged';
+    count: number;
+    percentage: number;
+  }>;
+  message?: string;
+  timestamp: string;
+}
+
+export interface PatientAtRisk {
+  patient_id: string;
+  patient_name: string;
+  email?: string;
+  phone?: string;
+  risk_score: number;
+  risk_level: 'critical' | 'high' | 'medium' | 'low';
+  days_since_last_contact: number;
+  action_priority: number;
+  recommended_action: string;
+  contact_success_prediction: 'high' | 'medium' | 'low';
+  upcoming_appointments: number;
+}
+
+export interface PatientsAtRiskResponse {
+  organization_id: string;
+  patients: PatientAtRisk[];
+  message?: string;
+  timestamp: string;
+}
+
 export class RoutiqAPI {
   private baseUrl: string;
   private organizationId?: string;
@@ -512,6 +547,34 @@ export class RoutiqAPI {
     }
 
     return features;
+  }
+
+  // ========================================
+  // REENGAGEMENT ENDPOINTS
+  // ========================================
+
+  /**
+   * Get reengagement dashboard with risk metrics
+   */
+  async getReengagementDashboard(organizationId: string): Promise<ReengagementDashboard> {
+    return this.request(`/api/v1/reengagement/${organizationId}/dashboard`);
+  }
+
+  /**
+   * Get patients at risk prioritized by action needed
+   */
+  async getPatientsAtRisk(organizationId: string, options?: {
+    risk_level?: 'critical' | 'high' | 'medium' | 'low' | 'all';
+    limit?: number;
+    action_required?: string;
+  }): Promise<PatientsAtRiskResponse> {
+    const params = new URLSearchParams();
+    if (options?.risk_level) params.append('risk_level', options.risk_level);
+    if (options?.limit) params.append('limit', options.limit.toString());
+    if (options?.action_required) params.append('action_required', options.action_required);
+    
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return this.request(`/api/v1/reengagement/${organizationId}/patients/at-risk${query}`);
   }
 }
 
