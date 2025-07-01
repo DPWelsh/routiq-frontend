@@ -72,8 +72,7 @@ export function UpcomingAppointments({
         patients: [],
         total_count: 0,
         organization_id: '',
-        timestamp: new Date().toISOString(),
-        message: 'Integration with backend pending - organization context required'
+        timestamp: new Date().toISOString()
       }
       
       setData(result)

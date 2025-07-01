@@ -76,7 +76,7 @@ export function useConversationPerformance(
 
       // TODO: Replace with RoutiqAPI call when performance endpoints are available
       console.log('🔍 Using mock performance data')
-      setPerformance(null)
+        setPerformance(null)
     } catch (err) {
       console.error('Error fetching performance:', err)
       setError(err instanceof Error ? err.message : 'Unknown error')
@@ -105,7 +105,7 @@ export function useConversationPerformance(
 
       // TODO: Replace with RoutiqAPI call when performance endpoints are available
       console.log('🔄 Mock performance update')
-      return true
+        return true
     } catch (err) {
       console.error('Error updating performance:', err)
       setError(err instanceof Error ? err.message : 'Update failed')

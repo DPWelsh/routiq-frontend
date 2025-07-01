@@ -8,9 +8,9 @@ export default function DashboardLayout({
 }) {
   return (
     <AuthGuard>
-      <ClientDashboardLayout>
-        {children}
-      </ClientDashboardLayout>
+    <ClientDashboardLayout>
+      {children}
+    </ClientDashboardLayout>
     </AuthGuard>
   )
 } 

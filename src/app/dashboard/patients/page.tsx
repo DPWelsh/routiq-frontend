@@ -124,7 +124,7 @@ export default function PatientsPage() {
     }
     
     // Apply type filter
-      if (filterType !== 'all') {
+    if (filterType !== 'all') {
       filtered = filtered.filter((patient: Patient) => {
         switch (filterType) {
           case 'high':
@@ -143,8 +143,13 @@ export default function PatientsPage() {
       })
     }
     
-    return filtered.slice(0, showCount)
-  }, [allPatients, searchTerm, filterType, showCount])
+    return filtered
+  }, [allPatients, searchTerm, filterType])
+
+  // Get displayed patients (limited by showCount)
+  const displayedPatients = useMemo(() => {
+    return filteredPatients.slice(0, showCount)
+  }, [filteredPatients, showCount])
 
   // Create stats from patients data
   const stats = useMemo(() => {
@@ -257,7 +262,7 @@ export default function PatientsPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredPatients.map((patient) => {
+            {displayedPatients.map((patient) => {
               const engagement = getEngagementLevel(patient)
               const EngagementIcon = engagement.icon
               
@@ -350,9 +355,9 @@ export default function PatientsPage() {
                 </div>
                 <AlertCircle className="h-6 w-6 text-red-500" />
               </div>
-            </CardContent>
-          </Card>
-
+              </CardContent>
+            </Card>
+                    
           <Card className="bg-white border-l-4 border-l-orange-500">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -365,9 +370,9 @@ export default function PatientsPage() {
                 </div>
                 <Phone className="h-6 w-6 text-orange-500" />
               </div>
-            </CardContent>
-          </Card>
-
+              </CardContent>
+            </Card>
+                    
           <Card className="bg-white border-l-4 border-l-green-500">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -380,8 +385,8 @@ export default function PatientsPage() {
                 </div>
                 <UserCheck className="h-6 w-6 text-green-500" />
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
           <Card className="bg-white border-l-4 border-l-blue-500">
             <CardContent className="p-4">
@@ -395,8 +400,8 @@ export default function PatientsPage() {
                 </div>
                 <Users className="h-6 w-6 text-blue-500" />
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
         </div>
 
         {/* Show reengagement data loading state */}
@@ -419,21 +424,20 @@ export default function PatientsPage() {
           </Alert>
         )}
 
-        {/* Compact Upcoming Appointments Alert */}
-        <div className="mb-6">
-          <Alert className="border-orange-200 bg-orange-50">
-            <AlertCircle className="h-4 w-4 text-orange-600" />
-            <AlertDescription className="text-orange-800 text-sm">
-              Integration with backend pending - organization context required
-            </AlertDescription>
-          </Alert>
-        </div>
+
 
         {/* Patient List Section */}
         <Card className="bg-white">
           <CardHeader className="pb-3">
             <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-              <CardTitle className="text-lg">Patients ({filteredPatients.length})</CardTitle>
+              <CardTitle className="text-lg">
+                Patients ({filteredPatients.length})
+                {showCount < filteredPatients.length && (
+                  <span className="text-sm font-normal text-gray-500 ml-2">
+                    (showing {Math.min(showCount, filteredPatients.length)})
+                  </span>
+                )}
+              </CardTitle>
               
               <div className="flex items-center gap-2">
                 {/* View Toggle */}
@@ -511,7 +515,7 @@ export default function PatientsPage() {
               <>
                 {viewMode === 'card' ? (
                   <div className="grid gap-3">
-                    {filteredPatients.map((patient) => (
+                    {displayedPatients.map((patient) => (
                       <PatientCard key={patient.id} patient={patient} />
                     ))}
                   </div>
@@ -520,14 +524,14 @@ export default function PatientsPage() {
                 )}
                 
                 {/* Show More Button */}
-                {filteredPatients.length === showCount && allPatients.length > showCount && (
+                {showCount < filteredPatients.length && (
                   <div className="text-center mt-6">
                                   <Button
                       variant="outline" 
                       onClick={() => setShowCount(prev => prev + 10)}
                       className="w-full sm:w-auto"
                     >
-                      Show More Patients
+                      Show More Patients ({filteredPatients.length - showCount} remaining)
                                   </Button>
                   </div>
                 )}

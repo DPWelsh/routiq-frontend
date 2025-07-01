@@ -52,7 +52,7 @@
         "id": "strategic_002",
         "title": "Reengagement Stats Design ✅ COMPLETED",
         "status": "completed", 
-        "priority": "high",
+        "priority": "high", 
         "estimated_hours": 1.0,
         "actual_hours": 0.8,
         "description": "Replaced generic stats with actionable reengagement metrics",
@@ -132,8 +132,8 @@
           "Patient list sorted by action priority",
           "Analytics show reengagement trends"
         ]
-      },
-      {
+          },
+          {
         "id": "frontend_integration",
         "title": "Frontend Integration Phase",
         "priority": "high",
@@ -191,5 +191,5 @@
       "Backend API requirements created from 10-year PM experience",
       "Focus shifted from 'how many patients' to 'which patients need help'",
       "Platform now optimized for staff workflow and patient retention ROI"
-    ]
+      ]
   }
