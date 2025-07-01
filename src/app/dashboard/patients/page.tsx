@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { 
   Users, 
   UserCheck, 
@@ -87,7 +87,8 @@ export default function PatientsPage() {
   
   // Local state for filtering and search
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterType, setFilterType] = useState('active')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [riskFilter, setRiskFilter] = useState('all')
   const [viewMode, setViewMode] = useState<'card' | 'table'>('table')
 
 
@@ -99,7 +100,7 @@ export default function PatientsPage() {
     router.push(`/dashboard/conversations/phone/${encodeURIComponent(phone)}`)
   }
 
-  // Apply client-side filtering based on filter type
+  // Apply client-side filtering based on status and risk filters
   const filteredPatients = useMemo(() => {
     let filtered = allPatients
     
@@ -113,22 +114,16 @@ export default function PatientsPage() {
       )
     }
     
-    // Apply type filter based on engagement status and risk levels
-    if (filterType !== 'all') {
+    // Apply status filter
+    if (statusFilter !== 'all') {
       filtered = filtered.filter((patient: Patient) => {
-        switch (filterType) {
+        switch (statusFilter) {
           case 'active':
             return patient.engagement_status === 'active'
           case 'dormant':
             return patient.engagement_status === 'dormant'
           case 'stale':
             return patient.engagement_status === 'stale'
-          case 'low':
-            return patient.risk_level === 'low'
-          case 'medium':
-            return patient.risk_level === 'medium' 
-          case 'high':
-            return patient.risk_level === 'high'
           case 'upcoming':
             return patient.upcoming_appointment_count > 0
           default:
@@ -137,8 +132,24 @@ export default function PatientsPage() {
       })
     }
     
+    // Apply risk filter
+    if (riskFilter !== 'all') {
+      filtered = filtered.filter((patient: Patient) => {
+        switch (riskFilter) {
+          case 'low':
+            return patient.risk_level === 'low'
+          case 'medium':
+            return patient.risk_level === 'medium' 
+          case 'high':
+            return patient.risk_level === 'high'
+          default:
+            return true
+        }
+      })
+    }
+    
     return filtered
-  }, [allPatients, searchTerm, filterType])
+  }, [allPatients, searchTerm, statusFilter, riskFilter])
 
   // Get displayed patients for card view only
   const displayedPatients = useMemo(() => {
@@ -418,17 +429,34 @@ export default function PatientsPage() {
                     />
                   </div>
               
-              <Tabs value={filterType} onValueChange={setFilterType} className="w-auto">
-                <TabsList className="grid grid-cols-3 lg:grid-cols-7 w-auto">
-                  <TabsTrigger value="active" className="text-xs">Active</TabsTrigger>
-                  <TabsTrigger value="dormant" className="text-xs">Dormant</TabsTrigger>
-                  <TabsTrigger value="stale" className="text-xs">Stale</TabsTrigger>
-                  <TabsTrigger value="high" className="text-xs">High Risk</TabsTrigger>
-                  <TabsTrigger value="medium" className="text-xs">Medium Risk</TabsTrigger>
-                  <TabsTrigger value="low" className="text-xs">Low Risk</TabsTrigger>
-                  <TabsTrigger value="all" className="text-xs">All</TabsTrigger>
-                </TabsList>
-              </Tabs>
+              <div className="flex gap-2">
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-32">
+                    <Filter className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="dormant">Dormant</SelectItem>
+                    <SelectItem value="stale">Stale</SelectItem>
+                    <SelectItem value="upcoming">Upcoming</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Select value={riskFilter} onValueChange={setRiskFilter}>
+                  <SelectTrigger className="w-32">
+                    <Filter className="h-4 w-4 mr-2" />
+                    <SelectValue placeholder="Risk" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Risk</SelectItem>
+                    <SelectItem value="high">High Risk</SelectItem>
+                    <SelectItem value="medium">Medium Risk</SelectItem>
+                    <SelectItem value="low">Low Risk</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
                           </div>
 
             {/* Patient List */}
