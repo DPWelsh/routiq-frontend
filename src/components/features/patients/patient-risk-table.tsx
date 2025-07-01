@@ -46,9 +46,10 @@ import { formatDistanceToNow } from 'date-fns'
 interface PatientRiskTableProps {
   data: PatientRiskData[]
   onPatientClick?: (phone: string) => void
+  organizationId?: string  // Optional: for webhook integration
 }
 
-export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps) {
+export function PatientRiskTable({ data, onPatientClick, organizationId: propOrgId }: PatientRiskTableProps) {
   const [sorting, setSorting] = useState<SortingState>([
     { id: 'risk_score', desc: true } // Default sort by risk score descending
   ])
@@ -115,41 +116,54 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
 
   const handlePatientAction = async (patient: PatientRiskData, actionType: string) => {
     const patientId = patient.patient_id
+    // Hardcoded for testing - will replace with org context later
+    const organizationId = "org_2xwiHJY6BaRUIX1DanXG6ZX7"
     
     // Add to loading set
     setLoadingActions(prev => new Set(prev).add(patientId))
     
     try {
-      const response = await fetch('/api/patients/action', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          patient_id: patient.patient_id,
-          patient_name: patient.patient_name,
-          phone: patient.phone,
-          email: patient.email,
-          risk_level: patient.risk_level,
-          engagement_status: patient.engagement_status,
-          recommended_action: patient.recommended_action,
-          action_priority: patient.action_priority,
-          lifetime_value_aud: patient.lifetime_value_aud,
-          action_type: actionType
-        })
-      })
+      const response = await fetch(
+        `https://routiq-backend-prod.up.railway.app/api/v1/webhooks/${organizationId}/trigger`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            webhook_type: actionType,
+            patient_id: patient.patient_id,
+            trigger_data: {
+              patient_name: patient.patient_name,
+              patient_email: patient.email,
+              patient_phone: patient.phone,
+              risk_level: patient.risk_level,
+              engagement_status: patient.engagement_status,
+              recommended_action: patient.recommended_action,
+              action_priority: patient.action_priority,
+              lifetime_value_aud: patient.lifetime_value_aud,
+              triggered_from: 'patient_dashboard',
+              description: `${actionType} for ${patient.patient_name}`
+            },
+            user_id: 'dashboard_user', // TODO: Get from auth context
+            trigger_source: 'dashboard'
+          })
+        }
+      )
 
-      if (response.ok) {
-        // TODO: Add success notification (toast)
-        console.log(`Action '${actionType}' triggered successfully for patient:`, patient.patient_name)
+      const data = await response.json()
+
+      if (data.success) {
+        console.log(`✅ ${actionType} triggered successfully for ${patient.patient_name} (${data.execution_time_ms}ms)`)
+        console.log(`📋 Webhook Log ID: ${data.log_id}`)
+        // TODO: Add success toast notification
       } else {
-        const error = await response.text()
-        console.error('Failed to trigger action:', error)
-        // TODO: Add error notification
+        console.error(`❌ Failed to trigger ${actionType}:`, data.error || 'Unknown error')
+        // TODO: Add error toast notification
       }
     } catch (error) {
-      console.error('Error triggering patient action:', error)
-      // TODO: Add error notification
+      console.error('🚨 Network error triggering webhook:', error)
+      // TODO: Add error toast notification
     } finally {
       // Remove from loading set
       setLoadingActions(prev => {
@@ -162,25 +176,28 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
 
   const actionOptions = [
     {
-      id: 'urgent_call',
-      label: 'Urgent Call Required',
-      icon: PhoneCall,
-      description: 'Immediate phone outreach',
-      color: 'text-red-600'
-    },
-    {
-      id: 'send_sms',
-      label: 'Send SMS Follow-up',
+      id: 'patient_followup',
+      label: 'Send Follow-up Campaign',
       icon: Send,
-      description: 'Automated SMS reminder',
-      color: 'text-blue-600'
+      description: '📧 Automated patient follow-up workflow',
+      color: 'text-blue-600',
+      status: '✅ Active'
     },
     {
-      id: 'schedule_appointment',
-      label: 'Schedule Appointment',
+      id: 'reengagement_campaign',
+      label: 'Reengagement Campaign',
+      icon: Zap,
+      description: '🎯 Dormant patient reactivation workflow',
+      color: 'text-orange-600',
+      status: '⚙️ Setup Required'
+    },
+    {
+      id: 'appointment_reminder',
+      label: 'Appointment Reminder',
       icon: CalendarPlus,
-      description: 'Book next appointment',
-      color: 'text-green-600'
+      description: '📅 Automated appointment reminders',
+      color: 'text-green-600',
+      status: '⚙️ Setup Required'
     }
   ]
 
@@ -460,23 +477,33 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
                   )}
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuContent align="end" className="w-64">
                 {actionOptions.map((action) => {
                   const IconComponent = action.icon
+                  const isAvailable = action.status?.includes('✅')
                   return (
                     <DropdownMenuItem
                       key={action.id}
                       onClick={() => handlePatientAction(patient, action.id)}
-                      className="cursor-pointer"
+                      className={`cursor-pointer ${!isAvailable ? 'opacity-60' : ''}`}
+                      disabled={!isAvailable}
                     >
                       <IconComponent className={`h-4 w-4 mr-2 ${action.color}`} />
-                      <div className="flex flex-col">
-                        <span className="font-medium">{action.label}</span>
+                      <div className="flex flex-col flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-sm">{action.label}</span>
+                          <span className="text-xs">{action.status}</span>
+                        </div>
                         <span className="text-xs text-gray-500">{action.description}</span>
                       </div>
                     </DropdownMenuItem>
                   )
                 })}
+                <div className="border-t mt-1 pt-1">
+                  <div className="px-2 py-1 text-xs text-gray-500">
+                    🚀 Connected to N8N Workflows
+                  </div>
+                </div>
               </DropdownMenuContent>
             </DropdownMenu>
             <div className="text-xs text-gray-500 mt-1 text-center">
