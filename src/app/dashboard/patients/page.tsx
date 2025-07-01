@@ -28,22 +28,11 @@ import {
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { UpcomingAppointments } from '@/components/features/patients/upcoming-appointments'
 import { usePatientsData } from '@/hooks/useDashboardData'
-import { useReengagementDashboard } from '@/hooks/useReengagementData'
+import { useRiskMetrics } from '@/hooks/useReengagementData'
+import { PatientRiskData } from '@/lib/routiq-api'
 
-// Patient interface for TypeScript
-interface Patient {
-  id: string
-  name: string
-  phone: string
-  email: string
-  cliniko_patient_id: string
-  is_active: boolean
-  recent_appointment_count: number
-  upcoming_appointment_count: number
-  total_appointment_count: number
-  next_appointment_time?: string
-  last_appointment_date?: string
-}
+// Use PatientRiskData from the API
+type Patient = PatientRiskData
 
 // Stats interface
 interface ActivePatientsApiStats {
@@ -88,12 +77,12 @@ export default function PatientsPage() {
     refetch: refetchPatients 
   } = usePatientsData(organizationId)
 
-  // Get reengagement dashboard data
+  // Get risk metrics data (the actual API you're using)
   const { 
-    data: reengagementData, 
-    isLoading: reengagementLoading,
-    error: reengagementError 
-  } = useReengagementDashboard(organizationId || '')
+    data: riskMetricsData, 
+    isLoading: riskMetricsLoading,
+    error: riskMetricsError 
+  } = useRiskMetrics(organizationId || '')
   
   // Local state for filtering and search
   const [searchTerm, setSearchTerm] = useState('')
@@ -101,9 +90,9 @@ export default function PatientsPage() {
   const [viewMode, setViewMode] = useState<'card' | 'table'>('table')
   const [showCount, setShowCount] = useState(10)
 
-  // Extract patients data from response - use correct API structure
-  const allPatients = patientsResponse?.patient_details || []
-  const totalCount = patientsResponse?.total_active_patients || 0
+  // Extract patients data from risk metrics API
+  const allPatients = riskMetricsData?.patients || []
+  const totalCount = riskMetricsData?.summary?.total_patients || 0
 
   const handlePatientClick = (phone: string) => {
     router.push(`/dashboard/conversations/phone/${encodeURIComponent(phone)}`)
@@ -117,7 +106,7 @@ export default function PatientsPage() {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
       filtered = filtered.filter(patient => 
-        patient.name?.toLowerCase().includes(searchLower) ||
+        patient.patient_name?.toLowerCase().includes(searchLower) ||
         patient.phone?.toLowerCase().includes(searchLower) ||
         patient.email?.toLowerCase().includes(searchLower)
       )
@@ -203,7 +192,7 @@ export default function PatientsPage() {
         <div className="flex items-start justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-2">
-              <h3 className="font-semibold text-gray-900">{patient.name}</h3>
+              <h3 className="font-semibold text-gray-900">{patient.patient_name}</h3>
               <Badge className={`${engagement.color} text-xs`}>
                 <EngagementIcon className="h-3 w-3 mr-1" />
                 {engagement.level}
@@ -268,14 +257,14 @@ export default function PatientsPage() {
               
               return (
                 <tr 
-                  key={patient.id}
+                  key={patient.patient_id}
                   className="border-b hover:bg-gray-50 cursor-pointer transition-colors"
                   onClick={() => handlePatientClick(patient.phone)}
                 >
                   <td className="py-3 px-4">
                     <div>
-                      <div className="font-medium text-gray-900">{patient.name}</div>
-                      <div className="text-sm text-gray-500">{patient.cliniko_patient_id}</div>
+                      <div className="font-medium text-gray-900">{patient.patient_name}</div>
+                      <div className="text-sm text-gray-500">Risk: {patient.risk_score}/100 ({patient.risk_level})</div>
                     </div>
                   </td>
                   <td className="py-3 px-4">
@@ -349,7 +338,7 @@ export default function PatientsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">🚨 Action Required</p>
                   <p className="text-xl font-bold text-red-600">
-                    {reengagementData?.immediate_actions_required || '12'}
+                    {riskMetricsData?.summary?.risk_distribution?.critical || 0}
                   </p>
                   <p className="text-xs text-gray-500">Immediate contact needed</p>
                 </div>
@@ -364,7 +353,7 @@ export default function PatientsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">📞 This Week&apos;s Target</p>
                   <p className="text-xl font-bold text-orange-600">
-                    {reengagementData?.risk_distribution?.find(r => r.risk_level === 'high')?.count || '25'}
+                    {riskMetricsData?.summary?.risk_distribution?.high || 0}
                   </p>
                   <p className="text-xs text-gray-500">Patients to recontact</p>
                 </div>
@@ -379,7 +368,9 @@ export default function PatientsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">✅ Engaged Patients</p>
                   <p className="text-xl font-bold text-green-600">
-                    {reengagementData?.risk_distribution?.find(r => r.risk_level === 'engaged')?.percentage?.toFixed(1) || '74.1'}%
+                    {riskMetricsData?.summary ? 
+                      (((riskMetricsData.summary.total_patients - riskMetricsData.summary.stale_patients) / riskMetricsData.summary.total_patients) * 100).toFixed(1) 
+                      : '0'}%
                   </p>
                   <p className="text-xs text-gray-500">Recently active</p>
                 </div>
@@ -394,7 +385,7 @@ export default function PatientsPage() {
                 <div>
                   <p className="text-sm font-medium text-gray-600">📊 Total Patients</p>
                   <p className="text-xl font-bold text-blue-600">
-                    {reengagementData?.total_patients || totalCount}
+                    {riskMetricsData?.summary?.total_patients || totalCount}
                   </p>
                   <p className="text-xs text-gray-500">In system</p>
                 </div>
@@ -404,22 +395,22 @@ export default function PatientsPage() {
             </Card>
         </div>
 
-        {/* Show reengagement data loading state */}
-        {reengagementLoading && (
+        {/* Show risk metrics loading state */}
+        {riskMetricsLoading && (
           <Alert className="mb-4">
             <Loader2 className="h-4 w-4 animate-spin" />
             <AlertDescription>
-              Loading reengagement analytics...
+              Loading risk metrics...
             </AlertDescription>
           </Alert>
         )}
 
-        {/* Show demo data notice */}
-        {reengagementData?.message && (
-          <Alert className="mb-4 border-blue-200 bg-blue-50">
-            <AlertCircle className="h-4 w-4 text-blue-600" />
-            <AlertDescription className="text-blue-800">
-              <strong>Reengagement Platform Active:</strong> {reengagementData.message}
+        {/* Show risk metrics error */}
+        {riskMetricsError && (
+          <Alert className="mb-4 border-red-200 bg-red-50">
+            <AlertCircle className="h-4 w-4 text-red-600" />
+            <AlertDescription className="text-red-800">
+              <strong>Error loading risk metrics:</strong> {riskMetricsError.message}
             </AlertDescription>
           </Alert>
         )}
@@ -516,7 +507,7 @@ export default function PatientsPage() {
                 {viewMode === 'card' ? (
                   <div className="grid gap-3">
                     {displayedPatients.map((patient) => (
-                      <PatientCard key={patient.id} patient={patient} />
+                      <PatientCard key={patient.patient_id} patient={patient} />
                     ))}
                   </div>
                 ) : (
