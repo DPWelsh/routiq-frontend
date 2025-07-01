@@ -31,6 +31,7 @@ import {
   Activity,
   ChevronLeft,
   ChevronRight,
+  DollarSign,
 } from "lucide-react"
 import { PatientRiskData } from '@/lib/routiq-api'
 import { formatDistanceToNow } from 'date-fns'
@@ -63,6 +64,16 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
       return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
     }
     return phone
+  }
+
+  const formatCurrency = (amount: number | null) => {
+    if (amount === null || amount === undefined) return 'No data'
+    return new Intl.NumberFormat('en-AU', {
+      style: 'currency',
+      currency: 'AUD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount)
   }
 
   const getRiskBadge = (riskLevel: string, engagementStatus: string, riskScore: number) => {
@@ -198,6 +209,37 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
       enableSorting: false,
     },
     {
+      accessorKey: 'lifetime_value_aud',
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="h-auto p-0 font-medium hover:bg-transparent"
+        >
+          Lifetime Value
+          <ArrowUpDown className="ml-2 h-3 w-3" />
+        </Button>
+      ),
+      cell: ({ row }) => (
+        <div className="flex flex-col gap-1 min-w-[120px]">
+          <div className="flex items-center gap-1 text-sm font-medium">
+            <DollarSign className="h-3 w-3 text-green-500" />
+            <span className="text-green-700">
+              {formatCurrency(row.original.lifetime_value_aud)}
+            </span>
+          </div>
+          <div className="text-xs text-gray-500">
+            Total revenue
+          </div>
+        </div>
+      ),
+      sortingFn: (rowA, rowB) => {
+        const aValue = rowA.original.lifetime_value_aud || 0
+        const bValue = rowB.original.lifetime_value_aud || 0
+        return aValue - bValue
+      },
+    },
+    {
       accessorKey: 'days_since_last_contact',
       header: ({ column }) => (
         <Button
@@ -288,7 +330,7 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
     },
     initialState: {
       pagination: {
-        pageSize: 20,
+        pageSize: 1000, // Show all patients - set high enough to display everything
       },
     },
   })
@@ -307,27 +349,6 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
           <div className="text-sm text-gray-500">
             {table.getFilteredRowModel().rows.length} patients
           </div>
-        </div>
-        
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-            <ChevronRight className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
@@ -386,20 +407,7 @@ export function PatientRiskTable({ data, onPatientClick }: PatientRiskTableProps
         </div>
       </div>
 
-      {/* Pagination Info */}
-      <div className="flex items-center justify-between text-sm text-gray-500">
-        <div>
-          Showing {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} to{' '}
-          {Math.min(
-            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
-            table.getFilteredRowModel().rows.length
-          )}{' '}
-          of {table.getFilteredRowModel().rows.length} patients
-        </div>
-        <div>
-          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-        </div>
-      </div>
+
     </div>
   )
 } 

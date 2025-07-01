@@ -228,6 +228,7 @@ export interface PatientRiskData {
   contact_success_prediction: "very_high" | "high" | "medium" | "low" | "very_low";
   attendance_benchmark: "above_industry_avg" | "at_industry_avg" | "below_industry_avg";
   engagement_benchmark: "good_engagement" | "average_engagement" | "poor_engagement";
+  lifetime_value_aud: number | null;  // Patient's total revenue in AUD
 }
 
 export class RoutiqAPI {

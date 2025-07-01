@@ -324,8 +324,8 @@ export default function PatientsPage() {
                 </div>
                 <AlertCircle className="h-7 w-7 text-red-500" />
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
                     
           {/* Medium Risk Card */}
           <Card 
@@ -350,8 +350,8 @@ export default function PatientsPage() {
                 </div>
                 <Clock className="h-7 w-7 text-orange-500" />
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
                     
           {/* Low Risk Card */}
           <Card 
@@ -376,8 +376,8 @@ export default function PatientsPage() {
                 </div>
                 <UserCheck className="h-7 w-7 text-green-500" />
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
           {/* All Patients Card */}
           <Card 
@@ -471,8 +471,8 @@ export default function PatientsPage() {
                 </div>
                 <div className="h-2 w-2 rounded-full bg-gray-500"></div>
               </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
         </div>
 
         {/* Show risk metrics loading state */}
@@ -595,13 +595,13 @@ export default function PatientsPage() {
             <div className="flex flex-col sm:flex-row gap-4 mb-4">
               <div className="flex-1 relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
+                    <Input
                   placeholder="Search patients by name, phone, or email..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
                   className="pl-10"
-                />
-              </div>
+                    />
+                  </div>
               
               <div className="flex gap-2">
                 <Select value={statusFilter} onValueChange={setStatusFilter}>
