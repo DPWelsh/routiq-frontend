@@ -179,27 +179,19 @@ export default function PatientsPage() {
     await refetchPatients()
   }
 
-  // Handle card clicks to filter patients
-  const handleCardFilter = (type: 'high-risk' | 'medium-risk' | 'engaged' | 'all') => {
-    switch (type) {
-      case 'high-risk':
-        setRiskFilter('high')
-        setStatusFilter('all')
-        break
-      case 'medium-risk':
-        setRiskFilter('medium')
-        setStatusFilter('all')
-        break
-      case 'engaged':
-        setRiskFilter('all')
-        setStatusFilter('active')
-        break
-      case 'all':
-        setRiskFilter('all')
-        setStatusFilter('all')
-        setSearchTerm('')
-        break
-    }
+  // Handle card clicks to toggle filters additively
+  const handleRiskCardToggle = (risk: 'high' | 'medium' | 'low') => {
+    setRiskFilter(riskFilter === risk ? 'all' : risk)
+  }
+
+  const handleStatusCardToggle = (status: 'active' | 'dormant' | 'stale') => {
+    setStatusFilter(statusFilter === status ? 'all' : status)
+  }
+
+  const handleClearAllFilters = () => {
+    setRiskFilter('all')
+    setStatusFilter('all')
+    setSearchTerm('')
   }
 
   const getEngagementLevel = (patient: Patient) => {
@@ -307,14 +299,14 @@ export default function PatientsPage() {
           )}
       </div>
 
-        {/* Interactive Filter Cards */}
+        {/* Risk Level Filter Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           {/* High Risk Card */}
           <Card 
             className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-l-4 ${
               riskFilter === 'high' ? 'border-l-red-500 bg-red-50 ring-2 ring-red-200' : 'border-l-red-500 bg-white hover:bg-red-50'
             }`}
-            onClick={() => handleCardFilter('high-risk')}
+            onClick={() => handleRiskCardToggle('high')}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -327,7 +319,7 @@ export default function PatientsPage() {
                     Need immediate attention
                   </p>
                   <p className="text-xs text-red-600 font-medium mt-1">
-                    Click to filter →
+                    {riskFilter === 'high' ? 'Click to remove ×' : 'Click to filter →'}
                   </p>
                 </div>
                 <AlertCircle className="h-7 w-7 text-red-500" />
@@ -340,7 +332,7 @@ export default function PatientsPage() {
             className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-l-4 ${
               riskFilter === 'medium' ? 'border-l-orange-500 bg-orange-50 ring-2 ring-orange-200' : 'border-l-orange-500 bg-white hover:bg-orange-50'
             }`}
-            onClick={() => handleCardFilter('medium-risk')}
+            onClick={() => handleRiskCardToggle('medium')}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -353,7 +345,7 @@ export default function PatientsPage() {
                     Important follow-ups
                   </p>
                   <p className="text-xs text-orange-600 font-medium mt-1">
-                    Click to filter →
+                    {riskFilter === 'medium' ? 'Click to remove ×' : 'Click to filter →'}
                   </p>
                 </div>
                 <Clock className="h-7 w-7 text-orange-500" />
@@ -361,25 +353,25 @@ export default function PatientsPage() {
             </CardContent>
           </Card>
                     
-          {/* Active Patients Card */}
+          {/* Low Risk Card */}
           <Card 
             className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-l-4 ${
-              statusFilter === 'active' ? 'border-l-green-500 bg-green-50 ring-2 ring-green-200' : 'border-l-green-500 bg-white hover:bg-green-50'
+              riskFilter === 'low' ? 'border-l-green-500 bg-green-50 ring-2 ring-green-200' : 'border-l-green-500 bg-white hover:bg-green-50'
             }`}
-            onClick={() => handleCardFilter('engaged')}
+            onClick={() => handleRiskCardToggle('low')}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-700">✅ Active Patients</p>
+                  <p className="text-sm font-medium text-gray-700">✅ Low Risk</p>
                   <p className="text-2xl font-bold text-green-600">
-                    {allPatients.filter(p => p.engagement_status === 'active').length}
+                    {allPatients.filter(p => p.risk_level === 'low').length}
                   </p>
                   <p className="text-xs text-gray-600">
-                    Recently engaged
+                    Stable patients
                   </p>
                   <p className="text-xs text-green-600 font-medium mt-1">
-                    Click to filter →
+                    {riskFilter === 'low' ? 'Click to remove ×' : 'Click to filter →'}
                   </p>
                 </div>
                 <UserCheck className="h-7 w-7 text-green-500" />
@@ -387,12 +379,12 @@ export default function PatientsPage() {
             </CardContent>
           </Card>
 
-          {/* Total Patients Card */}
+          {/* All Patients Card */}
           <Card 
             className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105 border-l-4 ${
               statusFilter === 'all' && riskFilter === 'all' ? 'border-l-blue-500 bg-blue-50 ring-2 ring-blue-200' : 'border-l-blue-500 bg-white hover:bg-blue-50'
             }`}
-            onClick={() => handleCardFilter('all')}
+            onClick={handleClearAllFilters}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -405,7 +397,7 @@ export default function PatientsPage() {
                     Total in system
                   </p>
                   <p className="text-xs text-blue-600 font-medium mt-1">
-                    Click to show all →
+                    Click to clear filters
                   </p>
                 </div>
                 <Users className="h-7 w-7 text-blue-500" />
@@ -415,12 +407,12 @@ export default function PatientsPage() {
         </div>
 
         {/* Status Breakdown Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-6">
           <Card 
             className={`cursor-pointer transition-all duration-200 hover:shadow-md border ${
               statusFilter === 'active' ? 'border-green-300 bg-green-50' : 'border-gray-200 bg-white hover:bg-green-25'
             }`}
-            onClick={() => setStatusFilter('active')}
+            onClick={() => handleStatusCardToggle('active')}
           >
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
@@ -428,6 +420,9 @@ export default function PatientsPage() {
                   <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Active</p>
                   <p className="text-lg font-bold text-green-600">
                     {allPatients.filter(p => p.engagement_status === 'active').length}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {statusFilter === 'active' ? 'Click to remove' : 'Click to filter'}
                   </p>
                 </div>
                 <div className="h-2 w-2 rounded-full bg-green-500"></div>
@@ -439,7 +434,7 @@ export default function PatientsPage() {
             className={`cursor-pointer transition-all duration-200 hover:shadow-md border ${
               statusFilter === 'dormant' ? 'border-orange-300 bg-orange-50' : 'border-gray-200 bg-white hover:bg-orange-25'
             }`}
-            onClick={() => setStatusFilter('dormant')}
+            onClick={() => handleStatusCardToggle('dormant')}
           >
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
@@ -447,6 +442,9 @@ export default function PatientsPage() {
                   <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Dormant</p>
                   <p className="text-lg font-bold text-orange-600">
                     {allPatients.filter(p => p.engagement_status === 'dormant').length}
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {statusFilter === 'dormant' ? 'Click to remove' : 'Click to filter'}
                   </p>
                 </div>
                 <div className="h-2 w-2 rounded-full bg-orange-500"></div>
@@ -458,7 +456,7 @@ export default function PatientsPage() {
             className={`cursor-pointer transition-all duration-200 hover:shadow-md border ${
               statusFilter === 'stale' ? 'border-gray-400 bg-gray-50' : 'border-gray-200 bg-white hover:bg-gray-25'
             }`}
-            onClick={() => setStatusFilter('stale')}
+            onClick={() => handleStatusCardToggle('stale')}
           >
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
@@ -467,27 +465,11 @@ export default function PatientsPage() {
                   <p className="text-lg font-bold text-gray-600">
                     {allPatients.filter(p => p.engagement_status === 'stale').length}
                   </p>
-                </div>
-                <div className="h-2 w-2 rounded-full bg-gray-500"></div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card 
-            className={`cursor-pointer transition-all duration-200 hover:shadow-md border ${
-              riskFilter === 'low' ? 'border-blue-300 bg-blue-50' : 'border-gray-200 bg-white hover:bg-blue-25'
-            }`}
-            onClick={() => setRiskFilter('low')}
-          >
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-gray-600 uppercase tracking-wide">Low Risk</p>
-                  <p className="text-lg font-bold text-blue-600">
-                    {allPatients.filter(p => p.risk_level === 'low').length}
+                  <p className="text-xs text-gray-500 mt-1">
+                    {statusFilter === 'stale' ? 'Click to remove' : 'Click to filter'}
                   </p>
                 </div>
-                <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+                <div className="h-2 w-2 rounded-full bg-gray-500"></div>
               </div>
             </CardContent>
           </Card>
@@ -601,7 +583,7 @@ export default function PatientsPage() {
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  onClick={() => handleCardFilter('all')}
+                  onClick={handleClearAllFilters}
                   className="ml-auto h-6 px-2 text-xs border-blue-300 text-blue-700 hover:bg-blue-100"
                 >
                   Clear all
