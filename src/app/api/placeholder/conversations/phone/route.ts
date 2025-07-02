@@ -108,10 +108,8 @@ export async function GET(request: NextRequest) {
       
       return NextResponse.json({
         success: true,
-        data: {
-          conversation: conversationDetail,
-          messages: messages
-        }
+        conversation: conversationDetail,
+        messages: messages
       })
     }
     
@@ -138,7 +136,9 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: conversations
+      data: {
+        conversations: conversations
+      }
     })
   } catch (error) {
     console.error('Phone conversations API error:', error)
