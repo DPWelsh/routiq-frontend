@@ -1,0 +1,385 @@
+{
+  "conversations": [
+    {
+      "id": "conv_001",
+      "phone_number": "+6287862502798",
+      "patient_name": "Griffin (via Uncle)",
+      "patient_id": "pat_001",
+      "date": "2025-07-01T04:04:42Z",
+      "duration_seconds": 180,
+      "conversation_type": "injury_inquiry",
+      "status": "completed",
+      "sentiment": "positive",
+      "sentiment_score": 0.6,
+      "priority": "medium",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "ey brew, got my nephew in town and his shoulder is buggin him. Goina have Griffin hit you up while hes here in ulus"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:02",
+          "text": "G'day! Thanks for reaching out about your nephew's shoulder. I've forwarded your message to our physiotherapist who'll be able to give Griffin proper guidance on his shoulder issue. They'll get back to you soon (we're on Bali time - GMT+8)."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:03",
+          "text": "If Griffin wants to book in for an assessment while he's in Ulus, just let me know and I can check our availability for him!"
+        }
+      ],
+      "insights": {
+        "key_topics": ["shoulder injury", "family referral", "tourist patient"],
+        "action_items": ["Forward to physiotherapist", "Check availability for assessment"],
+        "patient_satisfaction": "high",
+        "treatment_effectiveness": "pending"
+      },
+      "tags": ["shoulder", "referral", "tourist", "family_care"]
+    },
+    {
+      "id": "conv_002",
+      "phone_number": "+447817478312",
+      "patient_name": "Immy",
+      "patient_id": "pat_002",
+      "date": "2025-06-30T19:23:58Z",
+      "duration_seconds": 420,
+      "conversation_type": "medical_concern",
+      "status": "requires_follow_up",
+      "sentiment": "concerned",
+      "sentiment_score": -0.4,
+      "priority": "high",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "Hey I think I have costochrondritis it came on this morning. Is it worth coming to see you or is it too soon? I had it before didn't rest properly an took me a month to recover 🙈 Currently just resting, ice and ibuprofen. Let me know if I should book an appointment or wait a few days. Thank you 🫶"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:05",
+          "text": "Hi there! Thanks for reaching out about your costochondritis concerns. I've forwarded your message straight to our physiotherapist who will be able to give you proper guidance on whether it's best to come in now or wait a few days, especially given your previous experience with it."
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "02:00",
+          "text": "When I say came on this morning I mean during a surf session"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "02:05",
+          "text": "Thanks for clarifying that it happened during your surf session this morning! I've made sure to include that important detail when forwarding your message to our physiotherapist."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "04:30",
+          "text": "Hi immy yes it happens quite often in surfers as you can imagine. Especially on the bottom of the ribs where it contacts the board. But there are some good things you can do and learn to relieve them and we can go through those management strategies so you can keep surfing with irritating it too much"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "04:35",
+          "text": "So yes, it is worth booking an appointment, it isn't too early to learn how to treat and minimize it"
+        }
+      ],
+      "insights": {
+        "key_topics": ["costochondritis", "surf-related injury", "previous injury history", "early intervention"],
+        "action_items": ["Book appointment", "Provide surf-specific management strategies", "Prevent recurrence"],
+        "patient_satisfaction": "medium",
+        "treatment_effectiveness": "proactive"
+      },
+      "tags": ["costochondritis", "surfing", "recurrent_injury", "early_intervention"]
+    },
+    {
+      "id": "conv_003",
+      "phone_number": "+13109245014",
+      "patient_name": "Amanda Strum",
+      "patient_id": "pat_003",
+      "date": "2025-06-30T15:55:04Z",
+      "duration_seconds": 300,
+      "conversation_type": "treatment_concern",
+      "status": "urgent_follow_up",
+      "sentiment": "negative",
+      "sentiment_score": -0.7,
+      "priority": "high",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "Hi, I'm dealing with worsening ulnar wrist/finger pain after a treatment I had yesterday. Can I please get back on the schedule for a gentle evaluation? 🙏🏽"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:08",
+          "text": "Hi Amanda! I'm so sorry to hear your wrist/finger pain has worsened after yesterday's treatment. Let's definitely get you back in for a gentle evaluation with Alister."
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "02:30",
+          "text": "Thank you! Is there anything tomorrow available?"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "02:35",
+          "text": "Unfortunately tomorrow (Wednesday, July 2nd) is fully booked! Since your pain has worsened, the earliest we can get you in would be: Today (Tuesday, July 1st): 4:30pm, 6:45pm"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "04:00",
+          "text": "Can I come at 4:30?"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "04:02",
+          "text": "Perfect! Your appointment is confirmed 🙌 Today (Tuesday, July 1st) at 4:30pm with Alister at SurfRehab, 360 Move, Uluwatu. Given your worsening wrist/finger pain, this will give Alister a chance to reassess and adjust your treatment plan accordingly."
+        }
+      ],
+      "insights": {
+        "key_topics": ["treatment reaction", "worsening pain", "urgent reassessment", "treatment modification"],
+        "action_items": ["Urgent appointment", "Gentle evaluation", "Modify treatment approach", "Monitor patient response"],
+        "patient_satisfaction": "low",
+        "treatment_effectiveness": "negative"
+      },
+      "tags": ["treatment_reaction", "urgent", "pain_increase", "reassessment"]
+    },
+    {
+      "id": "conv_004",
+      "phone_number": "+380987737958",
+      "patient_name": "Artem Melnychuk",
+      "patient_id": "pat_004",
+      "date": "2025-06-29T23:30:16Z",
+      "duration_seconds": 480,
+      "conversation_type": "post_surgery_rehab",
+      "status": "completed",
+      "sentiment": "positive",
+      "sentiment_score": 0.7,
+      "priority": "medium",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "I need some good coach to train my legs after knee surgery. Basically I need to enhance my muscles which help my knees"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:05",
+          "text": "Thanks for sharing that with me! Post-surgical rehabilitation is definitely something that needs expert guidance, so I've forwarded your message straight to Alister, our physiotherapist. He'll be able to give you proper advice on strengthening and rehabilitation after your knee surgery."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:12",
+          "text": "Would you also like me to check our availability for an assessment appointment? That way Alister can properly evaluate your specific needs and create a tailored program for you."
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "02:00",
+          "text": "Yes let's have appointment for tomorrow morning?"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "02:05",
+          "text": "Unfortunately tomorrow morning is fully booked, but I do have some options for you! Tomorrow (Tuesday July 1st) - afternoon only: 4:30pm, 6:00pm, 6:45pm"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "06:00",
+          "text": "Let's schedule for tomorrow 6 pm"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "06:02",
+          "text": "Perfect! Your appointment is confirmed: Tuesday, July 1st at 6:00pm with Alister at SurfRehab at 360 Move, Uluwatu. We're all set for your knee rehabilitation consultation tomorrow evening. Alister will be able to assess your post-surgical needs and create a tailored strengthening program for you."
+        }
+      ],
+      "insights": {
+        "key_topics": ["post-surgical rehabilitation", "knee surgery recovery", "muscle strengthening", "tailored program"],
+        "action_items": ["Assessment appointment", "Create rehabilitation program", "Expert guidance on post-surgical care"],
+        "patient_satisfaction": "high",
+        "treatment_effectiveness": "pending"
+      },
+      "tags": ["post_surgery", "knee_rehab", "strengthening", "assessment"]
+    },
+    {
+      "id": "conv_005",
+      "phone_number": "+6281935454615",
+      "patient_name": "Teresa",
+      "patient_id": "pat_005",
+      "date": "2025-06-30T17:27:41Z",
+      "duration_seconds": 240,
+      "conversation_type": "scheduling_clarification",
+      "status": "completed",
+      "sentiment": "neutral",
+      "sentiment_score": 0.0,
+      "priority": "low",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "Pagi Sorry I think this was a misunderstanding. I am away on holiday until the 12th. I was just asking if it is possible to still meet at Ulu active when if I don't have a membership there, but for appointment I can only do after the 12th"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:08",
+          "text": "No worries about the misunderstanding, Teresa! I don't have the specific details about Ulu Active's guest access policy, but I'll check with Alister about whether you can meet there without a membership and get back to you."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:15",
+          "text": "Thanks for letting me know you're available after the 12th - enjoy the rest of your holiday! When you're ready to book an appointment after you're back, just let me know and I'll check what times work best 🙂"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "01:30",
+          "text": "Actually nomsorry you are still on a package so it is covered in our package"
+        }
+      ],
+      "insights": {
+        "key_topics": ["holiday scheduling", "venue access", "membership requirements", "package coverage"],
+        "action_items": ["Confirm venue access policy", "Schedule post-holiday appointment", "Clarify package benefits"],
+        "patient_satisfaction": "medium",
+        "treatment_effectiveness": "neutral"
+      },
+      "tags": ["scheduling", "holiday", "venue_access", "package_patient"]
+    },
+    {
+      "id": "conv_006",
+      "phone_number": "+628113882556",
+      "patient_name": "Edd Wright",
+      "patient_id": "pat_006",
+      "date": "2025-06-19T15:53:33Z",
+      "duration_seconds": 180,
+      "conversation_type": "appointment_scheduling",
+      "status": "cancelled",
+      "sentiment": "neutral",
+      "sentiment_score": 0.1,
+      "priority": "low",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "Hello! Does Alister have any free appointments for early morning Thursday 26 June?"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:05",
+          "text": "Hi there! I'm part of the reception team at SurfRehab 🙂 Great news! Alister does have an early morning slot available on Thursday 26th June at 8:30am - perfect for what you're looking for!"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:12",
+          "text": "Yes plz!"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:15",
+          "text": "Perfect! Your appointment is confirmed: Thursday, 26th June at 8:30am with Alister at SurfRehab at 360 Move, Uluwatu"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "11d_later",
+          "text": "Hello. Sorry I have to postpone my appointment on Thursday at 8.30am. I'll get in contact when I can re-schedule."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "11d_later",
+          "text": "No worries at all, Edd! Your Thursday 8:30am appointment has been cancelled and Alister has been notified. Just reach out whenever you're ready to reschedule - we'll be here to help! 🙂"
+        }
+      ],
+      "insights": {
+        "key_topics": ["early morning preference", "appointment booking", "later cancellation"],
+        "action_items": ["Process cancellation", "Update schedule", "Welcome future rebooking"],
+        "patient_satisfaction": "medium",
+        "treatment_effectiveness": "neutral"
+      },
+      "tags": ["scheduling", "early_morning", "cancellation", "rebooking_welcome"]
+    },
+    {
+      "id": "conv_007",
+      "phone_number": "+6281529509431",
+      "patient_name": "Unknown Indonesian Speaker",
+      "patient_id": "pat_007",
+      "date": "2025-06-30T03:10:53Z",
+      "duration_seconds": 30,
+      "conversation_type": "wrong_number",
+      "status": "completed",
+      "sentiment": "neutral",
+      "sentiment_score": 0.0,
+      "priority": "low",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "Eh maaf salah kontakk"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:03",
+          "text": "No worries at all! This is SurfRehab physiotherapy reception at 360 Move, Uluwatu. If you ever need physiotherapy services, feel free to reach out 🙂"
+        }
+      ],
+      "insights": {
+        "key_topics": ["wrong number", "multilingual support", "service awareness"],
+        "action_items": ["Polite response", "Brand awareness", "Open invitation"],
+        "patient_satisfaction": "neutral",
+        "treatment_effectiveness": "neutral"
+      },
+      "tags": ["wrong_number", "indonesian", "brand_awareness"]
+    }
+  ],
+  "summary_metrics": {
+    "total_conversations": 7,
+    "average_duration": 275,
+    "sentiment_distribution": {
+      "positive": 2,
+      "neutral": 3,
+      "negative": 1,
+      "concerned": 1
+    },
+    "conversation_types": {
+      "injury_inquiry": 1,
+      "medical_concern": 1,
+      "treatment_concern": 1,
+      "post_surgery_rehab": 1,
+      "scheduling_clarification": 1,
+      "appointment_scheduling": 1,
+      "wrong_number": 1
+    },
+    "priority_levels": {
+      "high": 2,
+      "medium": 3,
+      "low": 2
+    },
+    "requires_follow_up": 2
+  },
+  "clinic_insights": {
+    "location": "SurfRehab at 360 Move, Uluwatu, Bali",
+    "practitioner": "Alister (Lead Physiotherapist)",
+    "specializations": ["Surf-related injuries", "Post-surgical rehabilitation", "Sports physiotherapy"],
+    "patient_demographics": ["International tourists", "Local surfers", "Post-surgical patients"],
+    "common_conditions": ["Costochondritis (surf-related)", "Shoulder injuries", "Knee rehabilitation", "Wrist/finger pain"],
+    "service_features": ["Appointment-based", "GMT+8 timezone", "Package deals available", "Multiple venue options"]
+  },
+  "demo_talking_points": [
+    "🏄‍♂️ Surf-specific injury expertise - costochondritis from board contact identified immediately",
+    "🚨 Treatment reaction monitoring - Amanda's worsening pain flagged for urgent reassessment",
+    "🌍 International patient base - tourists and locals receiving care in Bali",
+    "💪 Post-surgical specialization - Artem's knee rehab consultation scheduled efficiently",
+    "📱 24/7 AI reception - handling inquiries across time zones",
+    "🎯 Smart escalation - complex cases forwarded to Alister for expert guidance",
+    "🏥 Venue flexibility - Ulu Active partnerships for specialized treatments"
+  ],
+  "clinical_patterns": {
+    "surf_injuries": {
+      "frequency": "High",
+      "types": ["Costochondritis", "Shoulder impingement", "Wrist strain"],
+      "approach": "Sport-specific management strategies"
+    },
+    "tourist_patients": {
+      "characteristics": ["Short-term availability", "Urgent care needs", "Family referrals"],
+      "adaptations": ["Flexible scheduling", "Rapid assessment", "Clear location guidance"]
+    },
+    "treatment_monitoring": {
+      "red_flags": ["Worsening pain post-treatment", "Unexpected reactions"],
+      "responses": ["Immediate reassessment", "Treatment plan modification", "Gentle re-evaluation"]
+    }
+  }
+} 

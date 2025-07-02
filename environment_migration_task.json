@@ -1,0 +1,197 @@
+{
+  "title": "Environment Migration & Architecture Setup - MVP",
+  "priority": "HIGH",
+  "estimated_time": "2-3 days",
+  "goal": "Establish proper dev/staging/prod environments to eliminate CORS issues and enable smooth development workflow",
+  
+  "current_problem": {
+    "description": "Local development (localhost:3001) blocked by CORS when calling production backend",
+    "root_cause": "Production backend only allows requests from production domains",
+    "impact": "Cannot develop locally, forcing all testing through production"
+  },
+
+  "phase_1_immediate_fix": {
+    "title": "Quick CORS Resolution (Day 1 - 2 hours)",
+    "tasks": [
+      {
+        "task": "Create .env.local for development",
+        "details": [
+          "Add NEXT_PUBLIC_API_URL=http://localhost:8000 (if local backend exists)",
+          "Or NEXT_PUBLIC_API_URL=https://routiq-backend-dev.up.railway.app",
+          "Add NEXT_PUBLIC_ENVIRONMENT=development"
+        ]
+      },
+      {
+        "task": "Update routiq-api.ts to use environment variables",
+        "details": [
+          "Replace hardcoded API_BASE with process.env.NEXT_PUBLIC_API_URL",
+          "Add fallback to production URL if env var not set"
+        ]
+      },
+      {
+        "task": "Test with existing backend or create dev backend",
+        "details": [
+          "Option A: Deploy dev backend instance with relaxed CORS",
+          "Option B: Use Next.js API routes as proxy (temporary solution)"
+        ]
+      }
+    ]
+  },
+
+  "phase_2_backend_environments": {
+    "title": "Backend Environment Setup (Day 1-2)",
+    "tasks": [
+      {
+        "task": "Deploy development backend",
+        "details": [
+          "Create new Railway deployment: routiq-backend-dev",
+          "Copy production environment variables",
+          "Add CORS_ORIGINS=http://localhost:3000,http://localhost:3001,https://routiq-frontend-dev.vercel.app",
+          "Set DATABASE_URL to development database"
+        ]
+      },
+      {
+        "task": "Deploy staging backend (optional for MVP)",
+        "details": [
+          "Create routiq-backend-staging",
+          "Use production database or staging database",
+          "Set CORS_ORIGINS=https://routiq-frontend-staging.vercel.app"
+        ]
+      },
+      {
+        "task": "Update production backend",
+        "details": [
+          "Ensure CORS_ORIGINS only includes production domains",
+          "Verify security settings are production-ready"
+        ]
+      }
+    ]
+  },
+
+  "phase_3_frontend_environments": {
+    "title": "Frontend Environment Configuration (Day 2)",
+    "tasks": [
+      {
+        "task": "Create environment files",
+        "details": [
+          ".env.local (git-ignored, for local development)",
+          ".env.development (committed, for dev deployment)",
+          ".env.staging (committed, for staging deployment)",
+          ".env.production (committed, for production deployment)"
+        ]
+      },
+      {
+        "task": "Configure Vercel deployments",
+        "details": [
+          "Development: routiq-frontend-dev.vercel.app (auto-deploy from dev branch)",
+          "Staging: routiq-frontend-staging.vercel.app (auto-deploy from staging branch)",
+          "Production: routiq-frontend.vercel.app (manual deploy from main branch)"
+        ]
+      },
+      {
+        "task": "Update environment variables in Vercel",
+        "details": [
+          "Development: NEXT_PUBLIC_API_URL=https://routiq-backend-dev.up.railway.app",
+          "Staging: NEXT_PUBLIC_API_URL=https://routiq-backend-staging.up.railway.app",
+          "Production: NEXT_PUBLIC_API_URL=https://routiq-backend-prod.up.railway.app"
+        ]
+      }
+    ]
+  },
+
+  "phase_4_configuration_management": {
+    "title": "Clean Configuration Architecture (Day 3)",
+    "tasks": [
+      {
+        "task": "Create src/config/environments.ts",
+        "details": [
+          "Centralize all environment-specific configuration",
+          "Include API URLs, feature flags, debug settings",
+          "Type-safe environment validation"
+        ]
+      },
+      {
+        "task": "Update API client",
+        "details": [
+          "Remove hardcoded URLs from routiq-api.ts",
+          "Use environment configuration",
+          "Add environment-specific retry logic and timeouts"
+        ]
+      },
+      {
+        "task": "Add environment indicators",
+        "details": [
+          "Show environment badge in development/staging",
+          "Different console.log levels per environment",
+          "Environment-specific error handling"
+        ]
+      }
+    ]
+  },
+
+  "git_workflow": {
+    "title": "Recommended Git Workflow",
+    "branches": [
+      "main: Production-ready code, protected branch",
+      "staging: Pre-production testing, auto-deploys to staging",
+      "dev: Active development, auto-deploys to dev environment",
+      "feature/*: Feature branches, merge to dev"
+    ],
+    "deployment_flow": [
+      "Developer works on feature/* branch",
+      "Merge to dev → Auto-deploy to dev environment",
+      "Test in dev environment",
+      "Merge to staging → Auto-deploy to staging environment", 
+      "QA testing in staging",
+      "Merge to main → Manual deploy to production"
+    ]
+  },
+
+  "environment_variables": {
+    "development": {
+      "NEXT_PUBLIC_API_URL": "https://routiq-backend-dev.up.railway.app",
+      "NEXT_PUBLIC_ENVIRONMENT": "development",
+      "NEXT_PUBLIC_DEBUG": "true"
+    },
+    "staging": {
+      "NEXT_PUBLIC_API_URL": "https://routiq-backend-staging.up.railway.app",
+      "NEXT_PUBLIC_ENVIRONMENT": "staging",
+      "NEXT_PUBLIC_DEBUG": "false"
+    },
+    "production": {
+      "NEXT_PUBLIC_API_URL": "https://routiq-backend-prod.up.railway.app",
+      "NEXT_PUBLIC_ENVIRONMENT": "production", 
+      "NEXT_PUBLIC_DEBUG": "false"
+    }
+  },
+
+  "success_criteria": [
+    "✅ Can develop locally without CORS errors",
+    "✅ Clear separation between dev/staging/prod environments",
+    "✅ Automated deployments for each environment",
+    "✅ Environment-specific configuration",
+    "✅ No production secrets in development",
+    "✅ Easy switching between environments for testing"
+  ],
+
+  "mvp_shortcuts": {
+    "title": "What to skip for MVP (add later)",
+    "items": [
+      "Infrastructure as Code (Terraform/CDK)",
+      "Advanced monitoring/logging",
+      "Blue-green deployments",
+      "Database migrations automation",
+      "Advanced security scanning",
+      "Performance monitoring"
+    ]
+  },
+
+  "immediate_next_steps": [
+    "1. Create .env.local with development API URL",
+    "2. Update routiq-api.ts to use environment variables", 
+    "3. Deploy or configure development backend with CORS",
+    "4. Test local development works",
+    "5. Create dev/staging Vercel deployments",
+    "6. Set up proper git workflow"
+  ]
+} 

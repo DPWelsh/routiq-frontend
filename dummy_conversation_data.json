@@ -1,0 +1,343 @@
+{
+  "conversations": [
+    {
+      "id": "conv_001",
+      "phone_number": "+61412345678",
+      "patient_name": "Sarah Mitchell",
+      "patient_id": "pat_001",
+      "date": "2024-07-01T14:30:00Z",
+      "duration_seconds": 180,
+      "conversation_type": "follow_up",
+      "status": "completed",
+      "sentiment": "positive",
+      "sentiment_score": 0.8,
+      "priority": "low",
+      "transcript": [
+        {
+          "speaker": "staff",
+          "timestamp": "00:00",
+          "text": "Hi Sarah, this is Emma from Surf Rehab. How are you feeling after your session last week?"
+        },
+        {
+          "speaker": "patient",  
+          "timestamp": "00:05",
+          "text": "Oh hi Emma! I'm feeling so much better. The exercises you gave me have really helped with my shoulder mobility."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:12",
+          "text": "That's wonderful to hear! Are you keeping up with the daily routine we discussed?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:16",
+          "text": "Yes, every morning. I can actually lift my arm above my head now without pain. It's amazing!"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:25",
+          "text": "Excellent progress! Let's schedule your next appointment to continue building on this improvement."
+        }
+      ],
+      "insights": {
+        "key_topics": ["shoulder mobility", "daily exercises", "pain improvement"],
+        "action_items": ["Schedule follow-up appointment", "Continue current exercise routine"],
+        "patient_satisfaction": "high",
+        "treatment_effectiveness": "positive"
+      },
+      "tags": ["recovery", "positive_outcome", "compliance"]
+    },
+    {
+      "id": "conv_002", 
+      "phone_number": "+61487654321",
+      "patient_name": "Marcus Chen",
+      "patient_id": "pat_002",
+      "date": "2024-07-01T11:15:00Z",
+      "duration_seconds": 420,
+      "conversation_type": "concern",
+      "status": "requires_follow_up",
+      "sentiment": "negative",
+      "sentiment_score": -0.6,
+      "priority": "high",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "Hi, I need to speak to someone about my treatment. I'm having some issues."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:04",
+          "text": "Of course Marcus, I'm here to help. What's been concerning you?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:08",
+          "text": "The exercises you gave me are making my back pain worse. I'm really worried I'm doing more damage."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:15",
+          "text": "I'm sorry to hear that. Can you describe exactly what you're feeling and when it happens?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:20",
+          "text": "It's a sharp pain right here in my lower back, especially when I do those twisting movements. It wasn't this bad before."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:30",
+          "text": "Let's get you in to see Dr. Williams as soon as possible. I'm going to modify your exercise plan immediately and we'll reassess your treatment approach."
+        }
+      ],
+      "insights": {
+        "key_topics": ["back pain worsening", "exercise modification needed", "treatment concerns"],
+        "action_items": ["Urgent appointment with Dr. Williams", "Modify exercise plan", "Pain assessment"],
+        "patient_satisfaction": "low",
+        "treatment_effectiveness": "negative"
+      },
+      "tags": ["urgent", "pain_increase", "treatment_adjustment"]
+    },
+    {
+      "id": "conv_003",
+      "phone_number": "+61423456789", 
+      "patient_name": "Jennifer Lopez",
+      "patient_id": "pat_003",
+      "date": "2024-06-30T16:45:00Z",
+      "duration_seconds": 240,
+      "conversation_type": "appointment_scheduling",
+      "status": "completed",
+      "sentiment": "neutral",
+      "sentiment_score": 0.1,
+      "priority": "medium",
+      "transcript": [
+        {
+          "speaker": "staff",
+          "timestamp": "00:00",
+          "text": "Good afternoon Jennifer, this is Surf Rehab calling about your upcoming appointment."
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:05",
+          "text": "Oh yes, I was actually going to call you. I need to reschedule my Thursday appointment."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:10",
+          "text": "No problem at all. What day would work better for you?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:13",
+          "text": "Could we do Friday afternoon instead? I have a work commitment I can't move."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:18",
+          "text": "Let me check our Friday availability... Yes, I have 2:30 PM or 4:00 PM available."
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:25",
+          "text": "2:30 PM works perfectly. Thank you so much for being flexible."
+        }
+      ],
+      "insights": {
+        "key_topics": ["appointment rescheduling", "work conflict", "scheduling flexibility"],
+        "action_items": ["Update appointment system", "Send confirmation"],
+        "patient_satisfaction": "medium",
+        "treatment_effectiveness": "neutral"
+      },
+      "tags": ["scheduling", "flexibility", "work_conflict"]
+    },
+    {
+      "id": "conv_004",
+      "phone_number": "+61434567890",
+      "patient_name": "David Thompson", 
+      "patient_id": "pat_004",
+      "date": "2024-06-29T09:20:00Z",
+      "duration_seconds": 360,
+      "conversation_type": "progress_check",
+      "status": "completed",
+      "sentiment": "positive",
+      "sentiment_score": 0.7,
+      "priority": "low",
+      "transcript": [
+        {
+          "speaker": "staff",
+          "timestamp": "00:00",
+          "text": "Hi David, it's been two weeks since your last visit. How's your knee feeling?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:05",
+          "text": "Much better actually! I've been able to go for short walks without the limp."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:12",
+          "text": "That's excellent progress! Are you still doing the strengthening exercises we discussed?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:17",
+          "text": "Yes, religiously. Three times a day just like you said. My wife even helps me with the resistance band exercises."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:25",
+          "text": "Wonderful! Family support makes such a difference. How's your pain level on a scale of 1 to 10?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:32",
+          "text": "It's down to about a 2 or 3 now. When I started it was definitely an 8."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:40",
+          "text": "That's a fantastic improvement! Let's continue with your current program and I'll see you next week to assess if we can start adding more activities."
+        }
+      ],
+      "insights": {
+        "key_topics": ["knee improvement", "exercise compliance", "pain reduction", "family support"],
+        "action_items": ["Continue current program", "Assess for activity progression next visit"],
+        "patient_satisfaction": "high",
+        "treatment_effectiveness": "very_positive"
+      },
+      "tags": ["recovery", "compliance", "family_support", "pain_reduction"]
+    },
+    {
+      "id": "conv_005",
+      "phone_number": "+61445678901",
+      "patient_name": "Lisa Wang",
+      "patient_id": "pat_005", 
+      "date": "2024-06-28T13:10:00Z",
+      "duration_seconds": 150,
+      "conversation_type": "missed_appointment",
+      "status": "requires_follow_up",
+      "sentiment": "negative",
+      "sentiment_score": -0.3,
+      "priority": "medium",
+      "transcript": [
+        {
+          "speaker": "staff",
+          "timestamp": "00:00",
+          "text": "Hi Lisa, we missed you at your appointment yesterday. Is everything okay?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:05",
+          "text": "Oh my goodness, I completely forgot! I'm so sorry. Work has been absolutely crazy."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:12",
+          "text": "No worries at all, these things happen. How are you feeling though? Any changes with your neck pain?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:18",
+          "text": "Actually, it's been getting worse again. The stress at work isn't helping and I haven't been doing the exercises as much."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:28",
+          "text": "I understand work stress can definitely impact recovery. Let's get you rescheduled as soon as possible and discuss some stress management techniques."
+        }
+      ],
+      "insights": {
+        "key_topics": ["missed appointment", "work stress", "pain worsening", "exercise non-compliance"],
+        "action_items": ["Reschedule appointment urgently", "Discuss stress management", "Motivate exercise compliance"],
+        "patient_satisfaction": "low",
+        "treatment_effectiveness": "negative"
+      },
+      "tags": ["missed_appointment", "stress", "non_compliance", "pain_worsening"]
+    },
+    {
+      "id": "conv_006",
+      "phone_number": "+61456789012",
+      "patient_name": "Robert Johnson",
+      "patient_id": "pat_006",
+      "date": "2024-06-27T15:30:00Z", 
+      "duration_seconds": 480,
+      "conversation_type": "insurance_inquiry",
+      "status": "completed",
+      "sentiment": "neutral",
+      "sentiment_score": 0.0,
+      "priority": "low",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "Hi, I'm calling about my insurance coverage for physiotherapy sessions."
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:04",
+          "text": "Of course Robert, let me pull up your file. What specific questions do you have about your coverage?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:10",
+          "text": "My insurance company said I have 12 sessions covered per year. How many have I used so far?"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:16",
+          "text": "Let me check... You've completed 6 sessions so far, so you have 6 remaining for this year."
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "00:25",
+          "text": "Perfect. And if I need more than 12, what are the out-of-pocket costs?"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:30",
+          "text": "Our standard rate is $95 per session. However, we do offer a small discount for self-pay patients."
+        }
+      ],
+      "insights": {
+        "key_topics": ["insurance coverage", "session limits", "self-pay options"],
+        "action_items": ["Provide detailed pricing information", "Monitor session usage"],
+        "patient_satisfaction": "medium",
+        "treatment_effectiveness": "neutral"
+      },
+      "tags": ["insurance", "billing", "session_tracking"]
+    }
+  ],
+  "summary_metrics": {
+    "total_conversations": 6,
+    "average_duration": 305,
+    "sentiment_distribution": {
+      "positive": 3,
+      "neutral": 2, 
+      "negative": 1
+    },
+    "conversation_types": {
+      "follow_up": 1,
+      "concern": 1,
+      "appointment_scheduling": 1,
+      "progress_check": 1,
+      "missed_appointment": 1,
+      "insurance_inquiry": 1
+    },
+    "priority_levels": {
+      "high": 1,
+      "medium": 2,
+      "low": 3
+    },
+    "requires_follow_up": 2
+  },
+  "demo_talking_points": [
+    "🎯 Real-time sentiment analysis identifies patient concerns before they escalate",
+    "📊 Conversation insights reveal treatment effectiveness and patient satisfaction trends", 
+    "🚨 Automated priority flagging ensures urgent issues get immediate attention",
+    "📝 AI-generated action items streamline follow-up care coordination",
+    "📈 Patient compliance tracking through conversation analysis",
+    "💡 Stress and lifestyle factors identified through natural conversation",
+    "🔄 Automated follow-up scheduling based on conversation outcomes"
+  ]
+} 
