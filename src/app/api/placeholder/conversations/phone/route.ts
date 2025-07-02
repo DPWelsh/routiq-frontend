@@ -1,4 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
+import path from 'path'
+import fs from 'fs'
+
+// JSON data structure interfaces
+interface TranscriptMessage {
+  speaker: 'patient' | 'staff'
+  timestamp: string
+  text: string
+}
+
+interface ConversationData {
+  id: string
+  phone_number: string
+  patient_name: string
+  patient_id: string
+  date: string
+  conversation_type: string
+  status: string
+  sentiment: string
+  priority: string
+  transcript: TranscriptMessage[]
+}
+
+interface JsonConversationsData {
+  conversations: ConversationData[]
+}
 
 // Live conversation data from n8n - 20 WhatsApp + 20 Instagram
 const LIVE_CONVERSATIONS = [
@@ -712,47 +738,80 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const phone = searchParams.get('phone')
     
-    console.log('📡 API: Received request for phone:', phone)
-    
-    // If phone parameter is provided, return specific conversation
+    // If phone parameter is provided, return individual conversation data
     if (phone) {
-      const decodedPhone = decodeURIComponent(phone)
-      console.log('📡 API: Decoded phone:', decodedPhone)
+      // Read the JSON file with actual conversation data
+      const jsonFilePath = path.join(process.cwd(), 'live_conversation_data.json')
+      const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'))
       
-      const conversation = LIVE_CONVERSATIONS.find(conv => conv.phone === decodedPhone)
-      const messages = CONVERSATION_MESSAGES[decodedPhone] || []
-      
-      console.log('📡 API: Found conversation:', !!conversation)
-      console.log('📡 API: Found messages:', messages.length)
+      // Find the conversation by phone number
+      const conversation = (jsonData as JsonConversationsData).conversations.find((conv: ConversationData) => 
+        conv.phone_number === phone
+      )
       
       if (!conversation) {
         return NextResponse.json({
           success: false,
           error: 'Conversation not found'
-        }, { status: 404 })
+        })
       }
+      
+      // Convert the JSON format to the expected API format
+      const conversationDetail = {
+        phone: conversation.phone_number,
+        patient_name: conversation.patient_name,
+        email: `${conversation.patient_name.toLowerCase().replace(/\s+/g, '.')}@example.com`,
+        conversation_id: conversation.id,
+        conversation_start: conversation.date,
+        conversation_last_activity: conversation.date,
+        total_messages: conversation.transcript?.length || 0,
+        first_message_time: conversation.transcript?.[0]?.timestamp || conversation.date,
+        last_message_time: conversation.transcript?.[conversation.transcript.length - 1]?.timestamp || conversation.date
+      }
+      
+      // Convert transcript to messages format
+      const messages = conversation.transcript?.map((msg: TranscriptMessage, index: number) => ({
+        id: index + 1,
+        content: msg.text,
+        sender_type: msg.speaker === 'patient' ? 'user' : 'agent',
+        timestamp: new Date(conversation.date).toISOString(),
+        metadata: {
+          original_timestamp: msg.timestamp,
+          conversation_type: conversation.conversation_type,
+          sentiment: conversation.sentiment,
+          priority: conversation.priority
+        },
+        external_id: `${conversation.id}_msg_${index + 1}`
+      })) || []
       
       return NextResponse.json({
         success: true,
-        conversation,
-        messages
+        data: {
+          conversation: conversationDetail,
+          messages: messages
+        }
       })
     }
     
-    // Return all conversations
-    console.log('📡 API: Returning all conversations:', LIVE_CONVERSATIONS.length)
+    // If no phone parameter, return the list of conversations (existing behavior)
+    const conversations = LIVE_CONVERSATIONS.map(conv => ({
+      ...conv,
+      unread_messages: Math.floor(Math.random() * 3), // Random for demo
+      clinical_priority: conv.total_messages > 10 ? 'high' : 'medium',
+      last_activity: conv.last_message_time,
+      patient_status: 'active',
+      conversation_summary: conv.last_message_content.substring(0, 100) + '...'
+    }))
+
     return NextResponse.json({
       success: true,
-      data: {
-        conversations: LIVE_CONVERSATIONS
-      }
+      data: conversations
     })
-    
   } catch (error) {
-    console.error('❌ API: Error in phone conversations endpoint:', error)
+    console.error('Phone conversations API error:', error)
     return NextResponse.json({
       success: false,
-      error: 'Internal server error'
+      error: 'Failed to fetch conversations'
     }, { status: 500 })
   }
 } 
