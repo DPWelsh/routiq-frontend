@@ -561,6 +561,7 @@ export default function PhoneChatPage() {
   const [loading, setLoading] = useState(true)
   const [chatLoading, setChatLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const [sourceFilter, setSourceFilter] = useState<'all' | 'whatsapp' | 'instagram'>('all')
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -762,11 +763,15 @@ export default function PhoneChatPage() {
 
   const filteredConversations = conversations.filter(conv => {
     const searchLower = searchTerm.toLowerCase()
-    return (
+    const matchesSearch = (
       (conv.patient_name || '').toLowerCase().includes(searchLower) ||
       (conv.phone || '').toLowerCase().includes(searchLower) ||
       (conv.email || '').toLowerCase().includes(searchLower)
     )
+    
+    const matchesSource = sourceFilter === 'all' || conv.conversation_source === sourceFilter
+    
+    return matchesSearch && matchesSource
   })
 
   // Only log when conversations change, not on every render
@@ -845,7 +850,38 @@ export default function PhoneChatPage() {
         {/* Header */}
         <div className="p-3 border-b border-routiq-cloud/30 flex-shrink-0">
           <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-lg font-semibold text-routiq-core">Phone Conversations</h1>
+            <h1 className="text-lg font-semibold text-routiq-core">Conversations</h1>
+            <span className="text-xs text-routiq-blackberry/60 bg-routiq-cloud/20 px-2 py-1 rounded-full">
+              {filteredConversations.length} of {conversations.length}
+            </span>
+          </div>
+          
+          {/* Source Filter Buttons */}
+          <div className="flex gap-1 mb-3">
+            <Button
+              variant={sourceFilter === 'all' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSourceFilter('all')}
+              className="text-xs h-7"
+            >
+              All ({conversations.length})
+            </Button>
+            <Button
+              variant={sourceFilter === 'whatsapp' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSourceFilter('whatsapp')}
+              className="text-xs h-7"
+            >
+              WhatsApp ({conversations.filter(c => c.conversation_source === 'whatsapp').length})
+            </Button>
+            <Button
+              variant={sourceFilter === 'instagram' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSourceFilter('instagram')}
+              className="text-xs h-7"
+            >
+              Instagram ({conversations.filter(c => c.conversation_source === 'instagram').length})
+            </Button>
           </div>
           
           {/* Search */}
@@ -904,11 +940,27 @@ export default function PhoneChatPage() {
                         {conversation.last_message_content || conversation.phone}
                     </p>
                     </div>
-                    {conversation.total_messages > 0 && (
-                      <Badge variant="secondary" className="text-xs h-4 flex-shrink-0 ml-2">
-                        {conversation.total_messages}
+                    <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                      {/* Platform Badge */}
+                      <Badge 
+                        variant="outline" 
+                        className={`text-xs h-4 px-1 ${
+                          conversation.conversation_source === 'whatsapp' 
+                            ? 'bg-green-50 text-green-700 border-green-200' 
+                            : conversation.conversation_source === 'instagram'
+                            ? 'bg-purple-50 text-purple-700 border-purple-200'
+                            : 'bg-gray-50 text-gray-700 border-gray-200'
+                        }`}
+                      >
+                        {conversation.conversation_source === 'whatsapp' ? 'WA' : 
+                         conversation.conversation_source === 'instagram' ? 'IG' : 'Unknown'}
                       </Badge>
-                    )}
+                      {conversation.total_messages > 0 && (
+                        <Badge variant="secondary" className="text-xs h-4">
+                          {conversation.total_messages}
+                        </Badge>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -937,6 +989,21 @@ export default function PhoneChatPage() {
                     <div className="flex items-center gap-2 text-xs text-routiq-blackberry/70">
                       <Phone className="h-3 w-3" />
                       {selectedChat?.conversation?.phone || 'No phone'}
+                      {selectedChat?.conversation?.conversation_source && (
+                        <Badge 
+                          variant="outline" 
+                          className={`text-xs h-4 px-1 ml-1 ${
+                            selectedChat.conversation.conversation_source === 'whatsapp' 
+                              ? 'bg-green-50 text-green-700 border-green-200' 
+                              : selectedChat.conversation.conversation_source === 'instagram'
+                              ? 'bg-purple-50 text-purple-700 border-purple-200'
+                              : 'bg-gray-50 text-gray-700 border-gray-200'
+                          }`}
+                        >
+                          {selectedChat.conversation.conversation_source === 'whatsapp' ? 'WhatsApp' : 
+                           selectedChat.conversation.conversation_source === 'instagram' ? 'Instagram' : 'Unknown'}
+                        </Badge>
+                      )}
                     </div>
                   </div>
                 </div>
