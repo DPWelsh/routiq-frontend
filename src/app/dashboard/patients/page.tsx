@@ -21,9 +21,10 @@ import {
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { UpcomingAppointments } from '@/components/features/patients/upcoming-appointments'
 import { usePatientsData } from '@/hooks/useDashboardData'
-import { useRiskMetrics } from '@/hooks/useReengagementData'
+import { useRiskMetrics, usePrioritizedPatients } from '@/hooks/useReengagementData'
 import { PatientRiskData } from '@/lib/routiq-api'
 import { PatientRiskTable } from '@/components/features/patients/patient-risk-table'
+import { PerformanceDashboard } from '@/components/features/reengagement'
 
 // Use PatientRiskData from the API
 type Patient = PatientRiskData
@@ -71,21 +72,27 @@ export default function PatientsPage() {
     refetch: refetchPatients 
   } = usePatientsData(organizationId)
 
-  // Get risk metrics data (the actual API you're using)
+  // Get risk metrics summary for dashboard cards
   const { 
     data: riskMetricsData, 
     isLoading: riskMetricsLoading,
     error: riskMetricsError 
   } = useRiskMetrics(organizationId || '')
+
+  // Get prioritized patients data (the new API)
+  const { 
+    data: prioritizedPatientsData, 
+    isLoading: isPrioritizedLoading,
+    error: prioritizedError 
+  } = usePrioritizedPatients(organizationId || '', { limit: 200 })
   
   // Local state for filtering and search
   const [searchTerm, setSearchTerm] = useState('')
   const [statusFilter, setStatusFilter] = useState('all')
   const [riskFilter, setRiskFilter] = useState('all')
 
-
-  // Extract patients data from risk metrics API - include all patients now
-  const allPatients = riskMetricsData?.patients || []
+  // Extract patients data from prioritized patients API
+  const allPatients = prioritizedPatientsData?.patients || []
   const totalCount = allPatients.length
 
   const handlePatientClick = (phone: string) => {
@@ -100,7 +107,7 @@ export default function PatientsPage() {
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase()
       filtered = filtered.filter(patient => 
-        patient.patient_name?.toLowerCase().includes(searchLower) ||
+        patient.name?.toLowerCase().includes(searchLower) ||
         patient.phone?.toLowerCase().includes(searchLower) ||
         patient.email?.toLowerCase().includes(searchLower)
       )
@@ -108,7 +115,7 @@ export default function PatientsPage() {
     
     // Apply status filter
     if (statusFilter !== 'all') {
-      filtered = filtered.filter((patient: Patient) => {
+      filtered = filtered.filter((patient: PatientRiskData) => {
         switch (statusFilter) {
           case 'active':
             return patient.engagement_status === 'active'
@@ -117,7 +124,7 @@ export default function PatientsPage() {
           case 'stale':
             return patient.engagement_status === 'stale'
           case 'upcoming':
-            return patient.upcoming_appointment_count > 0
+            return patient.next_scheduled_appointment !== null
           default:
             return true
         }
@@ -126,7 +133,7 @@ export default function PatientsPage() {
     
     // Apply risk filter
     if (riskFilter !== 'all') {
-      filtered = filtered.filter((patient: Patient) => {
+      filtered = filtered.filter((patient: PatientRiskData) => {
         switch (riskFilter) {
           case 'low':
             return patient.risk_level === 'low'
@@ -134,6 +141,10 @@ export default function PatientsPage() {
             return patient.risk_level === 'medium' 
           case 'high':
             return patient.risk_level === 'high'
+          case 'critical':
+            return patient.risk_level === 'critical'
+          case 'engaged':
+            return patient.risk_level === 'engaged'
           default:
             return true
         }
@@ -149,9 +160,9 @@ export default function PatientsPage() {
   const stats = useMemo(() => {
     if (!allPatients.length) return null
     
-    const activePatients = allPatients.filter((p: Patient) => p.is_active).length
-    const patientsWithUpcoming = allPatients.filter((p: Patient) => p.upcoming_appointment_count > 0).length
-    const patientsWithRecent = allPatients.filter((p: Patient) => p.recent_appointment_count > 0).length
+    const activePatients = allPatients.filter((p: PatientRiskData) => p.engagement_status === 'active').length
+    const patientsWithUpcoming = allPatients.filter((p: PatientRiskData) => p.next_scheduled_appointment !== null).length
+    const patientsWithRecent = allPatients.filter((p: PatientRiskData) => p.last_appointment_date !== null).length
     
     return {
       overview: {
@@ -162,7 +173,7 @@ export default function PatientsPage() {
         activityRate: totalCount > 0 ? (activePatients / totalCount) * 100 : 0
       }
     }
-  }, [allPatients, totalCount, organizationId])
+  }, [allPatients, totalCount])
 
   const handleRefresh = async () => {
     await refetchPatients()
@@ -404,7 +415,12 @@ export default function PatientsPage() {
           </Alert>
         )}
 
-
+        {/* Performance Dashboard */}
+        {organizationId && (
+          <div className="mb-6">
+            <PerformanceDashboard organizationId={organizationId} />
+          </div>
+        )}
 
         {/* Patient List Section */}
         <Card className="bg-white">
@@ -523,7 +539,7 @@ export default function PatientsPage() {
                           </div>
 
             {/* Patient List */}
-            {isLoading ? (
+            {(isLoading || isPrioritizedLoading) ? (
               <div className="text-center py-12">
                 <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600" />
                 <p className="mt-2 text-gray-600">Loading patients...</p>
@@ -536,6 +552,7 @@ export default function PatientsPage() {
               <PatientRiskTable 
                 data={filteredPatients}
                 onPatientClick={handlePatientClick}
+                organizationId={organizationId || undefined}
               />
             )}
                         </CardContent>

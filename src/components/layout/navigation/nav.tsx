@@ -13,6 +13,7 @@ import {
   BarChart3, 
   MessageSquare, 
   UserCheck,
+  Zap,
   Settings,
   ChevronRight,
   HelpCircle
@@ -56,6 +57,14 @@ const navigation = [
     icon: UserCheck, 
     roles: ["ADMIN", "USER"],
     description: "Patient management",
+    badge: null
+  },
+  { 
+    name: "Integrations", 
+    href: "/dashboard/integrations", 
+    icon: Zap, 
+    roles: ["ADMIN", "USER"],
+    description: "Connected services",
     badge: null
   },
   { 

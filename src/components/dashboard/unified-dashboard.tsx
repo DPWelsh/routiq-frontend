@@ -6,11 +6,12 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Progress } from "@/components/ui/progress"
-import { Users, Calendar, Activity, RefreshCw, Zap, AlertTriangle } from 'lucide-react'
+import { Users, Calendar, Activity, RefreshCw, Zap, AlertTriangle, AlertCircle, TrendingUp, Phone, Clock } from 'lucide-react'
 import { formatDistanceToNow } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { useDashboardData, usePatientsData, useSyncMutation } from '@/hooks/useDashboardData'
+import { useRiskMetrics, usePerformanceMetrics, useCriticalRiskPatients } from '@/hooks/useReengagementData'
 import LoadingSpinner from '@/components/magicui/loading-spinner'
 
 /**
@@ -43,6 +44,24 @@ export function UnifiedDashboard() {
     error: patientsError,
   } = usePatientsData(organizationId)
 
+  // NEW: Risk-based reengagement data
+  const {
+    data: riskMetrics,
+    isLoading: isRiskLoading,
+    error: riskError,
+    refetch: refetchRiskMetrics
+  } = useRiskMetrics(organizationId || '')
+
+  const {
+    data: performanceData,
+    isLoading: isPerformanceLoading,
+  } = usePerformanceMetrics(organizationId || '', 'last_30_days')
+
+  const {
+    data: criticalPatients,
+    isLoading: isCriticalLoading,
+  } = useCriticalRiskPatients(organizationId || '')
+
   // Sync mutation
   const syncMutation = useSyncMutation(organizationId)
 
@@ -61,6 +80,7 @@ export function UnifiedDashboard() {
 
   const handleManualRefresh = async () => {
     await refetchDashboard()
+    await refetchRiskMetrics()
   }
 
   const handleStartSync = () => {
@@ -190,93 +210,178 @@ export function UnifiedDashboard() {
         </div>
       </div>
 
-      {/* Key Metrics Cards */}
+      {/* Risk-Based Alert Cards */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
+        {/* Critical Risk Alert */}
+        <Card className="border-red-200 bg-red-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Total Patients
+                <p className="text-sm font-medium text-red-700">
+                  🔴 Critical Risk
                 </p>
-                <p className="text-2xl font-bold">
-                  {summary?.total_patients || 0}
+                <p className="text-2xl font-bold text-red-800">
+                  {riskMetrics?.risk_summary?.critical || 0}
                 </p>
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge variant="outline" className="text-xs">
-                    {summary?.integration_status || 'Active'}
-                  </Badge>
-                  {summary?.last_sync_time && (
-                    <p className="text-xs text-gray-500">
-                      {formatDistanceToNow(new Date(summary.last_sync_time), { 
-                        addSuffix: true 
-                      })}
-                    </p>
-                  )}
-                </div>
+                <p className="text-xs text-red-600 mt-1">
+                  Immediate contact required
+                </p>
               </div>
-              <Users className="h-8 w-8 text-gray-400" />
+              <AlertCircle className="h-8 w-8 text-red-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        {/* High Risk Alert */}
+        <Card className="border-orange-200 bg-orange-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Active Patients
+                <p className="text-sm font-medium text-orange-700">
+                  🟠 High Risk
                 </p>
-                <p className="text-2xl font-bold text-green-600">
-                  {summary?.active_patients || 0}
+                <p className="text-2xl font-bold text-orange-800">
+                  {riskMetrics?.risk_summary?.high || 0}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {summary?.engagement_rate || 0}% engagement rate
+                <p className="text-xs text-orange-600 mt-1">
+                  Contact within 24h
                 </p>
               </div>
-              <Activity className="h-8 w-8 text-green-500" />
+              <Clock className="h-8 w-8 text-orange-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        {/* Contact Success Rate */}
+        <Card className="border-blue-200 bg-blue-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Upcoming Appointments
+                <p className="text-sm font-medium text-blue-700">
+                  📞 Contact Success Rate
                 </p>
-                <p className="text-2xl font-bold text-blue-600">
-                  {summary?.patients_with_upcoming || 0}
+                <p className="text-2xl font-bold text-blue-800">
+                  {performanceData?.reengagement_metrics?.contact_success_rate?.toFixed(1) || '0.0'}%
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {summary?.patients_with_upcoming || 0} patients
+                <p className="text-xs text-blue-600 mt-1">
+                  {performanceData?.benchmark_comparison?.our_performance === 'above_average' ? '↗️ Above industry avg' : 
+                   performanceData?.benchmark_comparison?.our_performance === 'below_average' ? '↘️ Below industry avg' : 
+                   '→ At industry avg'}
                 </p>
               </div>
-              <Calendar className="h-8 w-8 text-blue-500" />
+              <Phone className="h-8 w-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        {/* Immediate Actions Required */}
+        <Card className="border-purple-200 bg-purple-50">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">
-                  Recent Appointments
+                <p className="text-sm font-medium text-purple-700">
+                  ⚡ Immediate Actions
                 </p>
-                <p className="text-2xl font-bold text-orange-600">
-                  {summary?.patients_with_recent || 0}
+                <p className="text-2xl font-bold text-purple-800">
+                  {riskMetrics?.immediate_actions_required || 0}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {summary?.patients_with_recent || 0} patients
+                <p className="text-xs text-purple-600 mt-1">
+                  Urgent priority tasks
                 </p>
               </div>
-              <Calendar className="h-8 w-8 text-orange-500" />
+              <Zap className="h-8 w-8 text-purple-500" />
             </div>
           </CardContent>
         </Card>
       </div>
+
+      {/* Risk Level Breakdown */}
+      {riskMetrics && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Risk Level Distribution</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-5 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-red-600">
+                  {riskMetrics.risk_summary.critical}
+                </div>
+                <div className="text-sm text-red-700">Critical</div>
+                <div className="text-xs text-gray-500">45+ days</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-orange-600">
+                  {riskMetrics.risk_summary.high}
+                </div>
+                <div className="text-sm text-orange-700">High</div>
+                <div className="text-xs text-gray-500">30-44 days</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-yellow-600">
+                  {riskMetrics.risk_summary.medium}
+                </div>
+                <div className="text-sm text-yellow-700">Medium</div>
+                <div className="text-xs text-gray-500">14-29 days</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-blue-600">
+                  {riskMetrics.risk_summary.low}
+                </div>
+                <div className="text-sm text-blue-700">Low</div>
+                <div className="text-xs text-gray-500">7-13 days</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-green-600">
+                  {riskMetrics.risk_summary.engaged}
+                </div>
+                <div className="text-sm text-green-700">Engaged</div>
+                <div className="text-xs text-gray-500">Recent contact</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Priority Patients */}
+      {criticalPatients?.patients && criticalPatients.patients.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Critical Risk Patients - Immediate Action Required</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {criticalPatients.patients.slice(0, 5).map((patient) => (
+                <div 
+                  key={patient.id} 
+                  className="flex items-center justify-between p-3 border border-red-200 rounded-lg bg-red-50"
+                >
+                  <div>
+                    <p className="font-medium text-red-900">{patient.name}</p>
+                    <p className="text-sm text-red-700">{patient.phone}</p>
+                    <p className="text-xs text-red-600">
+                      {patient.days_since_last_contact} days since last contact
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <Badge className="bg-red-100 text-red-800 border-red-300">
+                      Risk: {patient.risk_score}/100
+                    </Badge>
+                    <p className="text-xs text-red-600 mt-1">
+                      {patient.recommended_action}
+                    </p>
+                  </div>
+                </div>
+              ))}
+              {criticalPatients.patients.length > 5 && (
+                <p className="text-sm text-center text-gray-600 pt-2">
+                  And {criticalPatients.patients.length - 5} more critical patients...
+                </p>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Recent Activity */}
       <Card>

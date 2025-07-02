@@ -14,14 +14,17 @@ import {
   User, 
   Bell, 
   Shield, 
-  CreditCard,
+  Zap,
   Settings as SettingsIcon,
   Save,
   Download,
   Trash2,
-  AlertTriangle
+  AlertTriangle,
+  MessageSquare,
+  Webhook,
+  Database,
+  ExternalLink
 } from 'lucide-react'
-import { BillingSection } from '@/components/subscription/BillingSection'
 
 export default function SettingsContent() {
   const { user, isLoaded } = useUser()
@@ -57,9 +60,9 @@ export default function SettingsContent() {
             <User className="h-3 w-3" />
             Profile
           </TabsTrigger>
-          <TabsTrigger value="billing" className="flex items-center gap-2 text-xs">
-            <CreditCard className="h-3 w-3" />
-            Billing
+          <TabsTrigger value="integrations" className="flex items-center gap-2 text-xs">
+            <Zap className="h-3 w-3" />
+            Integrations
           </TabsTrigger>
           <TabsTrigger value="notifications" className="flex items-center gap-2 text-xs">
             <Bell className="h-3 w-3" />
@@ -188,9 +191,141 @@ export default function SettingsContent() {
           </div>
         </TabsContent>
 
-        {/* Billing Tab */}
-        <TabsContent value="billing" className="space-y-3 mt-3">
-          <BillingSection />
+        {/* Integrations Tab */}
+        <TabsContent value="integrations" className="space-y-3 mt-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+            {/* Connected Services */}
+            <Card className="border-gray-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-routiq-core text-base">Connected Services</CardTitle>
+                <CardDescription className="text-xs">Manage your connected healthcare platforms</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {/* Chatwoot Integration */}
+                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                      <MessageSquare className="h-4 w-4 text-blue-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-xs">Chatwoot</h4>
+                      <p className="text-[10px] text-gray-500">Customer support conversations</p>
+                      <Badge className="bg-green-100 text-green-800 border-green-200 text-[9px] mt-1">
+                        Connected
+                      </Badge>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="border-gray-300 text-gray-600 hover:bg-gray-50 text-[10px] h-7">
+                    Configure
+                  </Button>
+                </div>
+
+                {/* n8n Integration */}
+                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                      <Webhook className="h-4 w-4 text-purple-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-xs">n8n Workflows</h4>
+                      <p className="text-[10px] text-gray-500">Automation and data processing</p>
+                      <Badge className="bg-green-100 text-green-800 border-green-200 text-[9px] mt-1">
+                        Connected
+                      </Badge>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="border-gray-300 text-gray-600 hover:bg-gray-50 text-[10px] h-7">
+                    Configure
+                  </Button>
+                </div>
+
+                {/* Supabase Integration */}
+                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                      <Database className="h-4 w-4 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-xs">Supabase</h4>
+                      <p className="text-[10px] text-gray-500">Database and real-time data</p>
+                      <Badge className="bg-green-100 text-green-800 border-green-200 text-[9px] mt-1">
+                        Connected
+                      </Badge>
+                    </div>
+                  </div>
+                  <Button variant="outline" size="sm" className="border-gray-300 text-gray-600 hover:bg-gray-50 text-[10px] h-7">
+                    Configure
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Available Integrations */}
+            <Card className="border-gray-200">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-routiq-core text-base">Available Integrations</CardTitle>
+                <CardDescription className="text-xs">Connect new services to enhance your workflow</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {/* WhatsApp Integration */}
+                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
+                      <MessageSquare className="h-4 w-4 text-green-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-xs">WhatsApp Business</h4>
+                      <p className="text-[10px] text-gray-500">Direct patient messaging</p>
+                    </div>
+                  </div>
+                  <Button className="bg-routiq-core hover:bg-routiq-core/90 text-white text-[10px] h-7">
+                    Connect
+                  </Button>
+                </div>
+
+                {/* Instagram Integration */}
+                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-pink-100 flex items-center justify-center">
+                      <MessageSquare className="h-4 w-4 text-pink-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-xs">Instagram Messaging</h4>
+                      <p className="text-[10px] text-gray-500">Social media patient outreach</p>
+                    </div>
+                  </div>
+                  <Button className="bg-routiq-core hover:bg-routiq-core/90 text-white text-[10px] h-7">
+                    Connect
+                  </Button>
+                </div>
+
+                {/* Stripe Integration */}
+                <div className="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                      <ExternalLink className="h-4 w-4 text-indigo-600" />
+                    </div>
+                    <div>
+                      <h4 className="font-medium text-xs">Stripe Payments</h4>
+                      <p className="text-[10px] text-gray-500">Process patient payments</p>
+                    </div>
+                  </div>
+                  <Button className="bg-routiq-core hover:bg-routiq-core/90 text-white text-[10px] h-7">
+                    Connect
+                  </Button>
+                </div>
+
+                <Separator />
+
+                <div className="text-center">
+                  <Button variant="outline" className="border-routiq-core text-routiq-core hover:bg-routiq-core hover:text-white text-xs h-8">
+                    <Zap className="h-3 w-3 mr-2" />
+                    Browse All Integrations
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         {/* Notifications Tab */}
