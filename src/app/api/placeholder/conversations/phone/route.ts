@@ -793,14 +793,28 @@ export async function GET(request: NextRequest) {
       })
     }
     
-    // If no phone parameter, return the list of conversations (existing behavior)
-    const conversations = LIVE_CONVERSATIONS.map(conv => ({
-      ...conv,
+    // If no phone parameter, return the list of conversations from JSON file
+    const jsonFilePath = path.join(process.cwd(), 'live_conversation_data.json')
+    const jsonData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'))
+    
+    const conversations = (jsonData as JsonConversationsData).conversations.map(conv => ({
+      phone: conv.phone_number,
+      patient_name: conv.patient_name,
+      email: `${conv.patient_name.toLowerCase().replace(/\s+/g, '.')}@example.com`,
+      patient_id: conv.patient_id,
+      conversation_id: conv.id,
+      conversation_source: conv.phone_number.startsWith('@') ? 'instagram' : 'whatsapp',
+      conversation_updated_at: conv.date,
+      total_messages: conv.transcript?.length || 0,
+      last_message_time: conv.date,
+      last_message_content: conv.transcript?.[conv.transcript.length - 1]?.text || 'No messages',
+      last_message_sender: conv.transcript?.[conv.transcript.length - 1]?.speaker === 'patient' ? 'user' : 'agent',
+      latest_conversation_date: conv.date,
       unread_messages: Math.floor(Math.random() * 3), // Random for demo
-      clinical_priority: conv.total_messages > 10 ? 'high' : 'medium',
-      last_activity: conv.last_message_time,
+      clinical_priority: (conv.transcript?.length || 0) > 10 ? 'high' : 'medium',
+      last_activity: conv.date,
       patient_status: 'active',
-      conversation_summary: conv.last_message_content.substring(0, 100) + '...'
+      conversation_summary: (conv.transcript?.[conv.transcript.length - 1]?.text || 'No messages').substring(0, 100) + '...'
     }))
 
     return NextResponse.json({
