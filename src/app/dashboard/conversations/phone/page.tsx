@@ -28,13 +28,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { ArrowLeft, Phone, Search, MessageCircle, Clock, User, Bot, Send, MoreVertical, ThumbsUp, ThumbsDown, TrendingUp, Award, Target, MessageSquare, Star, BarChart3 } from "lucide-react"
+import { ArrowLeft, Phone, Search, MessageCircle, Clock, User, Bot, Send, MoreVertical, ThumbsUp, ThumbsDown, TrendingUp, Award, Target, MessageSquare, Star, BarChart3, Calendar, FileText, AlertTriangle, CheckCircle, Activity, Zap, Users } from "lucide-react"
 import { LoadingSpinner } from "@/components/magicui"
 import { Separator } from "@/components/ui/separator"
 import Image from "next/image"
 import { useAuth } from '@clerk/nextjs'
 import { useConversationPerformance } from '@/hooks/useConversationPerformance'
 import { usePatientProfileByPhone, usePatientPerformanceMetrics } from '@/hooks/usePatientProfileByPhone'
+import type { PatientProfile } from '@/lib/routiq-api'
 
 /**
  * ⚠️  DO NOT MODIFY: These interfaces match the phone-centric API responses
@@ -419,186 +420,440 @@ function ConversationPerformancePanel({
       {/* Header */}
       <div className="p-3 border-b border-routiq-cloud/30 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <BarChart3 className="h-4 w-4 text-routiq-prompt" />
-          <h3 className="font-medium text-routiq-core text-sm">Performance</h3>
+          <Users className="h-4 w-4 text-routiq-prompt" />
+          <h3 className="font-medium text-routiq-core text-sm">Clinical Profile</h3>
         </div>
       </div>
 
-      {/* Performance Score - Scrollable Content */}
-      <div className="flex-1 overflow-y-auto min-h-0 p-3 space-y-3">
+      {/* Patient Profile Content - Scrollable */}
+      <div className="flex-1 overflow-y-auto min-h-0 p-3 space-y-4">
         {(performanceLoading || patientLoading) ? (
-          <div className="text-center text-gray-500 text-sm">
-            {patientLoading ? 'Loading patient data...' : 'Loading performance data...'}
+          <div className="text-center text-gray-500 text-sm py-8">
+            <Activity className="h-6 w-6 mx-auto mb-2 animate-pulse" />
+            Loading patient profile...
           </div>
         ) : (performanceError || patientError) ? (
-          <div className="text-center text-red-500 text-sm">
-            {patientError ? 'Error loading patient data' : 'Error loading performance data'}
+          <div className="text-center text-red-500 text-sm py-8">
+            <AlertTriangle className="h-6 w-6 mx-auto mb-2" />
+            Error loading patient data
           </div>
         ) : (
           <>
-        <Card>
-          <CardContent className="p-3">
-            <div className="text-center">
-              {/* Compact Donut Chart */}
-              <div className="relative inline-flex items-center justify-center">
-                <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 36 36">
-                  {/* Background circle */}
-                  <path
-                    d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831
-                      a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className="text-routiq-cloud/40"
-                  />
-                  {/* Progress circle */}
-                  <path
-                    d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831
-                      a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                        strokeDasharray={`${satisfaction.score === 0 ? 0 : (satisfaction.score / 10) * 100}, 100`}
-                        className={getSatisfactionColor(satisfaction.score).replace('text-', 'text-')}
-                  />
-                </svg>
-                {/* Center text */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                      <div className={`text-lg font-bold ${getSatisfactionColor(satisfaction.score)}`}>
-                        {satisfaction.text}
+            {/* Patient Overview Card */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    Patient Overview
+                  </CardTitle>
+                  <Badge variant={patientProfile ? "default" : "secondary"} className="text-xs">
+                    {patientProfile ? "Verified" : "Unverified"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                {/* Basic Info */}
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Name</span>
+                    <span className="font-medium text-routiq-core">{conversation.patient_name}</span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Phone</span>
+                    <span className="font-medium text-routiq-core">{conversation.phone}</span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Email</span>
+                    <span className="font-medium text-routiq-core text-xs break-all">
+                      {conversation.email || patientProfile?.email || 'Not provided'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Patient ID</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.cliniko_patient_id || conversation.patient_id || 'N/A'}
+                    </span>
                   </div>
                 </div>
-              </div>
+
+                <Separator />
+
+                {/* Clinical Metrics */}
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Lifetime Value</span>
+                    <span className="font-bold text-green-600">
+                      ${patientProfile?.estimated_lifetime_value || 0}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Total Sessions</span>
+                    <span className="font-bold text-routiq-core">
+                      {patientProfile?.total_appointment_count || 0}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Recent Sessions</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.recent_appointment_count || 0} (90 days)
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Upcoming</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.upcoming_appointment_count || 0}
+                    </span>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Timeline Info */}
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="text-routiq-blackberry/60">Last Appointment</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.last_appointment_date 
+                        ? new Date(patientProfile.last_appointment_date).toLocaleDateString()
+                        : 'None recorded'
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-routiq-blackberry/60">Last Contact</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.last_conversation_date 
+                        ? new Date(patientProfile.last_conversation_date).toLocaleDateString()
+                        : conversation.last_message_time
+                        ? new Date(conversation.last_message_time).toLocaleDateString()
+                        : 'Today'
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-routiq-blackberry/60">Next Appointment</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.next_appointment_time 
+                        ? new Date(patientProfile.next_appointment_time).toLocaleDateString()
+                        : 'Not scheduled'
+                      }
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Engagement & Risk Assessment */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Clinical Assessment
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                {/* Engagement Score */}
+                <div className="text-center">
+                  <div className="relative inline-flex items-center justify-center">
+                    <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
+                      <path
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        className="text-routiq-cloud/40"
+                      />
+                      <path
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeDasharray={`${satisfaction.score === 0 ? 0 : (satisfaction.score / 10) * 100}, 100`}
+                        className={getSatisfactionColor(satisfaction.score).replace('text-', 'text-')}
+                      />
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className={`text-lg font-bold ${getSatisfactionColor(satisfaction.score)}`}>
+                        {satisfaction.text}
+                      </div>
+                    </div>
+                  </div>
                   <p className="text-xs text-routiq-blackberry/70 mt-2">
                     {patientProfile ? 'Patient Engagement' : 'Client Satisfaction'}
                   </p>
-                  {patientProfile && (
-                    <p className="text-xs text-routiq-blackberry/50 mt-1">
-                      Risk: {patientMetrics.riskLevel} • LTV: ${patientMetrics.lifetimeValue}
+                </div>
+
+                {/* Risk Indicators */}
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="bg-gray-50 p-2 rounded-lg">
+                    <span className="text-routiq-blackberry/60 block mb-1">Churn Risk</span>
+                    <div className="flex items-center gap-1">
+                      <div className={`w-2 h-2 rounded-full ${
+                        patientProfile?.churn_risk === 'critical' ? 'bg-red-500' :
+                        patientProfile?.churn_risk === 'high' ? 'bg-orange-500' :
+                        patientProfile?.churn_risk === 'medium' ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`} />
+                      <span className="font-medium capitalize">
+                        {patientProfile?.churn_risk || 'Unknown'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 p-2 rounded-lg">
+                    <span className="text-routiq-blackberry/60 block mb-1">Activity Status</span>
+                    <div className="flex items-center gap-1">
+                      <div className={`w-2 h-2 rounded-full ${
+                        patientProfile?.activity_status === 'active' ? 'bg-green-500' :
+                        patientProfile?.activity_status === 'recently_active' ? 'bg-yellow-500' :
+                        'bg-gray-400'
+                      }`} />
+                      <span className="font-medium capitalize">
+                        {patientProfile?.activity_status?.replace('_', ' ') || 'Unknown'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Priority */}
+                {patientProfile && (
+                  <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Zap className="h-4 w-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-900">Priority Action</span>
+                    </div>
+                    <p className="text-xs text-blue-800">
+                      {patientProfile.action_priority <= 2 
+                        ? "🔴 High Priority - Schedule follow-up appointment immediately"
+                        : patientProfile.action_priority <= 3
+                        ? "🟡 Medium Priority - Send appointment reminder within 48 hours"
+                        : "🟢 Low Priority - Continue regular engagement schedule"
+                      }
                     </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Communication History */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <MessageCircle className="h-4 w-4" />
+                  Communication History
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div className="text-center bg-gray-50 p-2 rounded-lg">
+                    <div className="font-bold text-routiq-core">
+                      {patientProfile?.total_conversations || conversation.total_messages || 0}
+                    </div>
+                    <div className="text-routiq-blackberry/60">Total Chats</div>
+                  </div>
+                  <div className="text-center bg-gray-50 p-2 rounded-lg">
+                    <div className="font-bold text-routiq-core">
+                      {patientProfile?.total_outreach_attempts || 0}
+                    </div>
+                    <div className="text-routiq-blackberry/60">Outreach</div>
+                  </div>
+                  <div className="text-center bg-gray-50 p-2 rounded-lg">
+                    <div className="font-bold text-green-600">
+                      {patientProfile?.outreach_success_rate 
+                        ? `${(patientProfile.outreach_success_rate * 100).toFixed(0)}%`
+                        : 'N/A'
+                      }
+                    </div>
+                    <div className="text-routiq-blackberry/60">Success Rate</div>
+                  </div>
+                </div>
+
+                {/* Recent Communication */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-routiq-blackberry/60">Current Conversation</span>
+                    <Badge variant="outline" className="text-xs">
+                      {conversation.conversation_source || 'WhatsApp'}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-routiq-blackberry/60">Messages</span>
+                    <span className="font-medium">{conversation.total_messages}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-routiq-blackberry/60">Sentiment</span>
+                    <span className={`font-medium ${sentimentInfo.color}`}>
+                      {sentimentInfo.sentiment}
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Smart Notes & Treatment Summary */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Clinical Notes
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                {/* Treatment Summary */}
+                {patientProfile?.treatment_summary && (
+                  <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                    <div className="text-xs font-medium text-blue-900 mb-1">Treatment Summary</div>
+                    <p className="text-xs text-blue-800">{patientProfile.treatment_summary}</p>
+                  </div>
+                )}
+
+                {/* Latest Treatment Note */}
+                {patientProfile?.last_treatment_note && (
+                  <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                    <div className="text-xs font-medium text-green-900 mb-1">Latest Note</div>
+                    <p className="text-xs text-green-800">{patientProfile.last_treatment_note}</p>
+                  </div>
+                )}
+
+                {/* Smart Conversation Insights */}
+                <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                  <div className="text-xs font-medium text-purple-900 mb-2 flex items-center gap-1">
+                    <Zap className="h-3 w-3" />
+                    Conversation Insights
+                  </div>
+                  {messages.length > 0 ? (
+                    <div className="space-y-1 text-xs text-purple-800">
+                      {messages.some(m => m.content?.toLowerCase().includes('pain')) && (
+                        <p>• Mentioned pain in recent conversation</p>
+                      )}
+                      {messages.some(m => m.content?.toLowerCase().includes('appointment')) && (
+                        <p>• Discussed appointment scheduling</p>
+                      )}
+                      {messages.some(m => m.content?.toLowerCase().includes('cancel')) && (
+                        <p>• ⚠️ Mentioned cancellation concerns</p>
+                      )}
+                      {messages.some(m => m.content?.toLowerCase().includes('better') || m.content?.toLowerCase().includes('improve')) && (
+                        <p>• ✅ Reported improvement in condition</p>
+                      )}
+                      {messages.length === 0 && <p>No recent conversation insights available</p>}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-purple-600">No conversation data to analyze</p>
                   )}
-            </div>
-          </CardContent>
-        </Card>
+                </div>
+              </CardContent>
+            </Card>
 
-        {/* Key Metrics */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
-            <div className="flex items-center gap-2">
-              <Target className="h-3 w-3 text-routiq-blackberry/60" />
-              <span className="text-xs text-routiq-core">Status</span>
-            </div>
-            <Select value={resolutionStatus} onValueChange={handleStatusChange}>
-              <SelectTrigger className="w-44 h-6 text-xs border-gray-300 bg-white hover:bg-gray-50 text-gray-700 focus:text-gray-700">
-                <SelectValue>{formatStatusDisplay(resolutionStatus)}</SelectValue>
-              </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg min-w-44">
-                <SelectItem value="open" className="text-gray-700 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800">Open</SelectItem>
-                <SelectItem value="requires-follow-up" className="text-gray-700 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800">Requires Follow-up</SelectItem>
-                <SelectItem value="resolved" className="text-gray-700 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800">Resolved</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            {/* Quick Actions */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-2">
+                <Button size="sm" className="w-full h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white">
+                  <Calendar className="h-3 w-3 mr-1" />
+                  Schedule Follow-up
+                </Button>
+                <Button size="sm" variant="outline" className="w-full h-8 text-xs">
+                  <FileText className="h-3 w-3 mr-1" />
+                  Add Treatment Note
+                </Button>
+                <Button size="sm" variant="outline" className="w-full h-8 text-xs">
+                  <Phone className="h-3 w-3 mr-1" />
+                  Call Patient
+                </Button>
+              </CardContent>
+            </Card>
 
-          {/* Sentiment Score - Always show with dummy value for now */}
-          <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
-            <div className="flex items-center gap-2">
-              <Star className="h-3 w-3 text-routiq-blackberry/60" />
-              <span className="text-xs text-routiq-core">Sentiment</span>
-            </div>
-            <span className={`text-xs font-medium ${sentimentInfo.color}`}>
-              {sentimentInfo.sentiment}
-            </span>
-          </div>
-        </div>
+            {/* Conversation Rating */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core">Rate this conversation</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    onClick={() => handleRating('positive')}
+                    className={`flex-1 gap-1 h-8 text-xs transition-all border ${
+                      rating === 'positive' 
+                        ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' 
+                        : 'bg-white border-green-300 text-green-600 hover:bg-green-50 hover:border-green-400'
+                    }`}
+                  >
+                    <ThumbsUp className="h-3 w-3" />
+                    Good
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => handleRating('neutral')}
+                    className={`flex-1 gap-1 h-8 text-xs transition-all border ${
+                      rating === 'neutral' 
+                        ? 'bg-gray-600 hover:bg-gray-700 text-white border-gray-600' 
+                        : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400'
+                    }`}
+                  >
+                    OK
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => handleRating('negative')}
+                    className={`flex-1 gap-1 h-8 text-xs transition-all border ${
+                      rating === 'negative' 
+                        ? 'bg-red-600 hover:bg-red-700 text-white border-red-600' 
+                        : 'bg-white border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400'
+                    }`}
+                  >
+                    <ThumbsDown className="h-3 w-3" />
+                    Poor
+                  </Button>
+                </div>
 
-        <Separator />
-
-        {/* Rating Section */}
-        <div className="space-y-2">
-          <h4 className="font-medium text-routiq-core text-sm">Rate this conversation</h4>
-          
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              onClick={() => handleRating('positive')}
-              className={`flex-1 gap-1 h-8 text-xs transition-all border ${
-                rating === 'positive' 
-                  ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' 
-                  : 'bg-white border-green-300 text-green-600 hover:bg-green-50 hover:border-green-400'
-              }`}
-            >
-              <ThumbsUp className="h-3 w-3" />
-              Good
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => handleRating('neutral')}
-              className={`flex-1 gap-1 h-8 text-xs transition-all border ${
-                rating === 'neutral' 
-                  ? 'bg-gray-600 hover:bg-gray-700 text-white border-gray-600' 
-                  : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400'
-              }`}
-            >
-              OK
-            </Button>
-            <Button
-              size="sm"
-              onClick={() => handleRating('negative')}
-              className={`flex-1 gap-1 h-8 text-xs transition-all border ${
-                rating === 'negative' 
-                  ? 'bg-red-600 hover:bg-red-700 text-white border-red-600' 
-                  : 'bg-white border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400'
-              }`}
-            >
-              <ThumbsDown className="h-3 w-3" />
-              Poor
-            </Button>
-          </div>
-
-              {/* Conditional feedback box - show when rating is selected OR existing feedback exists */}
-              {((showFeedback && rating) || (rating && feedback)) && (
-          <div className="space-y-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-            <textarea
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder={
-                rating === 'negative' 
-                  ? "Describe any issues, errors, or problems with the AI bot's responses..."
-                  : rating === 'neutral'
-                  ? "Share any thoughts or suggestions about this conversation..."
-                  : rating === 'positive'
-                  ? "Share your feedback to help improve our AI bot..."
-                  : "Rate the conversation and share your thoughts..."
-              }
-              className="w-full p-3 text-sm border border-gray-300 rounded-md resize-none h-24 focus:outline-none focus:ring-2 focus:ring-gray-400/30 focus:border-gray-400 bg-white"
-            />
-            <div className="flex gap-2">
-              <Button 
-                size="sm" 
-                onClick={submitFeedback} 
-                className="flex-1 h-8 text-xs bg-gray-600 hover:bg-gray-700 text-white border-0"
-                      disabled={!rating}
-              >
-                Submit Feedback
-              </Button>
-              <Button 
-                size="sm" 
-                onClick={() => {
-                  setRating(null)
-                  setFeedback('')
-                  setShowFeedback(false)
-                }} 
-                className="h-8 text-xs bg-white text-gray-600 hover:bg-gray-50 border border-gray-300"
-              >
-                Clear
-              </Button>
-            </div>
-          </div>
-              )}
-        </div>
+                {/* Feedback Section */}
+                {((showFeedback && rating) || (rating && feedback)) && (
+                  <div className="space-y-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                    <textarea
+                      value={feedback}
+                      onChange={(e) => setFeedback(e.target.value)}
+                      placeholder={
+                        rating === 'negative' 
+                          ? "Describe any issues with the conversation or patient interaction..."
+                          : rating === 'neutral'
+                          ? "Share feedback about this patient interaction..."
+                          : rating === 'positive'
+                          ? "What went well in this conversation?..."
+                          : "Rate the conversation and share your thoughts..."
+                      }
+                      className="w-full p-3 text-sm border border-gray-300 rounded-md resize-none h-20 focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400 bg-white"
+                    />
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        onClick={submitFeedback} 
+                        className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white border-0"
+                        disabled={!rating}
+                      >
+                        Submit Feedback
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        onClick={() => {
+                          setRating(null)
+                          setFeedback('')
+                          setShowFeedback(false)
+                        }} 
+                        className="h-8 text-xs bg-white text-gray-600 hover:bg-gray-50 border border-gray-300"
+                      >
+                        Clear
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </>
         )}
       </div>
@@ -968,7 +1223,7 @@ export default function PhoneChatPage() {
         })
         
         if (data.patient_profiles && data.patient_profiles.length > 0) {
-          const teresa = data.patient_profiles.find(p => p.phone === '6281935454615')
+          const teresa = data.patient_profiles.find((p: PatientProfile) => p.phone === '6281935454615')
           if (teresa) {
             console.log('✅ Found Teresa in direct API test:', {
               name: teresa.patient_name,
