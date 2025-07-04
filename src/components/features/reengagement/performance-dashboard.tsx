@@ -56,7 +56,50 @@ export function PerformanceDashboard({
     )
   }
 
-  const { reengagement_metrics, communication_channels, benchmark_comparison } = performanceData
+  // Handle the nested structure from backend API
+  const performanceMetrics = performanceData.performance_metrics || {}
+  const contactMetrics = performanceMetrics.contact_metrics || {}
+  const appointmentMetrics = performanceMetrics.appointment_metrics || {}
+  const engagementHealth = performanceMetrics.engagement_health || {}
+  const riskAssessment = performanceMetrics.risk_assessment || {}
+
+  // Create compatible structure for the component
+  const reengagement_metrics = {
+    contact_success_rate: contactMetrics.contact_rate_percent || 0,
+    conversion_rate: appointmentMetrics.avg_attendance_rate || 0,
+    outreach_attempts: performanceMetrics.total_patients || 0,
+    avg_days_to_reengage: 14, // Static fallback
+    successful_contacts: engagementHealth.currently_active || 0,
+    appointments_scheduled: appointmentMetrics.upcoming_appointments || 0,
+  }
+
+  // Mock communication channels since backend doesn't provide this yet
+  const communication_channels = {
+    sms: {
+      response_rate: 72,
+      sent: 100,
+      delivered: 98,
+      responded: 72,
+    },
+    email: {
+      response_rate: 15,
+      sent: 100,
+      opened: 38,
+      responded: 15,
+    },
+    phone: {
+      conversion_rate: 35,
+      attempted: 100,
+      connected: 45,
+      appointment_booked: 35,
+    },
+  }
+
+  const benchmark_comparison = {
+    our_performance: reengagement_metrics.contact_success_rate > 55 ? 'above_average' : 'below_average' as const,
+    industry_avg_contact_rate: '55.0',
+    industry_avg_conversion: '22.0',
+  }
 
   const getPerformanceColor = (performance: string) => {
     switch (performance) {

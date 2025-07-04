@@ -180,39 +180,38 @@ export interface RiskMetricsResponse {
 }
 
 export interface PerformanceMetricsResponse {
+  organization_id: string;
   timeframe: string;
-  reengagement_metrics: {
-    outreach_attempts: number;
-    successful_contacts: number;
-    contact_success_rate: number;
-    appointments_scheduled: number;
-    conversion_rate: number;
-    avg_days_to_reengage: number;
-  };
-  communication_channels: {
-    sms: {
-      sent: number;
-      delivered: number;
-      responded: number;
-      response_rate: number;
+  performance_metrics: {
+    total_patients: number;
+    engagement_health: {
+      currently_active: number;
+      currently_dormant: number;
+      currently_stale: number;
     };
-    email: {
-      sent: number;
-      opened: number;
-      responded: number;
-      response_rate: number;
+    risk_assessment: {
+      high_risk: number;
+      critical_risk: number;
+      urgent_actions: number;
     };
-    phone: {
-      attempted: number;
-      connected: number;
-      appointment_booked: number;
-      conversion_rate: number;
+    contact_metrics: {
+      avg_contact_success_score: number;
+      contact_rate_percent: number;
+      success_prediction_breakdown: {
+        very_high: number;
+        high: number;
+        medium: number;
+        low: number;
+      };
     };
-  };
-  benchmark_comparison: {
-    industry_avg_contact_rate: number;
-    industry_avg_conversion: number;
-    our_performance: 'above_average' | 'at_average' | 'below_average';
+    appointment_metrics: {
+      upcoming_appointments: number;
+      avg_attendance_rate: number;
+    };
+    financial_metrics: {
+      total_lifetime_value: number;
+      avg_lifetime_value: number;
+    };
   };
 }
 
