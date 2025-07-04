@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { RoutiqAPI, ReengagementDashboard, PrioritizedPatientsResponse, RiskMetricsResponse, PerformanceMetricsResponse, TrendsResponse, OutreachLogRequest } from '@/lib/routiq-api';
+import { RoutiqAPI, ReengagementDashboard, PrioritizedPatientsResponse, RiskMetricsResponse, PerformanceMetricsResponse, TrendsResponse, OutreachLogRequest, PatientProfilesResponse, SinglePatientProfileResponse, PatientProfilesSummaryResponse } from '@/lib/routiq-api';
 
 /**
  * Hook to fetch risk metrics summary for dashboard cards
@@ -100,6 +100,9 @@ export function useLogOutreach(organizationId: string) {
       queryClient.invalidateQueries({ queryKey: ['risk-metrics', organizationId] });
       queryClient.invalidateQueries({ queryKey: ['performance-metrics', organizationId] });
       queryClient.invalidateQueries({ queryKey: ['prioritized-patients', organizationId] });
+      // Invalidate new patient profiles queries
+      queryClient.invalidateQueries({ queryKey: ['patient-profiles', organizationId] });
+      queryClient.invalidateQueries({ queryKey: ['patient-profiles-summary', organizationId] });
     },
   });
 }
@@ -118,6 +121,82 @@ export function useReengagementDashboard(organizationId: string) {
     enabled: !!organizationId,
     staleTime: 1 * 60 * 1000, // 1 minute
     refetchInterval: 5 * 60 * 1000, // 5 minutes
+  });
+}
+
+// ========================================
+// NEW: Patient Profiles API Hooks (Backend Team's Latest API)
+// ========================================
+
+/**
+ * Hook to fetch patient profiles list with engagement metrics
+ * Uses new /patient-profiles endpoint from backend team
+ */
+export function usePatientProfiles(
+  organizationId: string,
+  options?: {
+    limit?: number;
+    offset?: number;
+    search?: string;
+  }
+) {
+  return useQuery({
+    queryKey: ['patient-profiles', organizationId, options],
+    queryFn: async () => {
+      const api = new RoutiqAPI(organizationId);
+      return api.getPatientProfiles(organizationId, options);
+    },
+    enabled: !!organizationId,
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 2 * 60 * 1000, // 2 minutes
+  });
+}
+
+/**
+ * Hook to fetch individual patient profile by ID
+ */
+export function usePatientProfile(organizationId: string, patientId: string) {
+  return useQuery({
+    queryKey: ['patient-profile', organizationId, patientId],
+    queryFn: async () => {
+      const api = new RoutiqAPI(organizationId);
+      return api.getPatientProfile(organizationId, patientId);
+    },
+    enabled: !!organizationId && !!patientId,
+    staleTime: 1 * 60 * 1000, // 1 minute
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
+  });
+}
+
+/**
+ * Hook to fetch patient profiles summary statistics
+ */
+export function usePatientProfilesSummary(organizationId: string) {
+  return useQuery({
+    queryKey: ['patient-profiles-summary', organizationId],
+    queryFn: async () => {
+      const api = new RoutiqAPI(organizationId);
+      return api.getPatientProfilesSummary(organizationId);
+    },
+    enabled: !!organizationId,
+    staleTime: 1 * 60 * 1000, // 1 minute
+    refetchInterval: 5 * 60 * 1000, // 5 minutes
+  });
+}
+
+/**
+ * Hook to test patient profiles API connectivity
+ */
+export function usePatientProfilesDebug(organizationId: string) {
+  return useQuery({
+    queryKey: ['patient-profiles-debug', organizationId],
+    queryFn: async () => {
+      const api = new RoutiqAPI(organizationId);
+      return api.getPatientProfilesDebug(organizationId);
+    },
+    enabled: !!organizationId,
+    staleTime: 0, // Always fresh for debug
+    refetchInterval: false, // Manual refresh only
   });
 }
 
