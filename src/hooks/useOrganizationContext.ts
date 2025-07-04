@@ -88,12 +88,14 @@ export function useOrganizationContext(): UseOrganizationContextResult {
     } finally {
       setIsLoading(false)
     }
-  }, [isClerkLoading, user, clerkOrgId, clerkOrgName, membershipRole])
+  }, [user?.id, clerkOrgId, clerkOrgName, membershipRole])
 
   // Fetch organization context when Clerk data is available
   useEffect(() => {
-    fetchOrganizationContext()
-  }, [fetchOrganizationContext])
+    if (!isClerkLoading && user && clerkOrgId) {
+      fetchOrganizationContext()
+    }
+  }, [isClerkLoading, user?.id, clerkOrgId, fetchOrganizationContext])
 
   // Computed values for convenience
   const organizationId = organizationContext?.organizationId || null

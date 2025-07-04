@@ -734,7 +734,7 @@ export class RoutiqAPI {
     if (options?.limit) params.append('limit', options.limit.toString());
     
     const query = params.toString() ? `?${params.toString()}` : '';
-    return this.request(`/api/v1/reengagement/${organizationId}/patients/prioritized${query}`);
+    return this.request(`/api/v1/reengagement/${organizationId}/prioritized${query}`);
   }
 
   /**
