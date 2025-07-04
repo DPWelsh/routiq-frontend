@@ -305,35 +305,35 @@ export function UnifiedDashboard() {
             <div className="grid grid-cols-5 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-red-600">
-                  {riskMetrics.risk_summary.critical}
+                  {riskMetrics?.risk_summary?.critical || 0}
                 </div>
                 <div className="text-sm text-red-700">Critical</div>
                 <div className="text-xs text-gray-500">45+ days</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-orange-600">
-                  {riskMetrics.risk_summary.high}
+                  {riskMetrics?.risk_summary?.high || 0}
                 </div>
                 <div className="text-sm text-orange-700">High</div>
                 <div className="text-xs text-gray-500">30-44 days</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-yellow-600">
-                  {riskMetrics.risk_summary.medium}
+                  {riskMetrics?.risk_summary?.medium || 0}
                 </div>
                 <div className="text-sm text-yellow-700">Medium</div>
                 <div className="text-xs text-gray-500">14-29 days</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-blue-600">
-                  {riskMetrics.risk_summary.low}
+                  {riskMetrics?.risk_summary?.low || 0}
                 </div>
                 <div className="text-sm text-blue-700">Low</div>
                 <div className="text-xs text-gray-500">7-13 days</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  {riskMetrics.risk_summary.engaged}
+                  {riskMetrics?.risk_summary?.engaged || 0}
                 </div>
                 <div className="text-sm text-green-700">Engaged</div>
                 <div className="text-xs text-gray-500">Recent contact</div>
