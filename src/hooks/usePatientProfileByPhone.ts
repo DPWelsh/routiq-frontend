@@ -21,9 +21,13 @@ export function usePatientProfileByPhone(phone: string) {
       console.log('📞 Search phone:', phone);
       console.log('🏢 Organization ID:', organizationId);
       
+      // Clean the phone number for search - remove + prefix and any non-digits
+      const cleanPhone = phone.replace(/^\+/, '').replace(/[^\d]/g, '');
+      console.log('🧹 Cleaned phone for search:', cleanPhone);
+      
       try {
         const response = await api.getPatientProfiles(organizationId, {
-          search: phone,
+          search: cleanPhone, // Use cleaned phone number
           limit: 10 // Increase limit to find more potential matches
         });
         
@@ -46,7 +50,7 @@ export function usePatientProfileByPhone(phone: string) {
           // Try a direct API test call to see if the issue is with our implementation
           console.log('🧪 Testing direct API call...');
           const testResponse = await fetch(
-            `https://routiq-backend-prod.up.railway.app/api/v1/reengagement/${organizationId}/patient-profiles?search=${encodeURIComponent(phone)}&limit=5`,
+            `https://routiq-backend-prod.up.railway.app/api/v1/reengagement/org_2xwHiNrj68eaRUlX10anlXGvzX7/patient-profiles?search=${encodeURIComponent(cleanPhone)}&limit=5`,
             {
               method: 'GET',
               headers: { 'Content-Type': 'application/json' }

@@ -944,6 +944,49 @@ export default function PhoneChatPage() {
     console.log('✅ Test conversation loaded - check performance panel for patient profile data')
   }
 
+  // Add API test function
+  const testAPIDirectly = async () => {
+    console.log('🧪 Testing Patient Profiles API directly from browser...')
+    
+    try {
+      const response = await fetch(
+        'https://routiq-backend-prod.up.railway.app/api/v1/reengagement/org_2xwHiNrj68eaRUlX10anlXGvzX7/patient-profiles?search=6281935454615&limit=5',
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        }
+      )
+      
+      console.log('📡 Direct API test response status:', response.status)
+      
+      if (response.ok) {
+        const data = await response.json()
+        console.log('✅ Direct API test successful:', {
+          success: data.success,
+          count: data.count,
+          profilesFound: data.patient_profiles?.length || 0
+        })
+        
+        if (data.patient_profiles && data.patient_profiles.length > 0) {
+          const teresa = data.patient_profiles.find(p => p.phone === '6281935454615')
+          if (teresa) {
+            console.log('✅ Found Teresa in direct API test:', {
+              name: teresa.patient_name,
+              phone: teresa.phone,
+              engagement: teresa.engagement_level,
+              risk: teresa.churn_risk,
+              ltv: teresa.estimated_lifetime_value
+            })
+          }
+        }
+      } else {
+        console.log('❌ Direct API test failed:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('❌ Direct API test error:', error)
+    }
+  }
+
   // Add test button to the UI (only in development)
   const isDevelopment = process.env.NODE_ENV === 'development'
 
