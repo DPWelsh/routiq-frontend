@@ -859,8 +859,10 @@ export default function PhoneChatPage() {
     }
   }
 
-  // Add test mode for demonstrating patient profile integration
+  // Add test mode for demonstrating patient profile integration with working API
   const testPatientIntegration = () => {
+    console.log('🧪 Test mode: Creating conversation with Teresa Theiss (real patient data)')
+    
     // Create a mock conversation with Teresa Theiss's actual phone number
     const testConversation: PhoneConversation = {
       phone: '6281935454615', // Teresa Theiss's actual phone number from database
@@ -877,63 +879,69 @@ export default function PhoneChatPage() {
     const testMessages: PhoneMessage[] = [
       {
         id: 1,
-        content: 'Hi, I wanted to confirm my upcoming appointment',
+        content: 'Hi, I wanted to confirm my upcoming appointment next week',
         sender_type: 'user',
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        timestamp: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
         metadata: {},
         external_id: 'test_msg_1'
       },
       {
         id: 2,
-        content: 'Hello Teresa! Yes, I can help you with that. Let me check your appointment details.',
+        content: 'Hello Teresa! Yes, you have an appointment scheduled for July 1st at 6:15 AM. Would you like me to confirm the details?',
         sender_type: 'agent',
-        timestamp: new Date(Date.now() - 3500000).toISOString(),
+        timestamp: new Date(Date.now() - 3000000).toISOString(), // 50 min ago
         metadata: {},
         external_id: 'test_msg_2'
       },
       {
         id: 3,
-        content: 'Your appointment is scheduled for July 1st at 6:15 AM. Would you like to keep this time?',
-        sender_type: 'agent',
-        timestamp: new Date(Date.now() - 3400000).toISOString(),
+        content: 'Perfect, that works for me. Is there anything I need to prepare?',
+        sender_type: 'user',
+        timestamp: new Date(Date.now() - 2400000).toISOString(), // 40 min ago
         metadata: {},
         external_id: 'test_msg_3'
       },
       {
         id: 4,
-        content: 'Yes, that time works perfectly for me.',
-        sender_type: 'user',
-        timestamp: new Date(Date.now() - 3300000).toISOString(),
+        content: 'Just bring your usual items and arrive 10 minutes early. We\'ll take care of the rest!',
+        sender_type: 'agent',
+        timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
         metadata: {},
         external_id: 'test_msg_4'
       },
       {
         id: 5,
-        content: 'Perfect! Your appointment is confirmed. We look forward to seeing you.',
-        sender_type: 'agent',
-        timestamp: new Date(Date.now() - 3200000).toISOString(),
+        content: 'Thank you for the reminder and the help!',
+        sender_type: 'user',
+        timestamp: new Date(Date.now() - 600000).toISOString(), // 10 min ago
         metadata: {},
         external_id: 'test_msg_5'
       },
       {
         id: 6,
-        content: 'Thank you for the appointment reminder!',
-        sender_type: 'user',
+        content: 'You\'re welcome, Teresa! See you next week.',
+        sender_type: 'agent',
         timestamp: new Date().toISOString(),
         metadata: {},
         external_id: 'test_msg_6'
       }
     ]
 
+    console.log('🧪 Test conversation details:', {
+      phone: testConversation.phone,
+      patientName: testConversation.patient_name,
+      messageCount: testMessages.length,
+      expectedProfile: 'Teresa Theiss - disengaged, low risk, $750 LTV'
+    })
+
+    // Update state with test data
     setSelectedChat({
       conversation: testConversation,
       messages: testMessages
     })
+    setLoading(false)
     
-    console.log('🧪 Test mode: Created conversation with Teresa Theiss\'s phone number')
-    console.log('📞 Phone:', testConversation.phone)
-    console.log('👤 Patient:', testConversation.patient_name)
-    console.log('💬 This should now search for Teresa\'s patient profile data')
+    console.log('✅ Test conversation loaded - check performance panel for patient profile data')
   }
 
   // Add test button to the UI (only in development)

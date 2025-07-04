@@ -943,8 +943,8 @@ export class RoutiqAPI {
   // ========================================
 
   /**
-   * Get patient profiles list with engagement metrics
-   * Uses new /patient-profiles endpoint from backend team
+   * Get patient profiles with search and pagination
+   * No authentication required - uses dashboard pattern
    */
   async getPatientProfiles(organizationId: string, options?: {
     limit?: number;
@@ -952,48 +952,101 @@ export class RoutiqAPI {
     search?: string;
   }): Promise<PatientProfilesResponse> {
     const params = new URLSearchParams();
-    if (options?.limit) params.append('limit', options.limit.toString());
-    if (options?.offset) params.append('offset', options.offset.toString());
-    if (options?.search) params.append('search', options.search);
+    if (options?.limit) params.set('limit', options.limit.toString());
+    if (options?.offset) params.set('offset', options.offset.toString());
+    if (options?.search) params.set('search', options.search);
     
-    const query = params.toString() ? `?${params.toString()}` : '';
-    return this.request(`/api/v1/reengagement/${organizationId}/patient-profiles${query}`);
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    
+    // Direct fetch without authentication headers for patient profiles
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/reengagement/${organizationId}/patient-profiles${queryString}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Patient Profiles API Error ${response.status}: ${errorText}`);
+    }
+    
+    return response.json();
   }
 
   /**
    * Get individual patient profile by ID
+   * No authentication required - uses dashboard pattern
    */
   async getPatientProfile(organizationId: string, patientId: string): Promise<SinglePatientProfileResponse> {
-    return this.request(`/api/v1/reengagement/${organizationId}/patient-profiles/${patientId}`);
+    // Direct fetch without authentication headers
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/reengagement/${organizationId}/patient-profiles/${patientId}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Patient Profile API Error ${response.status}: ${errorText}`);
+    }
+    
+    return response.json();
   }
 
   /**
    * Get patient profiles summary statistics
+   * No authentication required - uses dashboard pattern
    */
   async getPatientProfilesSummary(organizationId: string): Promise<PatientProfilesSummaryResponse> {
-    return this.request(`/api/v1/reengagement/${organizationId}/patient-profiles/summary`);
+    // Direct fetch without authentication headers
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/reengagement/${organizationId}/patient-profiles/summary`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Patient Profiles Summary API Error ${response.status}: ${errorText}`);
+    }
+    
+    return response.json();
   }
 
   /**
-   * Debug/test endpoint for patient profiles (first 5 patients)
+   * Get debug patient profiles (5 sample patients)
+   * No authentication required - uses dashboard pattern
    */
   async getPatientProfilesDebug(organizationId: string): Promise<PatientProfilesResponse> {
-    const response = await this.request<{
-      success: boolean;
-      organization_id: string;
-      debug_profiles: PatientProfile[];
-      count: number;
-      view_exists: boolean;
-      timestamp: string;
-    }>(`/api/v1/reengagement/${organizationId}/patient-profiles/debug`);
+    // Direct fetch without authentication headers
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/reengagement/${organizationId}/patient-profiles/debug`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
     
-    // Convert debug response to standard format
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Patient Profiles Debug API Error ${response.status}: ${errorText}`);
+    }
+    
+    const data = await response.json();
+    
+    // Debug endpoint returns debug_profiles, convert to standard format
     return {
-      success: response.success,
-      organization_id: response.organization_id,
-      patient_profiles: response.debug_profiles, // Map debug_profiles to patient_profiles
-      count: response.count,
-      timestamp: response.timestamp
+      success: data.success,
+      organization_id: data.organization_id,
+      patient_profiles: data.debug_profiles || data.patient_profiles, // Handle both formats
+      count: data.count,
+      timestamp: data.timestamp
     };
   }
 
