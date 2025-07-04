@@ -374,6 +374,7 @@ function ConversationPerformancePanel({
   const getClientSatisfaction = () => {
     // Priority 1: User-submitted satisfaction score (conversation-specific feedback)
     if (clientSatisfactionScore) {
+      console.log('✅ Using conversation-specific satisfaction score:', clientSatisfactionScore)
       const scaledScore = clientSatisfactionScore * 2
       return { 
         score: scaledScore, 
@@ -383,6 +384,12 @@ function ConversationPerformancePanel({
     
     // Priority 2: Patient profile overall rating (patient engagement score)
     if (patientProfile && patientMetrics.overallRating !== 'unrated') {
+      console.log('✅ Using patient profile data:', {
+        patientName: patientProfile.patient_name,
+        phone: patientProfile.phone,
+        engagementLevel: patientProfile.engagement_level,
+        overallRating: patientMetrics.overallRating
+      })
       const rating = patientMetrics.overallRating
       if (rating === 'good') {
         return { score: 8, text: 'good' }
@@ -394,6 +401,7 @@ function ConversationPerformancePanel({
     }
     
     // Fallback: unrated
+    console.log('🔄 Using fallback data - no patient profile found for:', conversation?.phone)
     return { score: 0, text: 'unrated' }
   }
 
@@ -851,6 +859,102 @@ export default function PhoneChatPage() {
     }
   }
 
+  // Add test mode for demonstrating patient profile integration
+  const testPatientIntegration = () => {
+    // Create a mock conversation with a real patient phone number
+    const testConversation: PhoneConversation = {
+      phone: '+61438459413', // Real patient: Mitch Cummings
+      patient_name: 'Mitch Cummings',
+      email: 'mitch.cummings@example.com',
+      conversation_id: 'test_conv_001',
+      conversation_source: 'whatsapp',
+      total_messages: 8,
+      last_message_time: new Date().toISOString(),
+      last_message_content: 'Thank you for your help!',
+      last_message_sender: 'user'
+    }
+
+    const testMessages: PhoneMessage[] = [
+      {
+        id: 1,
+        content: 'Hi, I need help with my appointment',
+        sender_type: 'user',
+        timestamp: new Date(Date.now() - 3600000).toISOString(),
+        metadata: {},
+        external_id: 'test_msg_1'
+      },
+      {
+        id: 2,
+        content: 'I can help you with that! What specific assistance do you need?',
+        sender_type: 'agent',
+        timestamp: new Date(Date.now() - 3500000).toISOString(),
+        metadata: {},
+        external_id: 'test_msg_2'
+      },
+      {
+        id: 3,
+        content: 'I need to reschedule my appointment for next week',
+        sender_type: 'user',
+        timestamp: new Date(Date.now() - 3400000).toISOString(),
+        metadata: {},
+        external_id: 'test_msg_3'
+      },
+      {
+        id: 4,
+        content: 'Perfect! I can help you reschedule. Let me check available times for next week.',
+        sender_type: 'agent',
+        timestamp: new Date(Date.now() - 3300000).toISOString(),
+        metadata: {},
+        external_id: 'test_msg_4'
+      },
+      {
+        id: 5,
+        content: 'I have Tuesday at 2pm or Wednesday at 10am available. Which works better for you?',
+        sender_type: 'agent',
+        timestamp: new Date(Date.now() - 3200000).toISOString(),
+        metadata: {},
+        external_id: 'test_msg_5'
+      },
+      {
+        id: 6,
+        content: 'Tuesday at 2pm works great!',
+        sender_type: 'user',
+        timestamp: new Date(Date.now() - 3100000).toISOString(),
+        metadata: {},
+        external_id: 'test_msg_6'
+      },
+      {
+        id: 7,
+        content: 'Excellent! I\'ve rescheduled your appointment for Tuesday at 2pm. You\'ll receive a confirmation shortly.',
+        sender_type: 'agent',
+        timestamp: new Date(Date.now() - 3000000).toISOString(),
+        metadata: {},
+        external_id: 'test_msg_7'
+      },
+      {
+        id: 8,
+        content: 'Thank you for your help!',
+        sender_type: 'user',
+        timestamp: new Date().toISOString(),
+        metadata: {},
+        external_id: 'test_msg_8'
+      }
+    ]
+
+    setSelectedChat({
+      conversation: testConversation,
+      messages: testMessages
+    })
+    
+    console.log('🧪 Test mode: Created conversation with real patient data')
+    console.log('📞 Phone:', testConversation.phone)
+    console.log('👤 Patient:', testConversation.patient_name)
+    console.log('💬 This should now load real patient profile data from the API')
+  }
+
+  // Add test button to the UI (only in development)
+  const isDevelopment = process.env.NODE_ENV === 'development'
+
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
@@ -903,6 +1007,17 @@ export default function PhoneChatPage() {
             <span className="text-xs text-routiq-blackberry/60 bg-routiq-cloud/20 px-2 py-1 rounded-full">
               {filteredConversations.length} of {conversations.length}
             </span>
+            {isDevelopment && (
+              <Button 
+                onClick={testPatientIntegration} 
+                variant="outline" 
+                size="sm" 
+                className="text-xs h-6 px-2 ml-auto"
+                title="Test Patient Integration"
+              >
+                🧪
+              </Button>
+            )}
           </div>
           
           {/* Source Filter Buttons */}

@@ -75,7 +75,7 @@ export function useConversationPerformance(
       }
 
       // TODO: Replace with RoutiqAPI call when performance endpoints are available
-      console.log('🔍 Using mock performance data')
+      console.log('🔄 Performance hook: No performance endpoint available, using patient profile data where possible')
         setPerformance(null)
     } catch (err) {
       console.error('Error fetching performance:', err)
