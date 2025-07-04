@@ -19,15 +19,53 @@ export function usePatientProfileByPhone(phone: string) {
       // Search for patient by phone number
       const response = await api.getPatientProfiles(organizationId, {
         search: phone,
-        limit: 1
+        limit: 10 // Increase limit to find more potential matches
       });
 
-      // Find exact phone match (since search might return partial matches)
-      const exactMatch = response.patient_profiles.find(p => 
-        p.phone === phone || 
-        p.phone === `+${phone}` || 
-        p.phone?.replace(/[^\d]/g, '') === phone.replace(/[^\d]/g, '')
-      );
+      // Enhanced phone number matching
+      const normalizePhone = (phoneStr: string) => {
+        if (!phoneStr) return '';
+        
+        // Handle scientific notation (e.g., 6.2819E+12)
+        if (phoneStr.includes('E+') || phoneStr.includes('e+')) {
+          const num = parseFloat(phoneStr);
+          phoneStr = num.toString();
+        }
+        
+        // Remove all non-digits
+        return phoneStr.replace(/[^\d]/g, '');
+      };
+
+      const normalizedSearchPhone = normalizePhone(phone);
+      console.log('🔍 Searching for phone:', phone, 'normalized:', normalizedSearchPhone);
+
+      // Find exact phone match with multiple matching strategies
+      const exactMatch = response.patient_profiles.find(p => {
+        if (!p.phone) return false; // Skip if phone is null/undefined
+        
+        const normalizedPatientPhone = normalizePhone(p.phone);
+        console.log('🔍 Checking patient:', p.patient_name, 'phone:', p.phone, 'normalized:', normalizedPatientPhone);
+        
+        return (
+          // Exact match
+          p.phone === phone ||
+          // With + prefix
+          p.phone === `+${phone}` ||
+          // Normalized digit comparison
+          normalizedPatientPhone === normalizedSearchPhone ||
+          // Check if search phone is contained in patient phone
+          normalizedPatientPhone.includes(normalizedSearchPhone) ||
+          // Check if patient phone is contained in search phone
+          normalizedSearchPhone.includes(normalizedPatientPhone)
+        );
+      });
+
+      console.log('🎯 Phone search result:', exactMatch ? {
+        found: true,
+        patient: exactMatch.patient_name,
+        phone: exactMatch.phone,
+        engagement: exactMatch.engagement_level
+      } : { found: false, searchedPhone: phone, totalResults: response.patient_profiles.length });
 
       return exactMatch || null;
     },
