@@ -34,6 +34,7 @@ import { Separator } from "@/components/ui/separator"
 import Image from "next/image"
 import { useAuth } from '@clerk/nextjs'
 import { useConversationPerformance } from '@/hooks/useConversationPerformance'
+import { usePatientProfileByPhone, usePatientPerformanceMetrics } from '@/hooks/usePatientProfileByPhone'
 
 /**
  * ⚠️  DO NOT MODIFY: These interfaces match the phone-centric API responses
@@ -101,6 +102,16 @@ function ConversationPerformancePanel({
     submitRating,
     updatePerformance 
   } = useConversationPerformance(conversation?.conversation_id)
+
+  // Get patient profile data by phone number
+  const { 
+    data: patientProfile, 
+    isLoading: patientLoading, 
+    error: patientError 
+  } = usePatientProfileByPhone(conversation?.phone || '')
+
+  // Get performance metrics from patient profile
+  const patientMetrics = usePatientPerformanceMetrics(patientProfile || null)
 
   // Initialize satisfaction score independently
   useEffect(() => {
@@ -179,55 +190,78 @@ function ConversationPerformancePanel({
     )
   }
 
-  // Calculate performance metrics from real data or use defaults
-  const performanceScore = performance?.overallPerformanceScore || Math.round(
-    // Fallback calculation based on message patterns
-    (conversation.total_messages > 15 ? 70 : 85) + // More messages = lower score (complexity)
-    (messages.filter(m => m.sender_type === 'user').length > 0 ? 10 : 0) + // User engagement
-    (messages.filter(m => m.sender_type === 'agent').length > 2 ? 5 : 0) // Bot responsiveness
-  )
+  // Use patient profile data for metrics, with fallback to conversation data
+  const performanceScore = patientProfile ? 
+    // Calculate score from patient engagement and risk factors
+    (patientMetrics.overallRating === 'good' ? 85 : 
+     patientMetrics.overallRating === 'ok' ? 70 : 55)
+    : 
+    // Fallback calculation if no patient data
+    Math.round(
+      (conversation.total_messages > 15 ? 70 : 85) + 
+      (messages.filter(m => m.sender_type === 'user').length > 0 ? 10 : 0) + 
+      (messages.filter(m => m.sender_type === 'agent').length > 2 ? 5 : 0)
+    )
 
-  const resolutionStatus = performance?.status || 
-    (conversation.total_messages > 10 ? "resolved" : "active")
+  const resolutionStatus = patientProfile ? 
+    patientMetrics.status : 
+    (performance?.status || (conversation.total_messages > 10 ? "resolved" : "active"))
 
   // Format status for display
   const formatStatusDisplay = (status: string) => {
     return status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ')
   }
 
-  // Convert satisfaction score to text rating - INDEPENDENT from user feedback
+  // Get overall rating from patient profile data
   const getOverallRating = () => {
-    console.log('🔍 Debug getOverallRating:', {
-      performance,
-      overallPerformanceScore: performance?.overallPerformanceScore,
-      hasPerformance: !!performance,
-      performanceKeys: performance ? Object.keys(performance) : null
-    })
+    if (patientProfile) {
+      // Use patient profile metrics for accurate rating
+      return patientMetrics.overallRating
+    }
     
-    // Use overallPerformanceScore (calculated separately) NOT satisfactionScore (user feedback)
+    // Fallback to performance data or conversation analysis
     let overallScore = performance?.overallPerformanceScore
     
-    // Fallback calculation if no overall score exists yet
     if (!overallScore && conversation) {
       // Temporary calculation based on conversation patterns
       overallScore = Math.round(
-        (conversation.total_messages > 15 ? 65 : 80) + // More messages = lower score (complexity)
-        (messages.filter(m => m.sender_type === 'user').length > 0 ? 10 : 0) + // User engagement
-        (messages.filter(m => m.sender_type === 'agent').length > 2 ? 5 : 0) // Bot responsiveness
+        (conversation.total_messages > 15 ? 65 : 80) + 
+        (messages.filter(m => m.sender_type === 'user').length > 0 ? 10 : 0) + 
+        (messages.filter(m => m.sender_type === 'agent').length > 2 ? 5 : 0)
       )
     }
     
     if (!overallScore) return 'unrated'
     
-    // Convert percentage-based score to rating
     if (overallScore >= 80) return 'good'
     if (overallScore >= 60) return 'ok'
-    return 'bad'
+    return 'poor'
   }
 
-  // Calculate dummy sentiment score based on conversation data
+  // Get sentiment from patient profile or fallback to conversation analysis
   const getSentimentInfo = () => {
-    // Dummy calculation based on message patterns and performance
+    // Use patient profile sentiment if available
+    if (patientProfile) {
+      const sentiment = patientMetrics.sentiment
+      const displaySentiment = sentiment.charAt(0).toUpperCase() + sentiment.slice(1)
+      let color = 'text-gray-600'
+      
+      switch (sentiment) {
+        case 'positive':
+          color = 'text-green-600'
+          break
+        case 'negative':
+          color = 'text-red-600'
+          break
+        case 'neutral':
+          color = 'text-gray-600'
+          break
+      }
+
+      return { sentiment: displaySentiment, color }
+    }
+
+    // Fallback: analyze conversation messages
     const messageCount = conversation.total_messages
     const hasPositiveKeywords = messages.some(m => 
       m.content?.toLowerCase().includes('thank') || 
@@ -240,7 +274,6 @@ function ConversationPerformancePanel({
       m.content?.toLowerCase().includes('bad')
     )
 
-    // Dummy sentiment logic
     let sentiment = 'Neutral'
     let color = 'text-gray-600'
     
@@ -337,22 +370,31 @@ function ConversationPerformancePanel({
     }
   }
 
-  // Get client satisfaction score for donut chart (1-10 scale) - INDEPENDENT from status
+  // Get client satisfaction from patient profile or user feedback
   const getClientSatisfaction = () => {
-    console.log('🔍 getClientSatisfaction using independent state:', {
-      clientSatisfactionScore,
-      performanceSatisfactionScore: performance?.satisfactionScore,
-      independent: true
-    })
-    
-    if (!clientSatisfactionScore) return { score: 0, text: 'unrated' }
-    
-    // Convert 1-5 scale to 1-10 scale and add text
-    const scaledScore = clientSatisfactionScore * 2
-    return { 
-      score: scaledScore, 
-      text: `${scaledScore}/10` 
+    // Priority 1: User-submitted satisfaction score (conversation-specific feedback)
+    if (clientSatisfactionScore) {
+      const scaledScore = clientSatisfactionScore * 2
+      return { 
+        score: scaledScore, 
+        text: `${scaledScore}/10` 
+      }
     }
+    
+    // Priority 2: Patient profile overall rating (patient engagement score)
+    if (patientProfile && patientMetrics.overallRating !== 'unrated') {
+      const rating = patientMetrics.overallRating
+      if (rating === 'good') {
+        return { score: 8, text: 'good' }
+      } else if (rating === 'ok') {
+        return { score: 6, text: 'ok' }
+      } else if (rating === 'poor') {
+        return { score: 3, text: 'poor' }
+      }
+    }
+    
+    // Fallback: unrated
+    return { score: 0, text: 'unrated' }
   }
 
   const satisfaction = getClientSatisfaction()
@@ -376,13 +418,13 @@ function ConversationPerformancePanel({
 
       {/* Performance Score - Scrollable Content */}
       <div className="flex-1 overflow-y-auto min-h-0 p-3 space-y-3">
-        {performanceLoading ? (
+        {(performanceLoading || patientLoading) ? (
           <div className="text-center text-gray-500 text-sm">
-            Loading performance data...
+            {patientLoading ? 'Loading patient data...' : 'Loading performance data...'}
           </div>
-        ) : performanceError ? (
+        ) : (performanceError || patientError) ? (
           <div className="text-center text-red-500 text-sm">
-            Error loading performance data
+            {patientError ? 'Error loading patient data' : 'Error loading performance data'}
           </div>
         ) : (
           <>
@@ -421,7 +463,14 @@ function ConversationPerformancePanel({
                   </div>
                 </div>
               </div>
-                  <p className="text-xs text-routiq-blackberry/70 mt-2">Client Satisfaction</p>
+                  <p className="text-xs text-routiq-blackberry/70 mt-2">
+                    {patientProfile ? 'Patient Engagement' : 'Client Satisfaction'}
+                  </p>
+                  {patientProfile && (
+                    <p className="text-xs text-routiq-blackberry/50 mt-1">
+                      Risk: {patientMetrics.riskLevel} • LTV: ${patientMetrics.lifetimeValue}
+                    </p>
+                  )}
             </div>
           </CardContent>
         </Card>
