@@ -17,57 +17,104 @@ export function usePatientProfileByPhone(phone: string) {
       const api = new RoutiqAPI(organizationId);
       
       // Search for patient by phone number
-      const response = await api.getPatientProfiles(organizationId, {
-        search: phone,
-        limit: 10 // Increase limit to find more potential matches
-      });
-
-      // Enhanced phone number matching
-      const normalizePhone = (phoneStr: string) => {
-        if (!phoneStr) return '';
+      console.log('🔍 Making API call to patient profiles...');
+      console.log('📞 Search phone:', phone);
+      console.log('🏢 Organization ID:', organizationId);
+      
+      try {
+        const response = await api.getPatientProfiles(organizationId, {
+          search: phone,
+          limit: 10 // Increase limit to find more potential matches
+        });
         
-        // Handle scientific notation (e.g., 6.2819E+12)
-        if (phoneStr.includes('E+') || phoneStr.includes('e+')) {
-          const num = parseFloat(phoneStr);
-          phoneStr = num.toString();
+        console.log('✅ API Response received:', {
+          success: response.success,
+          count: response.count,
+          profilesLength: response.patient_profiles?.length || 0,
+          totalProfiles: response.patient_profiles?.length || 0
+        });
+        
+        if (response.patient_profiles && response.patient_profiles.length > 0) {
+          console.log('📋 First few patients found:', response.patient_profiles.slice(0, 3).map(p => ({
+            name: p.patient_name,
+            phone: p.phone,
+            engagement: p.engagement_level
+          })));
+        } else {
+          console.log('❌ No patient profiles returned');
+          
+          // Try a direct API test call to see if the issue is with our implementation
+          console.log('🧪 Testing direct API call...');
+          const testResponse = await fetch(
+            `https://routiq-backend-prod.up.railway.app/api/v1/reengagement/${organizationId}/patient-profiles?search=${encodeURIComponent(phone)}&limit=5`,
+            {
+              method: 'GET',
+              headers: { 'Content-Type': 'application/json' }
+            }
+          );
+          
+          if (testResponse.ok) {
+            const testData = await testResponse.json();
+            console.log('🧪 Direct API test result:', {
+              success: testData.success,
+              count: testData.count,
+              profilesFound: testData.patient_profiles?.length || 0
+            });
+          } else {
+            console.log('❌ Direct API test failed:', testResponse.status, testResponse.statusText);
+          }
         }
-        
-        // Remove all non-digits
-        return phoneStr.replace(/[^\d]/g, '');
-      };
 
-      const normalizedSearchPhone = normalizePhone(phone);
-      console.log('🔍 Searching for phone:', phone, 'normalized:', normalizedSearchPhone);
+        // Enhanced phone number matching
+        const normalizePhone = (phoneStr: string) => {
+          if (!phoneStr) return '';
+          
+          // Handle scientific notation (e.g., 6.2819E+12)
+          if (phoneStr.includes('E+') || phoneStr.includes('e+')) {
+            const num = parseFloat(phoneStr);
+            phoneStr = num.toString();
+          }
+          
+          // Remove all non-digits
+          return phoneStr.replace(/[^\d]/g, '');
+        };
 
-      // Find exact phone match with multiple matching strategies
-      const exactMatch = response.patient_profiles.find(p => {
-        if (!p.phone) return false; // Skip if phone is null/undefined
-        
-        const normalizedPatientPhone = normalizePhone(p.phone);
-        console.log('🔍 Checking patient:', p.patient_name, 'phone:', p.phone, 'normalized:', normalizedPatientPhone);
-        
-        return (
-          // Exact match
-          p.phone === phone ||
-          // With + prefix
-          p.phone === `+${phone}` ||
-          // Normalized digit comparison
-          normalizedPatientPhone === normalizedSearchPhone ||
-          // Check if search phone is contained in patient phone
-          normalizedPatientPhone.includes(normalizedSearchPhone) ||
-          // Check if patient phone is contained in search phone
-          normalizedSearchPhone.includes(normalizedPatientPhone)
-        );
-      });
+        const normalizedSearchPhone = normalizePhone(phone);
+        console.log('🔍 Searching for phone:', phone, 'normalized:', normalizedSearchPhone);
 
-      console.log('🎯 Phone search result:', exactMatch ? {
-        found: true,
-        patient: exactMatch.patient_name,
-        phone: exactMatch.phone,
-        engagement: exactMatch.engagement_level
-      } : { found: false, searchedPhone: phone, totalResults: response.patient_profiles.length });
+        // Find exact phone match with multiple matching strategies
+        const exactMatch = response.patient_profiles.find(p => {
+          if (!p.phone) return false; // Skip if phone is null/undefined
+          
+          const normalizedPatientPhone = normalizePhone(p.phone);
+          console.log('🔍 Checking patient:', p.patient_name, 'phone:', p.phone, 'normalized:', normalizedPatientPhone);
+          
+          return (
+            // Exact match
+            p.phone === phone ||
+            // With + prefix
+            p.phone === `+${phone}` ||
+            // Normalized digit comparison
+            normalizedPatientPhone === normalizedSearchPhone ||
+            // Check if search phone is contained in patient phone
+            normalizedPatientPhone.includes(normalizedSearchPhone) ||
+            // Check if patient phone is contained in search phone
+            normalizedSearchPhone.includes(normalizedPatientPhone)
+          );
+        });
 
-      return exactMatch || null;
+        console.log('🎯 Phone search result:', exactMatch ? {
+          found: true,
+          patient: exactMatch.patient_name,
+          phone: exactMatch.phone,
+          engagement: exactMatch.engagement_level
+        } : { found: false, searchedPhone: phone, totalResults: response.patient_profiles.length });
+
+        return exactMatch || null;
+      } catch (error) {
+        console.error('❌ API call failed:', error);
+        throw error;
+      }
     },
     enabled: !!organizationId && !!phone,
     staleTime: 30 * 1000, // 30 seconds
