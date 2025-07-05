@@ -416,7 +416,7 @@ function ConversationPerformancePanel({
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col max-h-screen">
       {/* Header */}
       <div className="p-3 border-b border-routiq-cloud/30 flex-shrink-0">
         <div className="flex items-center gap-2">
@@ -425,8 +425,9 @@ function ConversationPerformancePanel({
         </div>
       </div>
 
-      {/* Patient Profile Content - Scrollable */}
-      <div className="flex-1 overflow-y-auto min-h-0 p-3 space-y-4">
+      {/* Patient Profile Content - Scrollable Container */}
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full overflow-y-auto p-3 space-y-4">
         {(performanceLoading || patientLoading) ? (
           <div className="text-center text-gray-500 text-sm py-8">
             <Activity className="h-6 w-6 mx-auto mb-2 animate-pulse" />
@@ -856,6 +857,7 @@ function ConversationPerformancePanel({
             </Card>
           </>
         )}
+        </div>
       </div>
     </div>
   )
