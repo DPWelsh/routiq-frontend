@@ -416,7 +416,7 @@ function ConversationPerformancePanel({
   }
 
   return (
-    <div className="h-full flex flex-col max-h-screen">
+    <div className="h-full flex flex-col">
       {/* Header */}
       <div className="p-3 border-b border-routiq-cloud/30 flex-shrink-0">
         <div className="flex items-center gap-2">
@@ -426,7 +426,7 @@ function ConversationPerformancePanel({
       </div>
 
       {/* Patient Profile Content - Scrollable Container */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden min-h-0">
         <div className="h-full overflow-y-auto p-3 space-y-4">
         {(performanceLoading || patientLoading) ? (
           <div className="text-center text-gray-500 text-sm py-8">
