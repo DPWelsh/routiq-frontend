@@ -133,7 +133,7 @@ export default function PatientInsightsPage() {
             {filteredTabs.includes('all-patients') && (
               <TabsTrigger 
                 value="all-patients" 
-                className="flex items-center gap-3 text-base font-medium data-[state=active]:bg-routiq-core data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-200"
+                className="flex items-center gap-3 text-base font-medium text-routiq-blackberry/70 data-[state=active]:bg-routiq-cloud data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-routiq-cloud/10 hover:text-routiq-cloud rounded-lg transition-all duration-200"
               >
                 <Users className="h-5 w-5" />
                 <div className="text-left">
@@ -146,7 +146,7 @@ export default function PatientInsightsPage() {
             {filteredTabs.includes('engagement-overview') && (
               <TabsTrigger 
                 value="engagement-overview" 
-                className="flex items-center gap-3 text-base font-medium data-[state=active]:bg-routiq-core data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-200"
+                className="flex items-center gap-3 text-base font-medium text-routiq-blackberry/70 data-[state=active]:bg-routiq-cloud data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-routiq-cloud/10 hover:text-routiq-cloud rounded-lg transition-all duration-200"
               >
                 <TrendingUp className="h-5 w-5" />
                 <div className="text-left">
@@ -159,7 +159,7 @@ export default function PatientInsightsPage() {
             {filteredTabs.includes('top-opportunities') && (
               <TabsTrigger 
                 value="top-opportunities" 
-                className="flex items-center gap-3 text-base font-medium data-[state=active]:bg-routiq-core data-[state=active]:text-white data-[state=active]:shadow-lg transition-all duration-200"
+                className="flex items-center gap-3 text-base font-medium text-routiq-blackberry/70 data-[state=active]:bg-routiq-cloud data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-routiq-cloud/10 hover:text-routiq-cloud rounded-lg transition-all duration-200"
               >
                 <Target className="h-5 w-5" />
                 <div className="text-left">
@@ -189,56 +189,7 @@ export default function PatientInsightsPage() {
           </div>
         </Tabs>
 
-        {/* Quick Stats Footer */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 pt-6 border-t border-routiq-cloud/20">
-          <Card className="border-routiq-cloud/20 bg-white/60">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Users className="h-8 w-8 text-routiq-core bg-routiq-cloud/20 p-2 rounded-lg" />
-                <div>
-                  <div className="text-2xl font-bold text-routiq-core">247</div>
-                  <div className="text-sm text-routiq-blackberry/60">Total Patients</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="border-routiq-cloud/20 bg-white/60">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <TrendingUp className="h-8 w-8 text-green-600 bg-green-100 p-2 rounded-lg" />
-                <div>
-                  <div className="text-2xl font-bold text-green-600">89</div>
-                  <div className="text-sm text-routiq-blackberry/60">Active Patients</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="border-routiq-cloud/20 bg-white/60">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Target className="h-8 w-8 text-amber-600 bg-amber-100 p-2 rounded-lg" />
-                <div>
-                  <div className="text-2xl font-bold text-amber-600">23</div>
-                  <div className="text-sm text-routiq-blackberry/60">At Risk</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="border-routiq-cloud/20 bg-white/60">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Filter className="h-8 w-8 text-routiq-prompt bg-routiq-prompt/20 p-2 rounded-lg" />
-                <div>
-                  <div className="text-2xl font-bold text-routiq-prompt">12</div>
-                  <div className="text-sm text-routiq-blackberry/60">Opportunities</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+
       </div>
     </div>
   )

@@ -15,7 +15,9 @@ import {
   AlertTriangle,
   ChevronDown,
   Download,
-  Plus
+  Plus,
+  TrendingUp,
+  Target
 } from 'lucide-react'
 
 interface AllPatientsTabProps {
@@ -156,6 +158,57 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
 
   return (
     <div className="space-y-6">
+      {/* Quick Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="border-routiq-cloud/20 bg-white/60">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Users className="h-8 w-8 text-routiq-core bg-routiq-cloud/20 p-2 rounded-lg" />
+              <div>
+                <div className="text-2xl font-bold text-routiq-core">247</div>
+                <div className="text-sm text-routiq-blackberry/60">Total Patients</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-routiq-cloud/20 bg-white/60">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <TrendingUp className="h-8 w-8 text-green-600 bg-green-100 p-2 rounded-lg" />
+              <div>
+                <div className="text-2xl font-bold text-green-600">89</div>
+                <div className="text-sm text-routiq-blackberry/60">Active Patients</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-routiq-cloud/20 bg-white/60">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Target className="h-8 w-8 text-amber-600 bg-amber-100 p-2 rounded-lg" />
+              <div>
+                <div className="text-2xl font-bold text-amber-600">23</div>
+                <div className="text-sm text-routiq-blackberry/60">At Risk</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-routiq-cloud/20 bg-white/60">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <Filter className="h-8 w-8 text-routiq-prompt bg-routiq-prompt/20 p-2 rounded-lg" />
+              <div>
+                <div className="text-2xl font-bold text-routiq-prompt">12</div>
+                <div className="text-sm text-routiq-blackberry/60">Opportunities</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* Table Header with Search and Filters */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white p-4 rounded-lg border border-routiq-cloud/20">
         <div className="flex items-center gap-4">
@@ -341,29 +394,6 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
         </CardContent>
       </Card>
 
-      {/* Coming Next - Advanced Filters Preview */}
-      <Card className="border-routiq-cloud/20 bg-routiq-energy/5">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <Filter className="h-5 w-5 text-routiq-energy" />
-            <h3 className="font-semibold text-routiq-core">Advanced Filtering Coming Next</h3>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-routiq-blackberry/70">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-routiq-energy" />
-              <span>Date range filters (last seen)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-routiq-energy" />
-              <span>LTV range slider</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-routiq-energy" />
-              <span>Risk status filters</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 } 
