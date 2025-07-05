@@ -1455,9 +1455,7 @@ export default function PhoneChatPage() {
   }
 
   return (
-    <div className="min-h-screen bg-routiq-cloud/5">
-      <div className="max-w-8xl mx-auto">
-        <div className="flex overflow-hidden" style={{ height: 'calc(100vh - 80px)' }}>
+    <div className="flex overflow-hidden" style={{ height: 'calc(100vh - 80px)' }}>
       {/* Sidebar - Conversation List */}
       <div className="w-96 bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
         {/* Header */}
@@ -1793,8 +1791,6 @@ export default function PhoneChatPage() {
           />
         </div>
       )}
-        </div>
-      </div>
     </div>
   )
 } 
