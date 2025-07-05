@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart3, Users, Zap } from 'lucide-react'
 import { ClinicOverviewTab } from './tabs/clinic-overview-tab'
 import { PatientInsightsTab } from './tabs/patient-insights-tab'
+import { AutomationSummaryTab } from './tabs/automation-summary-tab'
 
 /**
  * Main Dashboard Tabs Component
@@ -67,22 +68,7 @@ export function MainDashboardTabs() {
 
         {/* Automation Summary Tab Content */}
         <TabsContent value="automation-summary" className="mt-6">
-          <div className="space-y-6">
-            {/* Placeholder for Automation Summary content */}
-            <div className="text-center py-16 bg-routiq-prompt/5 rounded-lg border border-routiq-prompt/20">
-              <Zap className="h-16 w-16 text-routiq-blackberry/40 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-routiq-core mb-2">
-                Automation Summary
-              </h3>
-              <p className="text-routiq-blackberry/70 max-w-md mx-auto">
-                ROI tracking, automation performance metrics, and admin time savings will be displayed here.
-                Revenue impact and efficiency analytics coming soon.
-              </p>
-              <div className="mt-4 text-sm text-routiq-prompt">
-                ⚡ Ready for Phase 4 implementation
-              </div>
-            </div>
-          </div>
+          <AutomationSummaryTab />
         </TabsContent>
       </Tabs>
     </div>
