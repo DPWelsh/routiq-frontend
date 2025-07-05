@@ -32,15 +32,15 @@ import { TopOpportunitiesTab } from './components/top-opportunities-tab'
  * - Top Opportunities: Re-engagement opportunities and action center
  */
 export default function PatientInsightsPage() {
-  const [activeTab, setActiveTab] = useState('all-patients')
+  const [activeTab, setActiveTab] = useState('top-opportunities')
   const [searchTerm, setSearchTerm] = useState('')
   const [lastUpdated, setLastUpdated] = useState(new Date())
 
   // Search functionality across all tabs
   const searchableContent = {
+    'top-opportunities': ['opportunities', 'reengagement', 'actions', 'high-value', 'inactive'],
     'all-patients': ['patient', 'name', 'phone', 'email', 'ltv', 'sessions', 'appointments'],
-    'engagement-overview': ['risk', 'engagement', 'analytics', 'charts', 'metrics'],
-    'top-opportunities': ['opportunities', 'reengagement', 'actions', 'high-value', 'inactive']
+    'engagement-overview': ['risk', 'engagement', 'analytics', 'charts', 'metrics']
   }
 
   const filteredTabs = searchTerm 
@@ -52,7 +52,7 @@ export default function PatientInsightsPage() {
           )
         )
         .map(([tab]) => tab)
-    : ['all-patients', 'engagement-overview', 'top-opportunities']
+    : ['top-opportunities', 'all-patients', 'engagement-overview']
 
   const handleRefresh = () => {
     setLastUpdated(new Date())
@@ -97,7 +97,7 @@ export default function PatientInsightsPage() {
             <span>Dashboard</span>
             <ChevronRight className="h-4 w-4" />
             <span className="text-routiq-core font-medium">Patient Insights</span>
-            {activeTab !== 'all-patients' && (
+            {activeTab !== 'top-opportunities' && (
               <>
                 <ChevronRight className="h-4 w-4" />
                 <span className="text-routiq-core font-medium capitalize">
@@ -130,6 +130,16 @@ export default function PatientInsightsPage() {
         {/* Main 3-Tab Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-routiq-cloud/10 p-1 h-12">
+            {filteredTabs.includes('top-opportunities') && (
+              <TabsTrigger 
+                value="top-opportunities" 
+                className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
+              >
+                <Target className="h-4 w-4" />
+                <span className="font-medium">Top Opportunities</span>
+              </TabsTrigger>
+            )}
+
             {filteredTabs.includes('all-patients') && (
               <TabsTrigger 
                 value="all-patients" 
@@ -149,20 +159,15 @@ export default function PatientInsightsPage() {
                 <span className="font-medium">Engagement Overview</span>
               </TabsTrigger>
             )}
-            
-            {filteredTabs.includes('top-opportunities') && (
-              <TabsTrigger 
-                value="top-opportunities" 
-                className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
-              >
-                <Target className="h-4 w-4" />
-                <span className="font-medium">Top Opportunities</span>
-              </TabsTrigger>
-            )}
           </TabsList>
 
           {/* Tab Content */}
           <div className="mt-6">
+            {/* Top Opportunities Tab */}
+            <TabsContent value="top-opportunities" className="space-y-6 mt-0">
+              <TopOpportunitiesTab />
+            </TabsContent>
+
             {/* All Patients Tab */}
             <TabsContent value="all-patients" className="space-y-6 mt-0">
               <AllPatientsTab searchTerm={searchTerm} />
@@ -171,11 +176,6 @@ export default function PatientInsightsPage() {
             {/* Engagement Overview Tab */}
             <TabsContent value="engagement-overview" className="space-y-6 mt-0">
               <EngagementOverviewTab />
-            </TabsContent>
-
-            {/* Top Opportunities Tab */}
-            <TabsContent value="top-opportunities" className="space-y-6 mt-0">
-              <TopOpportunitiesTab />
             </TabsContent>
           </div>
         </Tabs>
