@@ -41,22 +41,22 @@ export default function IntegrationsPage() {
 
       {/* Tabs Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-gray-100">
-          <TabsTrigger value="overview" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-4 bg-routiq-cloud/10 p-1 h-12">
+          <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors">
             <Zap className="h-4 w-4" />
-            Overview
+            <span className="font-medium">Overview</span>
           </TabsTrigger>
-          <TabsTrigger value="connected" className="flex items-center gap-2">
+          <TabsTrigger value="connected" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors">
             <Check className="h-4 w-4" />
-            Connected
+            <span className="font-medium">Connected</span>
           </TabsTrigger>
-          <TabsTrigger value="available" className="flex items-center gap-2">
+          <TabsTrigger value="available" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors">
             <ExternalLink className="h-4 w-4" />
-            Available
+            <span className="font-medium">Available</span>
           </TabsTrigger>
-          <TabsTrigger value="api" className="flex items-center gap-2">
+          <TabsTrigger value="api" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors">
             <Settings className="h-4 w-4" />
-            API & Webhooks
+            <span className="font-medium">API & Webhooks</span>
           </TabsTrigger>
         </TabsList>
 
