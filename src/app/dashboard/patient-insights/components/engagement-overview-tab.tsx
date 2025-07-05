@@ -14,7 +14,14 @@ import {
   Target,
   BarChart3,
   PieChart,
-  Activity
+  Activity,
+  Play,
+  Pause,
+  CheckCircle,
+  ArrowRight,
+  Mail,
+  Phone,
+  Zap
 } from 'lucide-react'
 
 /**
@@ -313,6 +320,138 @@ export function EngagementOverviewTab() {
 
       {/* Patient Flow Analysis */}
       <PatientFlowAnalysis />
+
+      {/* Automation Stage Analytics */}
+      <Card className="border-routiq-cloud/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-routiq-core">
+            <Zap className="h-5 w-5" />
+            Automation Stage Analytics
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Automation Overview Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+              <div className="flex items-center gap-2 mb-2">
+                <Play className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-700">Active Sequences</span>
+              </div>
+              <div className="text-2xl font-bold text-blue-700">142</div>
+              <div className="text-xs text-blue-600 mt-1">Currently running</div>
+            </div>
+            
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <div className="flex items-center gap-2 mb-2">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <span className="text-sm font-medium text-green-700">Completed This Month</span>
+              </div>
+              <div className="text-2xl font-bold text-green-700">23</div>
+              <div className="text-xs text-green-600 mt-1">Journey completed</div>
+            </div>
+            
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div className="flex items-center gap-2 mb-2">
+                <Pause className="h-4 w-4 text-gray-600" />
+                <span className="text-sm font-medium text-gray-700">Paused Sequences</span>
+              </div>
+              <div className="text-2xl font-bold text-gray-700">8</div>
+              <div className="text-xs text-gray-600 mt-1">Need attention</div>
+            </div>
+            
+            <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+              <div className="flex items-center gap-2 mb-2">
+                <AlertTriangle className="h-4 w-4 text-orange-600" />
+                <span className="text-sm font-medium text-orange-700">Priority Interventions</span>
+              </div>
+              <div className="text-2xl font-bold text-orange-700">5</div>
+              <div className="text-xs text-orange-600 mt-1">High-risk patients</div>
+            </div>
+          </div>
+
+          {/* Upcoming Actions Today */}
+          <div className="space-y-4">
+            <h4 className="font-medium text-routiq-core">Actions Due Today</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex items-center justify-between p-3 bg-routiq-cloud/10 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Phone className="h-5 w-5 text-routiq-core" />
+                  <div>
+                    <div className="font-medium text-routiq-blackberry/80">Personal Outreach Calls</div>
+                    <div className="text-sm text-routiq-blackberry/60">High-risk intervention</div>
+                  </div>
+                </div>
+                <div className="text-lg font-bold text-routiq-core">5</div>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 bg-routiq-cloud/10 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <MessageCircle className="h-5 w-5 text-routiq-core" />
+                  <div>
+                    <div className="font-medium text-routiq-blackberry/80">SMS Follow-ups</div>
+                    <div className="text-sm text-routiq-blackberry/60">Reengagement campaign</div>
+                  </div>
+                </div>
+                <div className="text-lg font-bold text-routiq-core">8</div>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 bg-routiq-cloud/10 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Clock className="h-5 w-5 text-routiq-core" />
+                  <div>
+                    <div className="font-medium text-routiq-blackberry/80">Appointment Reminders</div>
+                    <div className="text-sm text-routiq-blackberry/60">Routine maintenance</div>
+                  </div>
+                </div>
+                <div className="text-lg font-bold text-routiq-core">12</div>
+              </div>
+              
+              <div className="flex items-center justify-between p-3 bg-routiq-cloud/10 rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Mail className="h-5 w-5 text-routiq-core" />
+                  <div>
+                    <div className="font-medium text-routiq-blackberry/80">Email Campaigns</div>
+                    <div className="text-sm text-routiq-blackberry/60">Various sequences</div>
+                  </div>
+                </div>
+                <div className="text-lg font-bold text-routiq-core">3</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Sequence Performance */}
+          <div className="space-y-4">
+            <h4 className="font-medium text-routiq-core">Top Performing Sequences</h4>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg border border-green-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                    <Zap className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-green-700">Routine Care Maintenance</div>
+                    <div className="text-sm text-green-600">89 patients • 94% completion rate</div>
+                  </div>
+                </div>
+                <ArrowRight className="h-5 w-5 text-green-600" />
+              </div>
+              
+              <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <Target className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <div className="font-medium text-blue-700">Reengagement Campaign</div>
+                    <div className="text-sm text-blue-600">28 patients • 67% success rate</div>
+                  </div>
+                </div>
+                <ArrowRight className="h-5 w-5 text-blue-600" />
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Action Items */}
       <Card className="border-routiq-prompt/20 bg-routiq-prompt/5">

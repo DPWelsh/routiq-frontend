@@ -17,11 +17,26 @@ import {
   Download,
   Plus,
   TrendingUp,
-  Target
+  Target,
+  Play,
+  Pause,
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  ArrowRight
 } from 'lucide-react'
 
 interface AllPatientsTabProps {
   searchTerm: string
+}
+
+interface AutomationState {
+  currentSequence: string
+  currentStage: string
+  progress: number
+  nextAction: string
+  nextActionDate: string
+  automationStatus: 'active' | 'paused' | 'priority' | 'completed'
 }
 
 /**
@@ -53,7 +68,15 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       lastAppointment: '2024-01-15',
       lastContacted: '2024-01-20',
       noShows: 1,
-      status: 'Active'
+      status: 'Active',
+      automationState: {
+        currentSequence: 'Routine Care Maintenance',
+        currentStage: 'Follow-up Scheduled',
+        progress: 75,
+        nextAction: 'Appointment Reminder',
+        nextActionDate: '2024-01-28',
+        automationStatus: 'active'
+      }
     },
     {
       id: '2', 
@@ -66,7 +89,15 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       lastAppointment: '2023-12-08',
       lastContacted: '2024-01-10',
       noShows: 0,
-      status: 'Dormant'
+      status: 'Dormant',
+      automationState: {
+        currentSequence: 'Reengagement Campaign',
+        currentStage: 'Email Sent - Awaiting Response',
+        progress: 40,
+        nextAction: 'SMS Follow-up',
+        nextActionDate: '2024-01-25',
+        automationStatus: 'active'
+      }
     },
     {
       id: '3',
@@ -79,7 +110,15 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       lastAppointment: '2023-11-22',
       lastContacted: '2023-12-15',
       noShows: 3,
-      status: 'At-Risk'
+      status: 'At-Risk',
+      automationState: {
+        currentSequence: 'High-Risk Intervention',
+        currentStage: 'Phone Call Scheduled',
+        progress: 60,
+        nextAction: 'Personal Outreach Call',
+        nextActionDate: '2024-01-24',
+        automationStatus: 'priority'
+      }
     },
     {
       id: '4',
@@ -92,7 +131,15 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       lastAppointment: '2024-01-18',
       lastContacted: '2024-01-22',
       noShows: 0,
-      status: 'Active'
+      status: 'Active',
+      automationState: {
+        currentSequence: 'VIP Care Journey',
+        currentStage: 'Satisfaction Survey Sent',
+        progress: 90,
+        nextAction: 'Loyalty Program Invite',
+        nextActionDate: '2024-01-30',
+        automationStatus: 'active'
+      }
     },
     {
       id: '5',
@@ -105,7 +152,15 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       lastAppointment: '2023-10-30',
       lastContacted: '2023-11-28',
       noShows: 2,
-      status: 'At-Risk'
+      status: 'At-Risk',
+      automationState: {
+        currentSequence: 'Win-Back Campaign',
+        currentStage: 'Paused - No Response',
+        progress: 25,
+        nextAction: 'Review & Restart',
+        nextActionDate: '2024-01-26',
+        automationStatus: 'paused'
+      }
     }
   ]
 
@@ -139,6 +194,78 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
           </span>
         )
     }
+  }
+
+  const getAutomationStatusBadge = (automationStatus: string) => {
+    switch (automationStatus) {
+      case 'active':
+        return (
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <Play className="w-3 h-3 mr-1" />
+            Active
+          </span>
+        )
+      case 'paused':
+        return (
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+            <Pause className="w-3 h-3 mr-1" />
+            Paused
+          </span>
+        )
+      case 'priority':
+        return (
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+            <AlertCircle className="w-3 h-3 mr-1" />
+            Priority
+          </span>
+        )
+      case 'completed':
+        return (
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Completed
+          </span>
+        )
+      default:
+        return (
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+            Unknown
+          </span>
+        )
+    }
+  }
+
+  const getAutomationStateDisplay = (automationState: AutomationState | null) => {
+    if (!automationState) return <span className="text-gray-500 text-sm">No automation</span>
+    
+    return (
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <div className="text-sm font-medium text-routiq-core">
+            {automationState.currentSequence}
+          </div>
+          {getAutomationStatusBadge(automationState.automationStatus)}
+        </div>
+        <div className="text-xs text-routiq-blackberry/70">
+          {automationState.currentStage}
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="flex-1 bg-gray-200 rounded-full h-1.5">
+            <div 
+              className="bg-routiq-core h-1.5 rounded-full transition-all duration-300"
+              style={{ width: `${automationState.progress}%` }}
+            ></div>
+          </div>
+          <span className="text-xs text-routiq-blackberry/60">{automationState.progress}%</span>
+        </div>
+        <div className="flex items-center gap-1 text-xs text-routiq-blackberry/60">
+          <Clock className="w-3 h-3" />
+          <span>Next: {automationState.nextAction}</span>
+          <ArrowRight className="w-3 h-3" />
+          <span>{formatDate(automationState.nextActionDate)}</span>
+        </div>
+      </div>
+    )
   }
 
   const formatCurrency = (amount: number) => {
@@ -298,6 +425,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                   <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
                     Status
                   </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
+                    Automation Journey
+                  </th>
                 </tr>
               </thead>
               
@@ -368,6 +498,10 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                     
                     <td className="px-6 py-4 whitespace-nowrap">
                       {getStatusBadge(patient.status)}
+                    </td>
+                    
+                    <td className="px-6 py-4">
+                      {getAutomationStateDisplay(patient.automationState as AutomationState)}
                     </td>
                   </tr>
                 ))}

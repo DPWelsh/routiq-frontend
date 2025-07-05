@@ -20,8 +20,10 @@ import {
   Users,
   Send,
   Eye,
-  Mail
+  Mail,
+  Route
 } from 'lucide-react'
+import { PatientJourneyTracker } from './patient-journey-tracker'
 
 /**
  * Top Opportunities Tab - PI-006 & PI-007: Re-engagement Action Center
@@ -55,7 +57,15 @@ export function TopOpportunitiesTab() {
       confidence: 85,
       phone: '+61 423 567 890',
       email: 'sarah.j@email.com',
-      notes: 'Missed last appointment, usually very regular. May need scheduling assistance.'
+      notes: 'Missed last appointment, usually very regular. May need scheduling assistance.',
+      automationState: {
+        currentSequence: 'Routine Care Maintenance',
+        currentStage: 'Follow-up Scheduled',
+        progress: 75,
+        nextAction: 'Appointment Reminder',
+        nextActionDate: '2024-01-28',
+        automationStatus: 'active' as const
+      }
     },
     {
       id: '2',
@@ -74,7 +84,15 @@ export function TopOpportunitiesTab() {
       confidence: 92,
       phone: '+61 456 789 123',
       email: 'michael.c@email.com',
-      notes: 'Treatment was going well, sudden drop-off. May have found another provider.'
+      notes: 'Treatment was going well, sudden drop-off. May have found another provider.',
+      automationState: {
+        currentSequence: 'Reengagement Campaign',
+        currentStage: 'Email Sent - Awaiting Response',
+        progress: 40,
+        nextAction: 'SMS Follow-up',
+        nextActionDate: '2024-01-25',
+        automationStatus: 'active' as const
+      }
     },
     {
       id: '3',
@@ -93,7 +111,15 @@ export function TopOpportunitiesTab() {
       confidence: 72,
       phone: '+61 789 123 456',
       email: 'emma.w@email.com',
-      notes: 'Completed initial treatment plan. May be ready for maintenance sessions.'
+      notes: 'Completed initial treatment plan. May be ready for maintenance sessions.',
+      automationState: {
+        currentSequence: 'High-Risk Intervention',
+        currentStage: 'Phone Call Scheduled',
+        progress: 60,
+        nextAction: 'Personal Outreach Call',
+        nextActionDate: '2024-01-24',
+        automationStatus: 'priority' as const
+      }
     },
     {
       id: '4',
@@ -112,7 +138,15 @@ export function TopOpportunitiesTab() {
       confidence: 78,
       phone: '+61 321 654 987',
       email: 'james.r@email.com',
-      notes: 'Top tier patient, ensure excellent service continuity.'
+      notes: 'Top tier patient, ensure excellent service continuity.',
+      automationState: {
+        currentSequence: 'VIP Care Journey',
+        currentStage: 'Satisfaction Survey Sent',
+        progress: 90,
+        nextAction: 'Loyalty Program Invite',
+        nextActionDate: '2024-01-30',
+        automationStatus: 'active' as const
+      }
     }
   ]
 
@@ -380,9 +414,81 @@ export function TopOpportunitiesTab() {
       {/* Opportunities List */}
       <div className="space-y-4">
         {filteredOpportunities.map((opportunity) => (
-          <OpportunityCard key={opportunity.id} opportunity={opportunity} />
+          <div key={opportunity.id} className="space-y-4">
+            <OpportunityCard opportunity={opportunity} />
+            {selectedOpportunity === opportunity.id && (
+              <div className="ml-4 border-l-4 border-routiq-core/30 pl-4">
+                <PatientJourneyTracker
+                  patient={{
+                    id: opportunity.patientId,
+                    name: opportunity.patient,
+                    automationState: opportunity.automationState,
+                    status: opportunity.type
+                  }}
+                  onActionTrigger={(action) => {
+                    console.log(`Triggering action: ${action} for patient: ${opportunity.patient}`)
+                    // Here you would integrate with your automation system
+                  }}
+                />
+              </div>
+            )}
+          </div>
         ))}
       </div>
+
+      {/* Patient Journey Tracker Section */}
+      <Card className="border-routiq-energy/20 bg-routiq-energy/5">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-routiq-core">
+            <Route className="h-5 w-5" />
+            Patient Automation Journeys
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <p className="text-sm text-routiq-blackberry/70">
+              Click on any opportunity above to view the detailed automation journey and current sequence stage for that patient.
+            </p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {filteredOpportunities.map((opportunity) => (
+                <button
+                  key={opportunity.id}
+                  onClick={() => setSelectedOpportunity(
+                    selectedOpportunity === opportunity.id ? null : opportunity.id
+                  )}
+                  className={`p-3 rounded-lg border-2 transition-all text-left ${
+                    selectedOpportunity === opportunity.id
+                      ? 'border-routiq-core bg-routiq-core/10'
+                      : 'border-routiq-cloud/20 bg-white hover:border-routiq-cloud/40'
+                  }`}
+                >
+                  <div className="font-medium text-routiq-core text-sm">
+                    {opportunity.patient}
+                  </div>
+                  <div className="text-xs text-routiq-blackberry/60 mt-1">
+                    {opportunity.automationState.currentSequence}
+                  </div>
+                  <div className="text-xs text-routiq-blackberry/50 mt-1">
+                    {opportunity.automationState.currentStage}
+                  </div>
+                  <div className="mt-2">
+                    <div className="w-full bg-gray-200 rounded-full h-1">
+                      <div
+                        className="bg-routiq-core h-1 rounded-full transition-all"
+                        style={{ width: `${opportunity.automationState.progress}%` }}
+                      ></div>
+                    </div>
+                    <div className="text-xs text-routiq-blackberry/60 mt-1">
+                      {opportunity.automationState.progress}% complete
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Action Center */}
       <Card className="border-routiq-core/20 bg-routiq-core/5">
