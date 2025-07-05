@@ -1467,7 +1467,7 @@ export default function PhoneChatPage() {
   return (
     <div className="flex overflow-hidden" style={{ height: 'calc(100vh - 80px)' }}>
       {/* Sidebar - Conversation List */}
-      <div className="w-80 bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
+      <div className="w-72 bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
         {/* Header */}
         <div className="p-3 border-b border-routiq-cloud/30 flex-shrink-0">
           <div className="flex items-center gap-3 mb-3">
@@ -1810,7 +1810,7 @@ export default function PhoneChatPage() {
 
       {/* Performance Panel */}
       {selectedChat && selectedChat.conversation && (
-        <div className="w-80 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
+        <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
           <ConversationPerformancePanel 
             conversation={selectedChat.conversation}
             messages={selectedChat.messages}

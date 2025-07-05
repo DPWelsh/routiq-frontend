@@ -1,0 +1,274 @@
+{
+  "project": "Routiq Settings Enhancement",
+  "description": "Complete overhaul of settings to provide comprehensive control without overwhelming users",
+  "goal": "Create a professional, healthcare-focused settings interface that gives complete control while maintaining simplicity",
+  "design_philosophy": "Progressive disclosure, clear hierarchy, healthcare-appropriate styling",
+  "total_estimated_hours": 28,
+  "phases": [
+    {
+      "phase": "Phase 1: Foundation & Architecture",
+      "tasks": [
+        {
+          "id": "SET-001",
+          "title": "Settings Architecture Enhancement",
+          "description": "Restructure settings with proper navigation hierarchy and responsive design",
+          "acceptance_criteria": [
+            "Implement 5-tab structure: Account, Integrations, Security, Notifications, Advanced",
+            "Add breadcrumb navigation for deep settings",
+            "Mobile-responsive sidebar navigation",
+            "Search functionality across all settings",
+            "Settings context preservation on refresh"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/settings/settings-content.tsx",
+            "src/app/dashboard/settings/components/settings-navigation.tsx",
+            "src/app/dashboard/settings/components/settings-search.tsx"
+          ],
+          "estimated_hours": 4,
+          "priority": "high",
+          "dependencies": []
+        },
+        {
+          "id": "SET-002",
+          "title": "Account Info Section - Clinic Details",
+          "description": "Comprehensive clinic information management replacing basic profile",
+          "acceptance_criteria": [
+            "Clinic name, logo upload, and business details",
+            "Operating hours with timezone support",
+            "Address with Google Maps integration",
+            "Contact information (phone, email, website)",
+            "Practice registration numbers and certifications",
+            "Billing and tax information",
+            "Save/cancel with validation feedback"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/settings/tabs/account-tab.tsx",
+            "src/app/dashboard/settings/components/clinic-details-form.tsx",
+            "src/app/dashboard/settings/components/logo-upload.tsx"
+          ],
+          "estimated_hours": 5,
+          "priority": "high",
+          "dependencies": ["SET-001"]
+        },
+        {
+          "id": "SET-003",
+          "title": "Staff Management System",
+          "description": "Complete staff management with role-based access control",
+          "acceptance_criteria": [
+            "Staff list with profile photos and roles",
+            "Add/edit/remove staff members",
+            "Role assignment: Owner, Receptionist, Practitioner",
+            "Permission matrix by role",
+            "Invite staff via email with role pre-selection",
+            "Staff activity status and last login",
+            "Bulk actions for staff management"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/settings/tabs/account-tab.tsx",
+            "src/app/dashboard/settings/components/staff-management.tsx",
+            "src/app/dashboard/settings/components/staff-invite-modal.tsx",
+            "src/app/dashboard/settings/components/role-permissions-matrix.tsx"
+          ],
+          "estimated_hours": 6,
+          "priority": "high",
+          "dependencies": ["SET-002"]
+        }
+      ]
+    },
+    {
+      "phase": "Phase 2: Integrations & Security",
+      "tasks": [
+        {
+          "id": "SET-004",
+          "title": "Enhanced Integrations Dashboard",
+          "description": "Professional integrations interface with Cliniko/Chatwoot focus",
+          "acceptance_criteria": [
+            "Integration status cards with health indicators",
+            "Cliniko integration with sync status and last sync time",
+            "Chatwoot configuration with webhook status",
+            "Connection test buttons with real-time feedback",
+            "Integration logs and error handling",
+            "API key management with secure storage",
+            "Webhook configuration interface"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/settings/tabs/integrations-tab.tsx",
+            "src/app/dashboard/settings/components/integration-card.tsx",
+            "src/app/dashboard/settings/components/cliniko-integration.tsx",
+            "src/app/dashboard/settings/components/chatwoot-integration.tsx"
+          ],
+          "estimated_hours": 4,
+          "priority": "high",
+          "dependencies": ["SET-001"]
+        },
+        {
+          "id": "SET-005",
+          "title": "Advanced Security & Access Control",
+          "description": "Enterprise-grade security settings with role-based permissions",
+          "acceptance_criteria": [
+            "User roles with detailed permission matrix",
+            "2FA setup with QR code and backup codes",
+            "Session management with device information",
+            "Login history with IP tracking",
+            "Data export with encryption options",
+            "API access tokens management",
+            "Security audit log",
+            "Account lockout policies"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/settings/tabs/security-tab.tsx",
+            "src/app/dashboard/settings/components/role-management.tsx",
+            "src/app/dashboard/settings/components/two-factor-setup.tsx",
+            "src/app/dashboard/settings/components/session-management.tsx"
+          ],
+          "estimated_hours": 5,
+          "priority": "high",
+          "dependencies": ["SET-003"]
+        }
+      ]
+    },
+    {
+      "phase": "Phase 3: Smart Notifications & Alerts",
+      "tasks": [
+        {
+          "id": "SET-006",
+          "title": "Smart Notifications System",
+          "description": "Intelligent notification system with healthcare-specific alerts",
+          "acceptance_criteria": [
+            "Weekly ROI reports with email delivery",
+            "Smart alerting for rebooking rate drops below threshold",
+            "Patient NPS monitoring with alerts below 3.5/5",
+            "No new bookings alert after 24 hours",
+            "Custom threshold configuration",
+            "Notification channels (email, SMS, push)",
+            "Digest frequency settings",
+            "Alert escalation rules"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/settings/tabs/notifications-tab.tsx",
+            "src/app/dashboard/settings/components/smart-alerts.tsx",
+            "src/app/dashboard/settings/components/roi-report-settings.tsx",
+            "src/app/dashboard/settings/components/alert-thresholds.tsx"
+          ],
+          "estimated_hours": 4,
+          "priority": "medium",
+          "dependencies": ["SET-001"]
+        },
+        {
+          "id": "SET-007",
+          "title": "Advanced Settings & Preferences",
+          "description": "Power user settings and system preferences",
+          "acceptance_criteria": [
+            "Timezone and locale settings",
+            "Date/time format preferences",
+            "Language selection",
+            "Theme customization (colors, logos)",
+            "Dashboard layout preferences",
+            "Data retention policies",
+            "Backup and restore options",
+            "System maintenance windows"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/settings/tabs/advanced-tab.tsx",
+            "src/app/dashboard/settings/components/system-preferences.tsx",
+            "src/app/dashboard/settings/components/theme-customization.tsx",
+            "src/app/dashboard/settings/components/backup-restore.tsx"
+          ],
+          "estimated_hours": 4,
+          "priority": "low",
+          "dependencies": ["SET-001"]
+        }
+      ]
+    }
+  ],
+  "ux_design_recommendations": {
+    "navigation_hierarchy": {
+      "primary_tabs": [
+        {
+          "tab": "Account",
+          "icon": "Building2",
+          "sections": ["Clinic Details", "Staff Management", "Billing Info"]
+        },
+        {
+          "tab": "Integrations", 
+          "icon": "Zap",
+          "sections": ["Connected Services", "API Management", "Webhooks"]
+        },
+        {
+          "tab": "Security",
+          "icon": "Shield",
+          "sections": ["Access Control", "Authentication", "Data Privacy"]
+        },
+        {
+          "tab": "Notifications",
+          "icon": "Bell",
+          "sections": ["Smart Alerts", "Reports", "Channels"]
+        },
+        {
+          "tab": "Advanced",
+          "icon": "Settings",
+          "sections": ["System", "Preferences", "Maintenance"]
+        }
+      ]
+    },
+    "design_principles": {
+      "progressive_disclosure": "Show basic settings first, advanced options behind 'Advanced' toggles",
+      "clear_hierarchy": "Use card-based layouts with clear section headers",
+      "healthcare_appropriate": "Professional color scheme, medical iconography where appropriate",
+      "status_indicators": "Clear visual feedback for connection status, sync status, etc.",
+      "validation_feedback": "Immediate validation with clear error messages",
+      "responsive_design": "Mobile-first approach with collapsible sections"
+    },
+    "specific_improvements": {
+      "current_issues": [
+        "No clinic-specific information management",
+        "Missing staff management entirely",
+        "Basic integration status without health monitoring",
+        "No smart alerting or ROI reporting",
+        "Limited role-based access control"
+      ],
+      "recommended_solutions": [
+        "Dedicated clinic profile section with logo upload",
+        "Staff management with role-based permissions",
+        "Integration health dashboard with real-time status",
+        "Smart notification system with healthcare KPIs",
+        "Enterprise-grade security with audit logging"
+      ]
+    }
+  },
+  "technical_requirements": {
+    "new_components": [
+      "ClinicDetailsForm",
+      "StaffManagement", 
+      "RolePermissionsMatrix",
+      "IntegrationHealthCard",
+      "SmartAlerts",
+      "TwoFactorSetup",
+      "SessionManagement",
+      "ThemeCustomization"
+    ],
+    "api_endpoints": [
+      "/api/clinic/details",
+      "/api/staff/management",
+      "/api/integrations/health",
+      "/api/notifications/smart-alerts",
+      "/api/security/sessions",
+      "/api/settings/preferences"
+    ],
+    "database_changes": [
+      "clinic_details table",
+      "staff_roles table", 
+      "integration_health_logs table",
+      "notification_settings table",
+      "user_sessions table"
+    ]
+  },
+  "testing_strategy": {
+    "unit_tests": "Component-level testing for all new settings components",
+    "integration_tests": "API endpoint testing for settings persistence",
+    "e2e_tests": "Complete settings workflow testing",
+    "accessibility_tests": "WCAG compliance for healthcare applications",
+    "security_tests": "Role-based access control validation"
+  },
+  "timeline": "4 weeks (1 week per phase, 1 week for testing and refinement)"
+} 
