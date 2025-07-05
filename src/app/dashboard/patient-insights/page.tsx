@@ -30,14 +30,14 @@ import { TopOpportunitiesTab } from './components/top-opportunities-tab'
  * - Top Opportunities: Re-engagement opportunities and action center
  */
 export default function PatientInsightsPage() {
-  const [activeTab, setActiveTab] = useState('top-opportunities')
+  const [activeTab, setActiveTab] = useState('all-patients')
   const [searchTerm, setSearchTerm] = useState('')
   const [lastUpdated, setLastUpdated] = useState(new Date())
 
   // Search functionality across all tabs
   const searchableContent = {
-    'top-opportunities': ['opportunities', 'reengagement', 'actions', 'high-value', 'inactive'],
     'all-patients': ['patient', 'name', 'phone', 'email', 'ltv', 'sessions', 'appointments'],
+    'top-opportunities': ['opportunities', 'reengagement', 'actions', 'high-value', 'inactive'],
     'engagement-overview': ['risk', 'engagement', 'analytics', 'charts', 'metrics']
   }
 
@@ -50,7 +50,7 @@ export default function PatientInsightsPage() {
           )
         )
         .map(([tab]) => tab)
-    : ['top-opportunities', 'all-patients', 'engagement-overview']
+    : ['all-patients', 'top-opportunities', 'engagement-overview']
 
   const handleRefresh = () => {
     setLastUpdated(new Date())
@@ -114,16 +114,6 @@ export default function PatientInsightsPage() {
         {/* Main 3-Tab Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-routiq-cloud/10 p-1 h-12">
-            {filteredTabs.includes('top-opportunities') && (
-              <TabsTrigger 
-                value="top-opportunities" 
-                className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
-              >
-                <Target className="h-4 w-4" />
-                <span className="font-medium">Top Opportunities</span>
-              </TabsTrigger>
-            )}
-
             {filteredTabs.includes('all-patients') && (
               <TabsTrigger 
                 value="all-patients" 
@@ -131,6 +121,16 @@ export default function PatientInsightsPage() {
               >
                 <Users className="h-4 w-4" />
                 <span className="font-medium">All Patients</span>
+              </TabsTrigger>
+            )}
+
+            {filteredTabs.includes('top-opportunities') && (
+              <TabsTrigger 
+                value="top-opportunities" 
+                className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
+              >
+                <Target className="h-4 w-4" />
+                <span className="font-medium">Top Opportunities</span>
               </TabsTrigger>
             )}
             
@@ -147,14 +147,14 @@ export default function PatientInsightsPage() {
 
           {/* Tab Content */}
           <div className="mt-6">
-            {/* Top Opportunities Tab */}
-            <TabsContent value="top-opportunities" className="space-y-6 mt-0">
-              <TopOpportunitiesTab />
-            </TabsContent>
-
             {/* All Patients Tab */}
             <TabsContent value="all-patients" className="space-y-6 mt-0">
               <AllPatientsTab searchTerm={searchTerm} />
+            </TabsContent>
+
+            {/* Top Opportunities Tab */}
+            <TabsContent value="top-opportunities" className="space-y-6 mt-0">
+              <TopOpportunitiesTab />
             </TabsContent>
 
             {/* Engagement Overview Tab */}
