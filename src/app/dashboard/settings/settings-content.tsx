@@ -26,8 +26,6 @@ import {
   ExternalLink,
   Building2,
   Search,
-  ChevronRight,
-  Home,
   Upload,
   UserPlus
 } from 'lucide-react'
@@ -95,19 +93,7 @@ export default function SettingsContent() {
           </div>
         </div>
 
-        {/* Breadcrumb Navigation */}
-        <div className="flex items-center gap-2 text-sm text-routiq-blackberry/60">
-          <Home className="h-4 w-4" />
-          <span>Dashboard</span>
-          <ChevronRight className="h-4 w-4" />
-          <span className="text-routiq-core font-medium">Settings</span>
-          {activeTab !== 'account' && (
-            <>
-              <ChevronRight className="h-4 w-4" />
-              <span className="text-routiq-core font-medium capitalize">{activeTab}</span>
-            </>
-          )}
-        </div>
+
       </div>
 
       {/* Enhanced 5-Tab Navigation */}

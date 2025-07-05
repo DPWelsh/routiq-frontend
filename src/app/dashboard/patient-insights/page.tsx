@@ -9,8 +9,6 @@ import {
   TrendingUp, 
   Target, 
   Search,
-  ChevronRight,
-  Home,
   Filter,
   Download,
   RefreshCw
@@ -91,21 +89,7 @@ export default function PatientInsightsPage() {
             </div>
           </div>
 
-          {/* Breadcrumb Navigation */}
-          <div className="flex items-center gap-2 text-sm text-routiq-blackberry/60">
-            <Home className="h-4 w-4" />
-            <span>Dashboard</span>
-            <ChevronRight className="h-4 w-4" />
-            <span className="text-routiq-core font-medium">Patient Insights</span>
-            {activeTab !== 'top-opportunities' && (
-              <>
-                <ChevronRight className="h-4 w-4" />
-                <span className="text-routiq-core font-medium capitalize">
-                  {activeTab.replace('-', ' ')}
-                </span>
-              </>
-            )}
-          </div>
+
 
           {/* Global Search */}
           <div className="flex items-center gap-4">
