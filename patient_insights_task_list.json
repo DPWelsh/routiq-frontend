@@ -1,0 +1,329 @@
+{
+  "project": "Patient Insights - Trajectory & Re-engagement System",
+  "description": "Complete patient journey tracking system to make every patient's journey trackable, measurable, and re-engageable",
+  "goal": "Transform patient management from reactive to proactive with trajectory-based insights and automated re-engagement opportunities",
+  "design_philosophy": "Data-driven patient care, predictive analytics, actionable insights",
+  "total_estimated_hours": 36,
+  "phases": [
+    {
+      "phase": "Phase 1: Foundation & Data Architecture",
+      "tasks": [
+        {
+          "id": "PI-001",
+          "title": "Patient Insights Navigation & Layout",
+          "description": "Create 3-tab navigation structure with responsive design for patient journey tracking",
+          "acceptance_criteria": [
+            "Three-tab structure: All Patients, Engagement Overview, Top Opportunities",
+            "Tab navigation with proper active states and Routiq branding",
+            "Responsive grid layout for different screen sizes",
+            "Breadcrumb navigation integration",
+            "Search and filter persistence across tabs",
+            "Loading states and error handling for each tab"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/patient-insights/page.tsx",
+            "src/app/dashboard/patient-insights/components/insights-navigation.tsx",
+            "src/app/dashboard/patient-insights/layout.tsx"
+          ],
+          "estimated_hours": 4,
+          "priority": "high",
+          "dependencies": []
+        },
+        {
+          "id": "PI-002",
+          "title": "Patient Data Table Infrastructure",
+          "description": "Build searchable, sortable, filterable patient data table with real-time updates",
+          "acceptance_criteria": [
+            "Searchable table with Name, Phone, Email search functionality",
+            "Sortable columns: Name, LTV, Avg. Spend, Sessions, Last Appt, Status",
+            "Column headers: Name, Phone, Email, LTV, Avg. Spend, No. Sessions, Last Appt, Last Contacted, No-shows, Status",
+            "Status indicators: Active (green), Dormant (yellow), At-Risk (red)",
+            "Pagination with 25/50/100 patients per page",
+            "Real-time data refresh every 30 seconds",
+            "Export functionality (CSV/Excel)",
+            "Loading skeleton for table rows"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/patient-insights/components/patient-data-table.tsx",
+            "src/app/dashboard/patient-insights/components/table-filters.tsx",
+            "src/app/dashboard/patient-insights/components/patient-row.tsx"
+          ],
+          "estimated_hours": 8,
+          "priority": "high",
+          "dependencies": ["PI-001"]
+        },
+        {
+          "id": "PI-003",
+          "title": "Advanced Filtering System",
+          "description": "Comprehensive filtering system for patient segmentation and analysis",
+          "acceptance_criteria": [
+            "Date range filter: Last seen (last 7 days, 30 days, 90 days, custom range)",
+            "LTV filter: Range slider with min/max values and preset ranges",
+            "Session frequency filter: Weekly, bi-weekly, monthly, custom frequency",
+            "Status filter: Active, Dormant, At-Risk (multi-select)",
+            "No-show filter: 0, 1-2, 3-5, 5+ no-shows",
+            "Filter combinations with AND/OR logic",
+            "Save and load custom filter presets",
+            "Clear all filters functionality",
+            "Filter results counter display"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/patient-insights/components/advanced-filters.tsx",
+            "src/app/dashboard/patient-insights/components/filter-presets.tsx",
+            "src/app/dashboard/patient-insights/components/date-range-picker.tsx"
+          ],
+          "estimated_hours": 6,
+          "priority": "high",
+          "dependencies": ["PI-002"]
+        }
+      ]
+    },
+    {
+      "phase": "Phase 2: Engagement Analytics & Risk Assessment",
+      "tasks": [
+        {
+          "id": "PI-004",
+          "title": "Engagement Overview Dashboard",
+          "description": "Visual dashboard showing patient engagement distribution and risk analysis",
+          "acceptance_criteria": [
+            "Risk tier breakdown: High Risk, Medium Risk, Low Risk with patient counts",
+            "Visual charts: Donut chart for risk distribution, trend lines for engagement over time",
+            "Key metrics cards: Total patients, Average LTV, Retention rate, Re-engagement success rate",
+            "Risk tier definitions with tooltips explaining criteria",
+            "Drill-down functionality to view patients in each risk tier",
+            "Engagement trend analysis (improving, stable, declining)",
+            "Color-coded risk indicators consistent across platform",
+            "Real-time updates with delta indicators"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/patient-insights/components/engagement-overview.tsx",
+            "src/app/dashboard/patient-insights/components/risk-tier-cards.tsx",
+            "src/app/dashboard/patient-insights/components/engagement-charts.tsx"
+          ],
+          "estimated_hours": 7,
+          "priority": "high",
+          "dependencies": ["PI-001"]
+        },
+        {
+          "id": "PI-005",
+          "title": "Patient Risk Scoring Algorithm",
+          "description": "Implement intelligent risk assessment based on patient behavior patterns",
+          "acceptance_criteria": [
+            "High Risk criteria: No appointment >90 days, 3+ no-shows, declining frequency",
+            "Medium Risk criteria: No appointment 30-90 days, 1-2 no-shows, irregular patterns",
+            "Low Risk criteria: Recent appointments, consistent patterns, high engagement",
+            "Weighted scoring system considering: recency, frequency, monetary value, engagement",
+            "Machine learning integration for pattern recognition",
+            "Risk score calculation API endpoints",
+            "Automated risk level updates based on new data",
+            "Risk score history tracking and trending"
+          ],
+          "files_to_modify": [
+            "src/lib/patient-risk-scoring.ts",
+            "src/hooks/usePatientRiskAnalysis.ts",
+            "src/app/dashboard/patient-insights/api/risk-calculation.ts"
+          ],
+          "estimated_hours": 8,
+          "priority": "high",
+          "dependencies": ["PI-004"]
+        }
+      ]
+    },
+    {
+      "phase": "Phase 3: Re-engagement Opportunities & Actions",
+      "tasks": [
+        {
+          "id": "PI-006",
+          "title": "Top Opportunities Detection System",
+          "description": "Automated identification of high-value re-engagement opportunities",
+          "acceptance_criteria": [
+            "Highest LTV, no recent appointment: Patients with LTV >$1000, no appointment 60+ days",
+            "Previously high-frequency, now inactive: Patients who visited 2+ times/month, now 0 visits 30+ days",
+            "Due for next session: Patients overdue based on historical treatment patterns",
+            "Opportunity scoring algorithm prioritizing potential revenue and likelihood of re-engagement",
+            "Automated opportunity detection running daily",
+            "Opportunity cards with action recommendations",
+            "Success tracking for acted-upon opportunities",
+            "ROI calculation for re-engagement campaigns"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/patient-insights/components/top-opportunities.tsx",
+            "src/app/dashboard/patient-insights/components/opportunity-card.tsx",
+            "src/lib/opportunity-detection.ts"
+          ],
+          "estimated_hours": 6,
+          "priority": "high",
+          "dependencies": ["PI-005"]
+        },
+        {
+          "id": "PI-007",
+          "title": "Re-engagement Action Center",
+          "description": "Actionable interface for staff to take re-engagement actions",
+          "acceptance_criteria": [
+            "Quick action buttons: Call patient, Send message, Schedule follow-up, Mark contacted",
+            "Bulk actions for multiple patients: Send campaign, Add to list, Export contacts",
+            "Communication templates: Re-engagement messages, appointment reminders, special offers",
+            "Action tracking: Log all outreach attempts with timestamps and outcomes",
+            "Success metrics: Response rates, booking rates, revenue generated",
+            "Integration with existing communication channels (WhatsApp, Email, SMS)",
+            "Staff assignment for follow-up responsibilities",
+            "Automated follow-up scheduling based on response patterns"
+          ],
+          "files_to_modify": [
+            "src/app/dashboard/patient-insights/components/action-center.tsx",
+            "src/app/dashboard/patient-insights/components/bulk-actions.tsx",
+            "src/app/dashboard/patient-insights/components/communication-templates.tsx"
+          ],
+          "estimated_hours": 7,
+          "priority": "medium",
+          "dependencies": ["PI-006"]
+        }
+      ]
+    }
+  ],
+  "ux_design_recommendations": {
+    "navigation_structure": {
+      "primary_tabs": [
+        {
+          "tab": "All Patients",
+          "icon": "Users",
+          "sections": ["Patient Table", "Search & Filters", "Export Tools"]
+        },
+        {
+          "tab": "Engagement Overview", 
+          "icon": "TrendingUp",
+          "sections": ["Risk Tiers", "Engagement Charts", "Key Metrics"]
+        },
+        {
+          "tab": "Top Opportunities",
+          "icon": "Target",
+          "sections": ["Opportunity Cards", "Action Center", "Success Tracking"]
+        }
+      ]
+    },
+    "design_principles": {
+      "data_visualization": "Clear charts and graphs showing patient trajectory trends",
+      "actionable_insights": "Every data point should lead to a clear action",
+      "healthcare_workflow": "Designed for busy practice staff with quick decision-making",
+      "predictive_focus": "Proactive patient care rather than reactive reporting",
+      "mobile_responsive": "Accessible on tablets for bedside patient discussions",
+      "color_coding": "Consistent risk-based color scheme across all components"
+    },
+    "specific_improvements": {
+      "current_limitations": [
+        "No patient trajectory tracking across time",
+        "Reactive approach to patient re-engagement",
+        "No risk-based patient segmentation",
+        "Limited visibility into engagement patterns",
+        "No automated opportunity detection"
+      ],
+      "solution_benefits": [
+        "Proactive patient retention with early risk detection",
+        "Data-driven re-engagement strategies with ROI tracking",
+        "Staff efficiency with prioritized action lists",
+        "Improved patient lifetime value through better retention",
+        "Measurable impact on practice revenue and patient outcomes"
+      ]
+    }
+  },
+  "technical_requirements": {
+    "new_components": [
+      "PatientDataTable",
+      "AdvancedFilters", 
+      "EngagementOverview",
+      "RiskTierCards",
+      "TopOpportunities",
+      "ActionCenter",
+      "PatientTrajectoryChart",
+      "CommunicationTemplates"
+    ],
+    "api_endpoints": [
+      "/api/patients/insights",
+      "/api/patients/risk-analysis",
+      "/api/patients/opportunities",
+      "/api/patients/actions",
+      "/api/patients/engagement-metrics",
+      "/api/patients/trajectory-data"
+    ],
+    "database_changes": [
+      "patient_risk_scores table",
+      "engagement_opportunities table", 
+      "re_engagement_actions table",
+      "patient_trajectory_history table",
+      "communication_logs table"
+    ],
+    "integrations": [
+      "Cliniko API for appointment and patient data",
+      "Chatwoot API for communication history",
+      "Email/SMS providers for outreach campaigns",
+      "Analytics API for trajectory calculations"
+    ]
+  },
+  "data_requirements": {
+    "patient_metrics": [
+      "Lifetime Value (LTV) calculation",
+      "Average spend per session",
+      "Total number of sessions",
+      "Last appointment date",
+      "Last contacted date", 
+      "Number of no-shows",
+      "Engagement status (Active/Dormant/At-Risk)"
+    ],
+    "trajectory_indicators": [
+      "Appointment frequency trends",
+      "Spending pattern changes",
+      "Communication response rates",
+      "No-show pattern analysis",
+      "Seasonal behavior patterns"
+    ],
+    "opportunity_detection": [
+      "High-LTV patients without recent appointments",
+      "Previously frequent patients now inactive",
+      "Patients overdue based on treatment cycles",
+      "Declining engagement patterns requiring intervention"
+    ]
+  },
+  "success_metrics": {
+    "user_adoption": [
+      "Daily active users on Patient Insights",
+      "Time spent analyzing patient data",
+      "Actions taken from opportunity recommendations"
+    ],
+    "business_impact": [
+      "Patient re-engagement rate improvement",
+      "Revenue from re-engaged patients",
+      "Reduction in patient churn rate",
+      "Increase in average patient lifetime value"
+    ],
+    "operational_efficiency": [
+      "Time saved in patient outreach planning",
+      "Success rate of targeted re-engagement campaigns",
+      "Staff productivity in patient management tasks"
+    ]
+  },
+  "testing_strategy": {
+    "unit_tests": "Component-level testing for all patient insights components",
+    "integration_tests": "API endpoint testing for patient data retrieval and risk calculations",
+    "e2e_tests": "Complete patient journey workflow testing from insights to actions",
+    "performance_tests": "Large dataset handling and real-time update performance",
+    "user_acceptance_tests": "Clinical staff workflow validation and usability testing"
+  },
+  "implementation_phases": {
+    "mvp_features": [
+      "Basic patient table with search and sort",
+      "Simple risk tier categorization",
+      "Top 10 opportunities list"
+    ],
+    "enhanced_features": [
+      "Advanced filtering and segmentation",
+      "Interactive charts and visualizations",
+      "Automated opportunity detection"
+    ],
+    "advanced_features": [
+      "Machine learning risk predictions",
+      "Automated re-engagement campaigns",
+      "ROI tracking and optimization"
+    ]
+  },
+  "timeline": "6 weeks (2 weeks per phase, with parallel development where possible)"
+} 

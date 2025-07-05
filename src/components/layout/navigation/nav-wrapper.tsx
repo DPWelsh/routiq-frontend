@@ -17,6 +17,7 @@ import {
   BarChart3, 
   MessageSquare, 
   UserCheck,
+  TrendingUp,
   Settings,
   HelpCircle,
   Building2
@@ -40,7 +41,7 @@ interface DashboardStats {
 
 const navigation = [
   { 
-    name: "Overview", 
+    name: "Dashboard", 
     href: "/dashboard", 
     icon: BarChart3, 
     roles: ["ADMIN", "USER"],
@@ -48,19 +49,19 @@ const navigation = [
     badge: null
   },
   { 
-    name: "Conversations", 
+    name: "Inbox", 
     href: "/dashboard/conversations/phone", 
     icon: MessageSquare, 
     roles: ["ADMIN", "USER"],
-    description: "Phone chat interface",
+    description: "Unified messaging center",
     badge: null
   },
   { 
-    name: "Patients", 
-    href: "/dashboard/patients", 
-    icon: UserCheck, 
+    name: "Patient Insights", 
+    href: "/dashboard/patient-insights", 
+    icon: TrendingUp, 
     roles: ["ADMIN", "USER"],
-    description: "Patient management",
+    description: "Patient journey tracking",
     badge: null
   },
   { 
@@ -185,7 +186,7 @@ function ResponsiveDashboardNav() {
         <div className="space-y-1">
           {navigation
             .filter(item => item.roles.includes(userRole))
-            .filter(item => !["Conversations", "Patients"].includes(item.name)) // Hide Conversations and Patients from mobile
+            .filter(item => !["Inbox"].includes(item.name)) // Hide Inbox from mobile
             .map((item) => {
               const isActive = pathname === item.href || 
                 (item.href !== "/dashboard" && pathname.startsWith(item.href))

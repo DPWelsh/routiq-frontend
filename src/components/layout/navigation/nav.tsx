@@ -13,6 +13,7 @@ import {
   BarChart3, 
   MessageSquare, 
   UserCheck,
+  TrendingUp,
   Zap,
   Settings,
   ChevronRight,
@@ -36,7 +37,7 @@ interface DashboardStats {
 
 const navigation = [
   { 
-    name: "Overview", 
+    name: "Dashboard", 
     href: "/dashboard", 
     icon: BarChart3, 
     roles: ["ADMIN", "USER"],
@@ -44,19 +45,19 @@ const navigation = [
     badge: null
   },
   { 
-    name: "Conversations", 
+    name: "Inbox", 
     href: "/dashboard/conversations/phone", 
     icon: MessageSquare, 
     roles: ["ADMIN", "USER"],
-    description: "Phone chat interface",
+    description: "Unified messaging center",
     badge: null
   },
   { 
-    name: "Patients", 
-    href: "/dashboard/patients", 
-    icon: UserCheck, 
+    name: "Patient Insights", 
+    href: "/dashboard/patient-insights", 
+    icon: TrendingUp, 
     roles: ["ADMIN", "USER"],
-    description: "Patient management",
+    description: "Patient journey tracking",
     badge: null
   },
   { 
