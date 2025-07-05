@@ -485,7 +485,7 @@ export function EngagementOverviewTab() {
                   Follow Up on Dormant Patients
                 </div>
                 <div className="text-sm text-routiq-blackberry/60">
-                  35 patients haven't been active recently - consider re-engagement campaign
+                  35 patients haven&apos;t been active recently - consider re-engagement campaign
                 </div>
               </div>
               <Button size="sm" variant="outline" className="border-blue-200 text-blue-700">

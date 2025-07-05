@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '@clerk/nextjs'
+import { useState, useEffect, useCallback } from 'react'
 
 interface ConversationPerformanceData {
   id: string
@@ -40,12 +39,11 @@ export function useConversationPerformance(
   routiqConversationId?: string,
   chatwootConversationId?: number
 ): PerformanceHookResult {
-  const { getToken } = useAuth()
   const [performance, setPerformance] = useState<ConversationPerformanceData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const fetchPerformance = async () => {
+  const fetchPerformance = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
@@ -72,7 +70,7 @@ export function useConversationPerformance(
     } finally {
       setLoading(false)
     }
-  }
+  }, [routiqConversationId, chatwootConversationId])
 
   // Fetch performance data
   useEffect(() => {

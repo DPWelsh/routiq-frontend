@@ -51,7 +51,7 @@ interface UpcomingAppointmentsProps {
 }
 
 export function UpcomingAppointments({ 
-  limit = 10, 
+  limit: _limit = 10, 
   showRefresh = true, 
   compact = false,
   onPatientClick,

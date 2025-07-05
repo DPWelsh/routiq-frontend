@@ -141,7 +141,7 @@ export function PatientJourneyTracker({ patient, onActionTrigger }: PatientJourn
         <div className="flex items-center justify-between">
           <div>
             <CardTitle className="text-lg text-routiq-core">
-              {patient.name}'s Automation Journey
+              {patient.name}&apos;s Automation Journey
             </CardTitle>
             <p className="text-sm text-routiq-blackberry/70 mt-1">
               {automationState.currentSequence}

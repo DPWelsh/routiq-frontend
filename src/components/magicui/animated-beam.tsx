@@ -24,6 +24,7 @@ export interface AnimatedBeamProps {
   endYOffset?: number;
 }
 
+// This is a placeholder component - the props are intentionally unused as this is a template
 export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   className,
   containerRef: _containerRef,
