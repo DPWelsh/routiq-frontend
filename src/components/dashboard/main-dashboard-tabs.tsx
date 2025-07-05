@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart3, Users, Zap } from 'lucide-react'
 import { ClinicOverviewTab } from './tabs/clinic-overview-tab'
+import { PatientInsightsTab } from './tabs/patient-insights-tab'
 
 /**
  * Main Dashboard Tabs Component
@@ -61,22 +62,7 @@ export function MainDashboardTabs() {
 
         {/* Patient Insights Tab Content */}
         <TabsContent value="patient-insights" className="mt-6">
-          <div className="space-y-6">
-            {/* Placeholder for Patient Insights content */}
-            <div className="text-center py-16 bg-routiq-energy/5 rounded-lg border border-routiq-energy/20">
-              <Users className="h-16 w-16 text-routiq-blackberry/40 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-routiq-core mb-2">
-                Patient Insights
-              </h3>
-              <p className="text-routiq-blackberry/70 max-w-md mx-auto">
-                Patient sentiment analysis, value metrics, and risk assessment will be displayed here.
-                Advanced analytics and engagement tracking coming soon.
-              </p>
-              <div className="mt-4 text-sm text-routiq-energy">
-                👥 Ready for Phase 3 implementation
-              </div>
-            </div>
-          </div>
+          <PatientInsightsTab />
         </TabsContent>
 
         {/* Automation Summary Tab Content */}
