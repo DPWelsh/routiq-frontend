@@ -148,7 +148,7 @@ export function useOrganizationBilling(): UseOrganizationBillingResult {
   }, [organizationContext, hasBillingPermissions])
 
   // Open Stripe Customer Portal
-  const openCustomerPortal = useCallback(async (returnUrl?: string): Promise<string | null> => {
+  const openCustomerPortal = useCallback(async (): Promise<string | null> => {
     if (!organizationContext || !hasBillingPermissions) {
       throw new Error('Insufficient permissions to access billing portal')
     }

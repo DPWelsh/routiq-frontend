@@ -3,7 +3,7 @@
  * Task #7: Create Role-Based Access Control - Middleware Integration
  */
 
-import { NextRequest, NextResponse } from 'next/server'
+import { NextRequest } from 'next/server'
 import { Permission, hasPermission, hasAllPermissions, hasAnyPermission, getRolePermissions } from './permissions'
 import { RequestOrganizationContext, getRequestOrganizationContext } from '@/lib/auth/request-context'
 

@@ -2,8 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '../logging/logger'
 import { 
   AppError, 
-  ErrorFactory, 
-  ErrorResponse, 
+  ErrorFactory,
   SuccessResponse, 
   HttpStatusCode,
   ErrorSeverity 

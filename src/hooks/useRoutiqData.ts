@@ -6,12 +6,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { RoutiqAPI, ORGANIZATIONS } from '../lib/routiq-api';
 import type { 
-  SyncTriggerResponse, 
-  SyncStatusResponse, 
-  DatabaseSummaryResponse,
-  ActivePatientsResponse,
-  ActivePatientsSummaryResponse,
-  SyncDashboardResponse
+  SyncTriggerResponse
 } from '@/lib/routiq-api';
 
 // ========================================

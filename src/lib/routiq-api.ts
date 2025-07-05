@@ -899,7 +899,7 @@ export class RoutiqAPI {
     try {
       await this.getSyncStatus();
       features.basic_sync = true;
-    } catch (_error) {
+    } catch {
       console.log('Basic sync not available');
     }
 
@@ -907,7 +907,7 @@ export class RoutiqAPI {
       await this.getActivePatientsummary(organizationId);
       features.active_patients = true;
       features.dashboard = true;
-    } catch (_error) {
+    } catch {
       console.log('Advanced features not yet available');
     }
 

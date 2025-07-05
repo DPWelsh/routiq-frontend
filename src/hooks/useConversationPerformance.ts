@@ -60,7 +60,6 @@ export function useConversationPerformance(
       setLoading(true)
       setError(null)
 
-      const token = await getToken()
       const params = new URLSearchParams({
         limit: '1',
         analytics: 'false',
@@ -87,8 +86,6 @@ export function useConversationPerformance(
 
   const updatePerformance = async (updates: Record<string, unknown>): Promise<boolean> => {
     try {
-      const token = await getToken()
-      
       const payload = {
         routiqConversationId,
         chatwootConversationId,

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { RoutiqAPI, ReengagementDashboard, PrioritizedPatientsResponse, RiskMetricsResponse, PerformanceMetricsResponse, TrendsResponse, OutreachLogRequest, PatientProfilesResponse, SinglePatientProfileResponse, PatientProfilesSummaryResponse } from '@/lib/routiq-api';
+import { RoutiqAPI, OutreachLogRequest } from '@/lib/routiq-api';
 
 /**
  * Hook to fetch risk metrics summary for dashboard cards

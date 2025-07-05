@@ -1,4 +1,3 @@
-import { headers } from 'next/headers';
 import { WebhookEvent } from '@clerk/nextjs/server';
 import crypto from 'crypto';
 
@@ -182,7 +181,7 @@ export async function verifyClerkWebhook(
     let parsedPayload: WebhookEvent;
     try {
       parsedPayload = JSON.parse(payload) as WebhookEvent;
-    } catch (error) {
+    } catch {
       throw new WebhookVerificationError(
         'Invalid JSON payload',
         'INVALID_PAYLOAD'

@@ -592,7 +592,7 @@ export class ActivePatientsDataAccess {
   }
 
   // Note: The original schema doesn't have a status field, so we'll work with appointment counts instead
-  async updatePatientNotes(id: number, _: string): Promise<ActivePatient | null> {
+  async updatePatientNotes(id: number, __unused: string): Promise<ActivePatient | null> {
     try {
       // Since there's no notes field in the schema, we'll just return the patient as-is
       // This method is kept for API compatibility but doesn't actually update anything
@@ -643,9 +643,9 @@ export async function getActivePatientsStats(): Promise<ActivePatientsStats> {
   return dataAccess.getActivePatientsStats()
 }
 
-export async function updatePatientNotes(id: number, _: string): Promise<ActivePatient | null> {
+export async function updatePatientNotes(id: number, __unused: string): Promise<ActivePatient | null> {
   const dataAccess = new ActivePatientsDataAccess()
-  return dataAccess.updatePatientNotes(id, _)
+  return dataAccess.updatePatientNotes(id, __unused)
 }
 
 export async function refreshPatientData(id: number): Promise<ActivePatient | null> {
