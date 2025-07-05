@@ -490,6 +490,50 @@ export interface PatientsAtRiskResponse {
   timestamp: string;
 }
 
+// Dashboard Analytics API Types (based on backend test results)
+export interface DashboardAnalyticsResponse {
+  booking_metrics: {
+    total_bookings: number;
+    period_comparison: number;
+    bookings_via_ai: number;
+  };
+  patient_metrics: {
+    total_patients: number;
+    active_patients: number;
+    new_patients: number;
+  };
+  financial_metrics: {
+    total_revenue: number;
+    avg_revenue_per_patient: number;
+  };
+  automation_metrics: {
+    total_roi: number;
+    automation_bookings: number;
+    efficiency_score: number;
+  };
+  timeframe: string;
+  last_updated: string;
+}
+
+export interface DashboardChartsResponse {
+  booking_trends: Array<{
+    date: string;
+    bookings: number;
+    revenue: number;
+  }>;
+  patient_satisfaction_trend: Array<{
+    date: string;
+    satisfaction_score: number;
+    response_count: number;
+  }>;
+  automation_performance: Array<{
+    date: string;
+    ai_bookings: number;
+    total_bookings: number;
+    efficiency: number;
+  }>;
+}
+
 export class RoutiqAPI {
   private baseUrl: string;
   private organizationId?: string;
@@ -1109,6 +1153,26 @@ export class RoutiqAPI {
    */
   async getDatabaseSummary(): Promise<DatabaseSummaryResponse> {
     return this.request('/api/v1/clerk-admin/database-summary');
+  }
+
+  /**
+   * Get dashboard analytics data with timeframe filtering
+   */
+  async getDashboardAnalytics(organizationId: string, timeframe: '7d' | '30d' | '90d' | '1y' = '30d'): Promise<DashboardAnalyticsResponse> {
+    const params = new URLSearchParams({ timeframe });
+    return this.request<DashboardAnalyticsResponse>(
+      `/api/v1/dashboard/${organizationId}/analytics?${params.toString()}`
+    );
+  }
+
+  /**
+   * Get dashboard charts data for visualizations
+   */
+  async getDashboardCharts(organizationId: string, timeframe: '7d' | '30d' | '90d' | '1y' = '30d'): Promise<DashboardChartsResponse> {
+    const params = new URLSearchParams({ timeframe });
+    return this.request<DashboardChartsResponse>(
+      `/api/v1/dashboard/${organizationId}/charts?${params.toString()}`
+    );
   }
 }
 
