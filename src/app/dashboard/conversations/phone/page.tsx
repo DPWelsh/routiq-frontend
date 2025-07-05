@@ -1237,12 +1237,7 @@ export default function PhoneChatPage() {
       statuses.push('unread')
     }
     
-    // AI-handle: conversations with keywords that suggest AI can handle
-    const lastMessage = conversation.last_message_content?.toLowerCase() || ''
-    if (lastMessage.includes('appointment') || lastMessage.includes('reschedule') || 
-        lastMessage.includes('cancel') || lastMessage.includes('confirm')) {
-      statuses.push('ai-handle')
-    }
+
     
     return statuses
   }
