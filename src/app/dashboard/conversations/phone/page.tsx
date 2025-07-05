@@ -443,15 +443,10 @@ function ConversationPerformancePanel({
             {/* Smart Patient Summary - Key Actionable Information */}
             <Card className="border-routiq-prompt/30 bg-gradient-to-br from-routiq-prompt/5 to-routiq-energy/5">
               <CardHeader className="pb-2">
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-routiq-prompt" />
-                    Smart Patient Summary
-                  </CardTitle>
-                  <Badge variant={patientProfile ? "default" : "secondary"} className="text-xs">
-                    {patientProfile ? "AI-Powered" : "Limited Data"}
-                  </Badge>
-                </div>
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-routiq-prompt" />
+                  Smart Patient Summary
+                </CardTitle>
               </CardHeader>
               <CardContent className="pt-0 space-y-3">
                 <div className="grid grid-cols-2 gap-4">
@@ -525,7 +520,7 @@ function ConversationPerformancePanel({
                     <div className="text-lg font-bold text-routiq-core">
                       {patientProfile?.total_appointment_count || 0}
                     </div>
-                    <p className="text-xs text-routiq-blackberry/70">Appointments</p>
+                    <p className="text-xs text-routiq-blackberry/70">Appts</p>
                   </div>
                   <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30 text-center">
                     <div className="text-lg font-bold text-routiq-prompt">
