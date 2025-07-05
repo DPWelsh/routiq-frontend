@@ -21,7 +21,11 @@ import {
   Send,
   Eye,
   Mail,
-  Route
+  Route,
+  ChevronDown,
+  ChevronRight,
+  Play,
+  Pause
 } from 'lucide-react'
 import { PatientJourneyTracker } from './patient-journey-tracker'
 
@@ -35,7 +39,6 @@ import { PatientJourneyTracker } from './patient-journey-tracker'
  * - Actionable outreach suggestions
  */
 export function TopOpportunitiesTab() {
-  const [selectedOpportunity, setSelectedOpportunity] = useState<string | null>(null)
   const [actionFilter, setActionFilter] = useState<'all' | 'high-value' | 'at-risk' | 'dormant'>('all')
 
   // Mock opportunity data
@@ -195,65 +198,73 @@ export function TopOpportunitiesTab() {
   }
 
   const OpportunitySummary = () => (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <Card className="border-routiq-cloud/20">
-        <CardContent className="p-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+      <Card className="border-routiq-cloud/20 bg-white/60">
+        <CardContent className="p-3">
           <div className="flex items-center gap-2">
-            <Target className="h-5 w-5 text-routiq-core" />
+            <div className="p-1.5 bg-routiq-core/10 rounded-lg">
+              <Target className="h-4 w-4 text-routiq-core" />
+            </div>
             <div>
-              <div className="text-2xl font-bold text-routiq-core">
+              <div className="text-xl font-bold text-routiq-core">
                 {opportunities.length}
               </div>
-              <div className="text-sm text-routiq-blackberry/60">
-                Total Opportunities
+              <div className="text-xs text-routiq-blackberry/60">
+                Opportunities
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <Card className="border-routiq-cloud/20">
-        <CardContent className="p-4">
+      <Card className="border-routiq-cloud/20 bg-white/60">
+        <CardContent className="p-3">
           <div className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5 text-green-600" />
+            <div className="p-1.5 bg-green-100 rounded-lg">
+              <DollarSign className="h-4 w-4 text-green-600" />
+            </div>
             <div>
-              <div className="text-2xl font-bold text-green-600">
-                ${opportunities.reduce((sum, opp) => sum + opp.potentialValue, 0)}
+              <div className="text-xl font-bold text-green-600">
+                ${opportunities.reduce((sum, opp) => sum + opp.potentialValue, 0).toLocaleString()}
               </div>
-              <div className="text-sm text-routiq-blackberry/60">
-                Potential Revenue
+              <div className="text-xs text-routiq-blackberry/60">
+                Potential Value
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <Card className="border-routiq-cloud/20">
-        <CardContent className="p-4">
+      <Card className="border-routiq-cloud/20 bg-white/60">
+        <CardContent className="p-3">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-amber-600" />
+            <div className="p-1.5 bg-amber-100 rounded-lg">
+              <AlertTriangle className="h-4 w-4 text-amber-600" />
+            </div>
             <div>
-              <div className="text-2xl font-bold text-amber-600">
+              <div className="text-xl font-bold text-amber-600">
                 {opportunities.filter(opp => opp.priority === 'urgent').length}
               </div>
-              <div className="text-sm text-routiq-blackberry/60">
-                Urgent Actions
+              <div className="text-xs text-routiq-blackberry/60">
+                Urgent
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <Card className="border-routiq-cloud/20">
-        <CardContent className="p-4">
+      <Card className="border-routiq-cloud/20 bg-white/60">
+        <CardContent className="p-3">
           <div className="flex items-center gap-2">
-            <Star className="h-5 w-5 text-routiq-energy" />
+            <div className="p-1.5 bg-routiq-energy/20 rounded-lg">
+              <TrendingUp className="h-4 w-4 text-routiq-energy" />
+            </div>
             <div>
-              <div className="text-2xl font-bold text-routiq-energy">
+              <div className="text-xl font-bold text-routiq-energy">
                 {Math.round(opportunities.reduce((sum, opp) => sum + opp.confidence, 0) / opportunities.length)}%
               </div>
-              <div className="text-sm text-routiq-blackberry/60">
-                Avg. Confidence
+              <div className="text-xs text-routiq-blackberry/60">
+                Confidence
               </div>
             </div>
           </div>
@@ -262,101 +273,129 @@ export function TopOpportunitiesTab() {
     </div>
   )
 
-  const OpportunityCard = ({ opportunity }: { opportunity: typeof opportunities[0] }) => (
-    <Card className={`border-l-4 ${getTypeColor(opportunity.type)} border-routiq-cloud/20`}>
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-lg text-routiq-core flex items-center gap-2">
-              {opportunity.title}
-              {getPriorityBadge(opportunity.priority)}
-            </CardTitle>
-            <div className="flex items-center gap-4 text-sm text-routiq-blackberry/60 mt-1">
-              <span className="font-medium">{opportunity.patient}</span>
-              <span>#{opportunity.patientId}</span>
-              <span>LTV: ${opportunity.ltv}</span>
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-2xl font-bold text-green-600">
-              ${opportunity.potentialValue}
-            </div>
-            <div className="text-sm text-routiq-blackberry/60">
-              Potential value
-            </div>
-          </div>
-        </div>
-      </CardHeader>
-      
-      <CardContent className="space-y-4">
-        {/* Patient Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-3 bg-white rounded-lg border border-routiq-cloud/20">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <Clock className="h-4 w-4 text-routiq-blackberry/60" />
-              <span>Last seen: {opportunity.lastSeen}</span>
-              <span className="text-red-600">({opportunity.daysInactive} days ago)</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <AlertTriangle className="h-4 w-4 text-amber-600" />
-              <span>Risk score: {opportunity.riskScore}%</span>
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-sm">
-              <Phone className="h-4 w-4 text-routiq-blackberry/60" />
-              <span>{opportunity.phone}</span>
-            </div>
-            <div className="flex items-center gap-2 text-sm">
-              <Mail className="h-4 w-4 text-routiq-blackberry/60" />
-              <span>{opportunity.email}</span>
-            </div>
-          </div>
-        </div>
+  const OpportunityCard = ({ opportunity }: { opportunity: typeof opportunities[0] }) => {
+    const [isAutomationExpanded, setIsAutomationExpanded] = useState(false)
+    
+    const getAutomationStatusIcon = (status: string) => {
+      switch (status) {
+        case 'active': return <Play className="h-3 w-3 text-blue-600" />
+        case 'paused': return <Pause className="h-3 w-3 text-gray-600" />
+        case 'priority': return <AlertTriangle className="h-3 w-3 text-orange-600" />
+        default: return <CheckCircle className="h-3 w-3 text-green-600" />
+      }
+    }
 
-        {/* Notes */}
-        <div className="p-3 bg-routiq-cloud/10 rounded-lg">
-          <div className="text-sm text-routiq-blackberry/70">
-            <strong>Notes:</strong> {opportunity.notes}
-          </div>
-        </div>
-
-        {/* Suggested Action */}
-        <div className="flex items-center justify-between p-3 bg-routiq-energy/10 rounded-lg border border-routiq-energy/20">
-          <div className="flex items-center gap-3">
-            {getActionIcon(opportunity.actionType)}
-            <div>
-              <div className="font-medium text-routiq-core">
-                {opportunity.suggestedAction}
+    return (
+      <Card className={`border-l-4 ${getTypeColor(opportunity.type)} border-routiq-cloud/20 hover:shadow-md transition-all duration-200`}>
+        {/* Main Opportunity Info - Compact Layout */}
+        <CardContent className="p-4 space-y-3">
+          {/* Header Row */}
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="font-semibold text-routiq-core text-base">{opportunity.patient}</h3>
+                {getPriorityBadge(opportunity.priority)}
               </div>
-              <div className="text-sm text-routiq-blackberry/60">
-                Confidence: {opportunity.confidence}%
+              <div className="flex items-center gap-3 text-sm text-routiq-blackberry/60">
+                <span>#{opportunity.patientId}</span>
+                <span>LTV: ${opportunity.ltv.toLocaleString()}</span>
+                <span className="text-red-600">{opportunity.daysInactive}d inactive</span>
               </div>
             </div>
+            <div className="text-right">
+              <div className="text-xl font-bold text-green-600">${opportunity.potentialValue}</div>
+              <div className="text-xs text-routiq-blackberry/50">potential</div>
+            </div>
           </div>
-          
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="outline" 
-              size="sm"
-              className="border-routiq-cloud/30 text-routiq-blackberry/70"
-            >
-              <Eye className="h-4 w-4 mr-1" />
-              View Profile
-            </Button>
-            <Button 
-              size="sm" 
-              className="bg-routiq-core hover:bg-routiq-core/90 text-white"
-            >
-              Take Action
-              <ArrowRight className="h-4 w-4 ml-1" />
-            </Button>
+
+          {/* Compact Automation Status Row */}
+          <div 
+            className="flex items-center justify-between p-2 bg-routiq-cloud/5 rounded-lg border border-routiq-cloud/20 cursor-pointer hover:bg-routiq-cloud/10 transition-colors"
+            onClick={() => setIsAutomationExpanded(!isAutomationExpanded)}
+          >
+            <div className="flex items-center gap-2">
+              {getAutomationStatusIcon(opportunity.automationState.automationStatus)}
+              <div className="flex-1">
+                <div className="text-sm font-medium text-routiq-blackberry/80">
+                  {opportunity.automationState.currentSequence}
+                </div>
+                <div className="text-xs text-routiq-blackberry/60">
+                  {opportunity.automationState.currentStage}
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
+                <div className="w-16 bg-gray-200 rounded-full h-1">
+                  <div 
+                    className="bg-routiq-core h-1 rounded-full transition-all"
+                    style={{ width: `${opportunity.automationState.progress}%` }}
+                  ></div>
+                </div>
+                <span className="text-xs text-routiq-blackberry/60 w-8">
+                  {opportunity.automationState.progress}%
+                </span>
+              </div>
+              {isAutomationExpanded ? 
+                <ChevronDown className="h-4 w-4 text-routiq-blackberry/60" /> : 
+                <ChevronRight className="h-4 w-4 text-routiq-blackberry/60" />
+              }
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
+
+          {/* Expandable Automation Journey */}
+          {isAutomationExpanded && (
+            <div className="border-t border-routiq-cloud/20 pt-3 space-y-3 animate-in slide-in-from-top-1 duration-200">
+              <PatientJourneyTracker
+                patient={{
+                  id: opportunity.patientId,
+                  name: opportunity.patient,
+                  automationState: opportunity.automationState,
+                  status: opportunity.type
+                }}
+                onActionTrigger={(action) => {
+                  console.log(`Triggering action: ${action} for patient: ${opportunity.patient}`)
+                }}
+              />
+            </div>
+          )}
+
+          {/* Suggested Action - Streamlined */}
+          <div className="flex items-center justify-between p-3 bg-gradient-to-r from-routiq-energy/10 to-routiq-energy/5 rounded-lg border border-routiq-energy/20">
+            <div className="flex items-center gap-2">
+              {getActionIcon(opportunity.actionType)}
+              <div>
+                <div className="font-medium text-routiq-core text-sm">
+                  {opportunity.suggestedAction}
+                </div>
+                <div className="text-xs text-routiq-blackberry/60">
+                  {opportunity.confidence}% confidence
+                </div>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline" 
+                size="sm"
+                className="border-routiq-cloud/30 text-routiq-blackberry/70 text-xs px-3 py-1"
+              >
+                <Eye className="h-3 w-3 mr-1" />
+                View
+              </Button>
+              <Button 
+                size="sm" 
+                className="bg-routiq-core hover:bg-routiq-core/90 text-white text-xs px-3 py-1"
+              >
+                Take Action
+                <ArrowRight className="h-3 w-3 ml-1" />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -411,123 +450,49 @@ export function TopOpportunitiesTab() {
         </div>
       </div>
 
-      {/* Opportunities List */}
-      <div className="space-y-4">
+      {/* Opportunities List - Streamlined */}
+      <div className="space-y-3">
         {filteredOpportunities.map((opportunity) => (
-          <div key={opportunity.id} className="space-y-4">
-            <OpportunityCard opportunity={opportunity} />
-            {selectedOpportunity === opportunity.id && (
-              <div className="ml-4 border-l-4 border-routiq-core/30 pl-4">
-                <PatientJourneyTracker
-                  patient={{
-                    id: opportunity.patientId,
-                    name: opportunity.patient,
-                    automationState: opportunity.automationState,
-                    status: opportunity.type
-                  }}
-                  onActionTrigger={(action) => {
-                    console.log(`Triggering action: ${action} for patient: ${opportunity.patient}`)
-                    // Here you would integrate with your automation system
-                  }}
-                />
-              </div>
-            )}
-          </div>
+          <OpportunityCard key={opportunity.id} opportunity={opportunity} />
         ))}
       </div>
 
-      {/* Patient Journey Tracker Section */}
-      <Card className="border-routiq-energy/20 bg-routiq-energy/5">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-routiq-core">
-            <Route className="h-5 w-5" />
-            Patient Automation Journeys
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <p className="text-sm text-routiq-blackberry/70">
-              Click on any opportunity above to view the detailed automation journey and current sequence stage for that patient.
-            </p>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {filteredOpportunities.map((opportunity) => (
-                <button
-                  key={opportunity.id}
-                  onClick={() => setSelectedOpportunity(
-                    selectedOpportunity === opportunity.id ? null : opportunity.id
-                  )}
-                  className={`p-3 rounded-lg border-2 transition-all text-left ${
-                    selectedOpportunity === opportunity.id
-                      ? 'border-routiq-core bg-routiq-core/10'
-                      : 'border-routiq-cloud/20 bg-white hover:border-routiq-cloud/40'
-                  }`}
-                >
-                  <div className="font-medium text-routiq-core text-sm">
-                    {opportunity.patient}
-                  </div>
-                  <div className="text-xs text-routiq-blackberry/60 mt-1">
-                    {opportunity.automationState.currentSequence}
-                  </div>
-                  <div className="text-xs text-routiq-blackberry/50 mt-1">
-                    {opportunity.automationState.currentStage}
-                  </div>
-                  <div className="mt-2">
-                    <div className="w-full bg-gray-200 rounded-full h-1">
-                      <div
-                        className="bg-routiq-core h-1 rounded-full transition-all"
-                        style={{ width: `${opportunity.automationState.progress}%` }}
-                      ></div>
-                    </div>
-                    <div className="text-xs text-routiq-blackberry/60 mt-1">
-                      {opportunity.automationState.progress}% complete
-                    </div>
-                  </div>
-                </button>
-              ))}
-            </div>
+      {/* Streamlined Action Center */}
+      <Card className="border-routiq-core/20 bg-gradient-to-r from-routiq-core/5 to-routiq-energy/5">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-routiq-core flex items-center gap-2">
+              <Send className="h-4 w-4" />
+              Quick Actions
+            </h3>
+            <span className="text-xs text-routiq-blackberry/60">
+              {filteredOpportunities.length} opportunities
+            </span>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Action Center */}
-      <Card className="border-routiq-core/20 bg-routiq-core/5">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-routiq-core">
-            <Send className="h-5 w-5" />
-            Quick Action Center
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <Button 
               variant="outline" 
-              className="border-green-200 text-green-700 hover:bg-green-50 h-16"
+              className="border-green-200 text-green-700 hover:bg-green-50 h-12 text-sm"
             >
-              <div className="text-center">
-                <MessageCircle className="h-5 w-5 mx-auto mb-1" />
-                <div className="text-sm">Send Bulk Messages</div>
-              </div>
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Bulk Messages
             </Button>
             
             <Button 
               variant="outline" 
-              className="border-blue-200 text-blue-700 hover:bg-blue-50 h-16"
+              className="border-blue-200 text-blue-700 hover:bg-blue-50 h-12 text-sm"
             >
-              <div className="text-center">
-                <Phone className="h-5 w-5 mx-auto mb-1" />
-                <div className="text-sm">Schedule Calls</div>
-              </div>
+              <Phone className="h-4 w-4 mr-2" />
+              Schedule Calls
             </Button>
             
             <Button 
               variant="outline" 
-              className="border-purple-200 text-purple-700 hover:bg-purple-50 h-16"
+              className="border-purple-200 text-purple-700 hover:bg-purple-50 h-12 text-sm"
             >
-              <div className="text-center">
-                <Calendar className="h-5 w-5 mx-auto mb-1" />
-                <div className="text-sm">Book Appointments</div>
-              </div>
+              <Calendar className="h-4 w-4 mr-2" />
+              Book Appointments
             </Button>
           </div>
         </CardContent>
