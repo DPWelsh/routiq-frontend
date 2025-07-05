@@ -1019,7 +1019,7 @@ export default function PhoneChatPage() {
   const [chatLoading, setChatLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [sourceFilter, setSourceFilter] = useState<'all' | 'whatsapp' | 'instagram'>('all')
-  const [statusFilter, setStatusFilter] = useState<'all' | 'needs-followup' | 'unread' | 'ai-handle'>('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'needs-followup' | 'unread'>('all')
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -1555,15 +1555,7 @@ export default function PhoneChatPage() {
                 <Mail className="h-3 w-3" />
                 Unread ({conversations.filter(c => getConversationStatus(c).includes('unread')).length})
               </Button>
-              <Button
-                variant={statusFilter === 'ai-handle' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('ai-handle')}
-                className="text-xs h-7 gap-1"
-              >
-                <BotMessageSquare className="h-3 w-3" />
-                AI-handle ({conversations.filter(c => getConversationStatus(c).includes('ai-handle')).length})
-              </Button>
+
             </div>
           </div>
           
