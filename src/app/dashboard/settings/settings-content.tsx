@@ -73,14 +73,15 @@ export default function SettingsContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-4 p-4 h-full overflow-auto">
-      {/* Header with Search */}
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-routiq-core">Settings</h1>
-            <p className="text-routiq-blackberry/70 text-sm">Manage your clinic and system preferences</p>
-          </div>
+    <div className="min-h-screen bg-routiq-cloud/5">
+      <div className="max-w-8xl mx-auto space-y-6 p-6">
+        {/* Header with Search */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-routiq-core">Settings</h1>
+              <p className="text-routiq-blackberry/70 text-lg">Manage your clinic and system preferences</p>
+            </div>
           
           {/* Settings Search */}
           <div className="relative w-80">
@@ -691,15 +692,16 @@ export default function SettingsContent() {
         </TabsContent>
       </Tabs>
 
-      {/* Save Settings Footer */}
-      <div className="border-t border-routiq-cloud/20 pt-4 flex justify-between items-center">
-        <p className="text-sm text-routiq-blackberry/60">
-          Settings are automatically saved when changed
-        </p>
-        <Button className="bg-routiq-core hover:bg-routiq-core/90 text-white">
-          <Save className="h-4 w-4 mr-2" />
-          Save All Changes
-        </Button>
+        {/* Save Settings Footer */}
+        <div className="border-t border-routiq-cloud/20 pt-4 flex justify-between items-center">
+          <p className="text-sm text-routiq-blackberry/60">
+            Settings are automatically saved when changed
+          </p>
+          <Button className="bg-routiq-core hover:bg-routiq-core/90 text-white">
+            <Save className="h-4 w-4 mr-2" />
+            Save All Changes
+          </Button>
+        </div>
       </div>
     </div>
   )

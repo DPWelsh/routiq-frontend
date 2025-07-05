@@ -32,12 +32,17 @@ export default function IntegrationsPage() {
   const [webhookEnabled, setWebhookEnabled] = useState(true)
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 p-6">
-      {/* Header */}
-      <div className="space-y-2">
-        <h1 className="text-3xl font-bold text-routiq-core">Integrations</h1>
-        <p className="text-gray-600">Connect and manage your healthcare platform integrations</p>
-      </div>
+    <div className="min-h-screen bg-routiq-cloud/5">
+      <div className="max-w-8xl mx-auto space-y-6 p-6">
+        {/* Header */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-routiq-core">Integrations</h1>
+              <p className="text-routiq-blackberry/70 text-lg">Connect and manage your healthcare platform integrations</p>
+            </div>
+          </div>
+        </div>
 
       {/* Tabs Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -622,6 +627,7 @@ export default function IntegrationsPage() {
           </div>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   )
 } 
