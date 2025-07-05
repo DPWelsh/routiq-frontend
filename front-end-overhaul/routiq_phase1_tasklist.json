@@ -7,9 +7,10 @@
     "default_tab": "Clinic Overview",
     "existing_data": "Start fresh - replace UnifiedDashboard completely"
   },
-  "phase": "Phase 1: Foundation & Navigation",
+  "phase": "Phase 1: Foundation & Navigation (Updated for Simplicity)",
   "priority": "Critical",
-  "estimated_total_hours": 8,
+  "estimated_total_hours": 14,
+  "update_notes": "Original tasks overcomplicated the interface. Adding update tasks to align with exact original requirements and remove CRM bloat. Includes essential UX elements (loading, error, data freshness) without compromising simplicity.",
   "tasks": [
     {
       "id": "NAV-001",
@@ -111,6 +112,115 @@
       "estimated_hours": 2,
       "dependencies": ["NAV-002", "NAV-003", "NAV-004"], 
       "status": "completed"
+    },
+    {
+      "id": "UPDATE-001",
+      "title": "Simplify Clinic Overview to Original Requirements",
+      "description": "Remove CRM bloat and focus on exactly 5 metrics as originally specified",
+      "what_was_wrong": [
+        "Added unnecessary booking trends section with chart placeholder",
+        "Added peak hours insights and growth trend cards", 
+        "Added live data indicators and quick actions",
+        "Missing 'New patients' as separate metric",
+        "Missing 7-day trend for daily booking average"
+      ],
+      "correct_approach": [
+        "ONLY 5 metric cards: Total Bookings, Active Patients, New Patients (+ % change), Missed Appointments (+ % change), Daily Avg (7 day trend)",
+        "Month/Week toggle in content area",
+        "Essential UX only: Loading states, error handling, 'Last updated' timestamp",
+        "NO extra sections, charts, or quick actions",
+        "Clean, focused metric display"
+      ],
+      "acceptance_criteria": [
+        "Exactly 5 metric cards matching original requirements",
+        "New patients shown as separate metric with % change", 
+        "Daily average shows 7-day trend indicator",
+        "Simple loading skeleton for metric cards",
+        "Error state with retry for failed loads",
+        "'Last updated' timestamp for data trust",
+        "No booking trends section or extra insights",
+        "No quick actions or live indicators"
+      ],
+      "estimated_hours": 2,
+      "dependencies": ["NAV-002"],
+      "status": "pending"
+    },
+    {
+      "id": "UPDATE-002", 
+      "title": "Simplify Patient Insights to Original Requirements",
+      "description": "Remove complexity and focus on exactly 5 metrics + 1 graph + 1 link as specified",
+      "what_was_wrong": [
+        "Added LTV distribution with progress bars",
+        "Added engagement metrics and efficiency stats",
+        "Added complex risk assessment with multiple categories",
+        "Added quick actions section",
+        "Missing sentiment graph over 4 weeks",
+        "Missing avg bookings/revenue per patient",
+        "Missing quick link to high risk patient list"
+      ],
+      "correct_approach": [
+        "Simple patient sentiment display (no complex breakdown)",
+        "Sentiment graph over last 4 weeks",
+        "Avg. No. Bookings per patient",
+        "Avg. Rev per patient", 
+        "No. High risk patients with quick link to list (ONLY actionable element)",
+        "Essential UX: Loading states, error handling, 'Last updated' timestamp",
+        "NO LTV distribution, engagement metrics, or risk categories"
+      ],
+      "acceptance_criteria": [
+        "Clean sentiment display without complex breakdowns",
+        "4-week sentiment trend graph (static, no interactions)",
+        "Average bookings per patient metric",
+        "Average revenue per patient metric",
+        "High risk patients count with actionable link (the ONE action allowed)",
+        "Simple loading skeleton for all elements",
+        "Error state with retry for failed loads",
+        "'Last updated' timestamp for data trust",
+        "No progress bars, distributions, or extra sections"
+      ],
+      "estimated_hours": 3,
+      "dependencies": ["NAV-003"],
+      "status": "pending"
+    },
+    {
+      "id": "UPDATE-003",
+      "title": "Simplify Automation Summary to Original Requirements", 
+      "description": "Remove system complexity and focus on ROI + automation list as specified",
+      "what_was_wrong": [
+        "Added system health indicators and performance metrics",
+        "Added complex admin time breakdown with progress bars",
+        "Added ROI breakdown section and opportunity suggestions",
+        "Added efficiency metrics and quick actions",
+        "Missing bookings via AI metric",
+        "Missing at-risk patients rebooked metric",
+        "Missing conversion rate (enquiry to booking)",
+        "Missing hourly rate calculation for admin savings",
+        "Missing simple automation list with checkboxes"
+      ],
+      "correct_approach": [
+        "Total ROI: Revenue from automations + Admin saved (with hourly rate)",
+        "Bookings via AI",
+        "At-Risk Patients Rebooked", 
+        "Conversion rate (Enquiry to booking)",
+        "Avg. Response Time",
+        "Est. Admin hours saved + price based on hourly rate",
+        "Simple list of automations with volumes and checkboxes (Appointment reminder, Rebooking reminder)",
+        "Essential UX: Loading states, error handling, 'Last updated' timestamp"
+      ],
+      "acceptance_criteria": [
+        "Clean ROI calculation showing revenue + admin savings",
+        "AI-specific booking metrics (Bookings via AI, At-Risk Patients Rebooked)",
+        "Conversion rate (Enquiry to booking) tracking",
+        "Admin time savings with dollar value calculation (hourly rate × hours)",
+        "Simple automation list with volume counts and status checkboxes",
+        "Simple loading skeleton for metrics and automation list",
+        "Error state with retry for failed loads",
+        "'Last updated' timestamp for data trust",
+        "No system health, performance metrics, or complex breakdowns"
+      ],
+      "estimated_hours": 3,
+      "dependencies": ["NAV-004"],
+      "status": "pending"
     }
   ],
   "file_changes": [
@@ -158,8 +268,36 @@
     "responsive": "Mobile-first responsive design"
   },
   "next_phases": {
-    "phase_2": "Clinic Overview content implementation with real metrics",
-    "phase_3": "Patient Insights content implementation", 
-    "phase_4": "Automation Summary content implementation"
+    "phase_2": "Connect real data to simplified Clinic Overview (5 metrics only)",
+    "phase_3": "Implement Patient Insights with real sentiment data (4 metrics + graph + link)", 
+    "phase_4": "Add Automation Summary with real ROI tracking (6 metrics + automation list)"
+  },
+  "lessons_learned": {
+    "avoid_crm_bloat": "Original implementation fell into CRM trap of adding 'helpful' extras that users didn't ask for",
+    "focus_on_requirements": "Stick exactly to specified metrics - don't add progress bars, breakdowns, or extra sections",
+    "simplicity_wins": "Users want to glance and understand key metrics quickly, not analyze complex dashboards",
+    "less_is_more": "18 focused data points beat 40+ elements with multiple subsections"
+  },
+  "design_philosophy": {
+    "primary_goal": "Speed and clarity over comprehensive analytics",
+    "user_experience": "3-second glance should reveal all critical information", 
+    "visual_hierarchy": "Simple metric cards with clear numbers and minimal decorations",
+    "interaction_model": "View metrics, not manipulate complex interfaces"
+  },
+  "essential_ux_elements": {
+    "loading_states": "Simple skeleton loading for metric cards only - no fancy animations",
+    "error_handling": "Clear error messages with retry option - 'Unable to load clinic data'",
+    "data_freshness": "'Last updated: [timestamp]' at top for user trust in AI-powered data",
+    "mobile_responsive": "Healthcare staff use phones/tablets - responsive grid is essential",
+    "empty_states": "Handle new clinics or data gaps - 'No data available for this period'",
+    "one_action_only": "Patient Insights quick link to high-risk patients list (as specified)"
+  },
+  "ux_elements_to_avoid": {
+    "tooltips": "Metrics should be self-explanatory",
+    "quick_actions_everywhere": "Only the one specified quick link",
+    "progressive_disclosure": "Everything visible at a glance",
+    "detailed_status": "No system health or complex status displays", 
+    "interactive_charts": "Static sentiment graph is sufficient",
+    "live_indicators": "Simple 'last updated' timestamp instead of pulsing dots"
   }
 } 
