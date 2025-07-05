@@ -1,0 +1,605 @@
+{
+  "project": "Routiq Dashboard Overhaul - AI-Powered Cliniko/Nookal Layer",
+  "version": "2.0",
+  "mission": "Always look to highlight data that Cliniko doesn't track - create a feeling of it being 'live'",
+  "goal": "Become the default AI-powered layer that sits on top of Cliniko/Nookal — not replace it — to unlock insights, automate actions, and deliver measurable ROI",
+  "phases": [
+    {
+      "phase": "Phase 1: Foundation & Navigation",
+      "priority": "Critical",
+      "tasks": [
+        {
+          "id": "NAV-001",
+          "title": "Create Main Dashboard Navigation Structure",
+          "description": "Build top-level navigation tabs with responsive design",
+          "components": [
+            "Clinic Overview",
+            "Patient Insights", 
+            "Automation Summary",
+            "Inbox",
+            "Patient Profiles",
+            "Settings"
+          ],
+          "estimated_hours": 16,
+          "dependencies": [],
+          "status": "pending"
+        },
+        {
+          "id": "NAV-002", 
+          "title": "Implement Dashboard Layout System",
+          "description": "Create reusable dashboard components with proper spacing and responsive grid",
+          "components": [
+            "DashboardCard component",
+            "MetricWidget component", 
+            "ChartContainer component",
+            "ResponsiveGrid layout"
+          ],
+          "estimated_hours": 12,
+          "dependencies": ["NAV-001"],
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": "Phase 2: Clinic Overview Dashboard",
+      "priority": "Critical",
+      "tasks": [
+        {
+          "id": "CLINIC-001",
+          "title": "Build Clinic Overview Tab Navigation",
+          "description": "Create Month and Week view toggles with date range selection",
+          "components": [
+            "Month/Week toggle buttons",
+            "Date range picker",
+            "Auto-refresh indicators"
+          ],
+          "estimated_hours": 8,
+          "dependencies": ["NAV-001"],
+          "status": "pending"
+        },
+        {
+          "id": "CLINIC-002",
+          "title": "Implement Core Booking Metrics",
+          "description": "Display key booking statistics with live updates",
+          "metrics": [
+            "No. Bookings made",
+            "No. Active patients", 
+            "No. New patients (+ % change)",
+            "No. Missed appointments (+ % change)",
+            "Daily booking avg. (7 day trend)"
+          ],
+          "estimated_hours": 20,
+          "dependencies": ["CLINIC-001"],
+          "status": "pending"
+        },
+        {
+          "id": "CLINIC-003",
+          "title": "Create Live Data Indicators",
+          "description": "Add visual indicators showing data freshness and 'live' feeling",
+          "features": [
+            "Real-time pulse indicators",
+            "Last updated timestamps",
+            "Data refresh animations",
+            "Live activity feed"
+          ],
+          "estimated_hours": 12,
+          "dependencies": ["CLINIC-002"],
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": "Phase 3: Patient Insights Dashboard",
+      "priority": "High",
+      "tasks": [
+        {
+          "id": "INSIGHTS-001",
+          "title": "Build Patient Sentiment Tracking",
+          "description": "Create sentiment analysis dashboard with historical trends",
+          "components": [
+            "Sentiment graph (4 week history)",
+            "Sentiment score aggregation",
+            "Patient sentiment distribution",
+            "Sentiment alerts"
+          ],
+          "estimated_hours": 24,
+          "dependencies": ["NAV-001"],
+          "status": "pending"
+        },
+        {
+          "id": "INSIGHTS-002",
+          "title": "Implement Patient Value Metrics",
+          "description": "Show patient value and engagement metrics",
+          "metrics": [
+            "Avg. No. Bookings per patient",
+            "Avg. Revenue per patient",
+            "No. High risk patients",
+            "Quick link to high-risk patient list"
+          ],
+          "estimated_hours": 16,
+          "dependencies": ["INSIGHTS-001"],
+          "status": "pending"
+        },
+        {
+          "id": "INSIGHTS-003",
+          "title": "Create Patient Risk Assessment",
+          "description": "Build AI-powered patient risk scoring and categorization",
+          "features": [
+            "Risk score calculation algorithm",
+            "Risk tier visualization (High/Medium/Low)",
+            "Risk trend analysis",
+            "Automated risk alerts"
+          ],
+          "estimated_hours": 32,
+          "dependencies": ["INSIGHTS-002"],
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": "Phase 4: Automation Summary Dashboard",
+      "priority": "High",
+      "tasks": [
+        {
+          "id": "AUTO-001",
+          "title": "Build ROI Tracking Dashboard",
+          "description": "Create comprehensive ROI calculation and display",
+          "components": [
+            "Total ROI calculator",
+            "Revenue from automations tracker",
+            "Admin time saved calculator",
+            "ROI trend visualization"
+          ],
+          "estimated_hours": 20,
+          "dependencies": ["NAV-001"],
+          "status": "pending"
+        },
+        {
+          "id": "AUTO-002",
+          "title": "Implement Automation Performance Metrics",
+          "description": "Track and display automation effectiveness",
+          "metrics": [
+            "Bookings via AI",
+            "At-Risk Patients Rebooked",
+            "Conversion rate (Enquiry to booking)",
+            "Avg. Response Time"
+          ],
+          "estimated_hours": 18,
+          "dependencies": ["AUTO-001"],
+          "status": "pending"
+        },
+        {
+          "id": "AUTO-003",
+          "title": "Create Admin Time Savings Calculator",
+          "description": "Estimate and display admin hours saved with pricing",
+          "features": [
+            "Hourly rate configuration",
+            "Time savings calculation",
+            "Cost savings visualization",
+            "Monthly/annual projections"
+          ],
+          "estimated_hours": 14,
+          "dependencies": ["AUTO-002"],
+          "status": "pending"
+        },
+        {
+          "id": "AUTO-004",
+          "title": "Build Automation Volume Tracking",
+          "description": "List and track volume of each automation type",
+          "automations": [
+            "Appointment reminder volumes",
+            "Rebooking reminder volumes",
+            "Custom automation tracking",
+            "Automation performance comparison"
+          ],
+          "estimated_hours": 16,
+          "dependencies": ["AUTO-003"],
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": "Phase 5: Inbox (Receptionist Power Hub)",
+      "priority": "Critical",
+      "tasks": [
+        {
+          "id": "INBOX-001",
+          "title": "Create Unified Inbox Interface",
+          "description": "Build single interface for all inbound messages",
+          "sources": [
+            "Email integration",
+            "SMS integration", 
+            "Call transcripts",
+            "DM's (WhatsApp, Instagram, etc.)"
+          ],
+          "estimated_hours": 40,
+          "dependencies": ["NAV-001"],
+          "status": "pending"
+        },
+        {
+          "id": "INBOX-002",
+          "title": "Implement Message Filtering System",
+          "description": "Create smart filters for message management",
+          "filters": [
+            "Needs follow-up",
+            "Unread messages",
+            "AI-handled messages",
+            "Priority levels",
+            "Source filtering"
+          ],
+          "estimated_hours": 18,
+          "dependencies": ["INBOX-001"],
+          "status": "pending"
+        },
+        {
+          "id": "INBOX-003",
+          "title": "Build Smart Patient Summary Panel",
+          "description": "Create AI-powered patient context panel",
+          "features": [
+            "Patient score (Likelihood of reengagement)",
+            "Risk flag (High Risk / Dormant / New)",
+            "LTV display",
+            "No. Appointments made",
+            "Upcoming appointments",
+            "High level notes (optional)"
+          ],
+          "estimated_hours": 28,
+          "dependencies": ["INBOX-002"],
+          "status": "pending"
+        },
+        {
+          "id": "INBOX-004",
+          "title": "Implement Message Response Tools",
+          "description": "Create tools for quick and AI-assisted responses",
+          "tools": [
+            "Quick reply templates",
+            "AI response suggestions",
+            "Booking integration",
+            "Follow-up scheduling"
+          ],
+          "estimated_hours": 24,
+          "dependencies": ["INBOX-003"],
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": "Phase 6: Patient Insights (Detailed)",
+      "priority": "High",
+      "tasks": [
+        {
+          "id": "PATIENT-001",
+          "title": "Build Patient Data Table",
+          "description": "Create comprehensive searchable patient table",
+          "columns": [
+            "Name",
+            "Phone", 
+            "Email",
+            "LTV",
+            "Avg. Spend",
+            "No. of Sessions",
+            "Last Appt",
+            "Last contacted",
+            "No. No-shows",
+            "Status (Active / Dormant / At-Risk)"
+          ],
+          "features": [
+            "Advanced search",
+            "Column sorting",
+            "Export functionality",
+            "Bulk actions"
+          ],
+          "estimated_hours": 32,
+          "dependencies": ["NAV-001"],
+          "status": "pending"
+        },
+        {
+          "id": "PATIENT-002",
+          "title": "Create Engagement Overview Dashboard",
+          "description": "Build patient engagement risk visualization",
+          "components": [
+            "Risk tier distribution (High/Medium/Low)",
+            "Patient counts per risk tier",
+            "Engagement trend charts",
+            "Risk movement tracking"
+          ],
+          "estimated_hours": 20,
+          "dependencies": ["PATIENT-001"],
+          "status": "pending"
+        },
+        {
+          "id": "PATIENT-003",
+          "title": "Implement Advanced Patient Filtering",
+          "description": "Create sophisticated filtering system",
+          "filters": [
+            "Date last seen",
+            "LTV ranges",
+            "Average session frequency",
+            "Risk levels",
+            "Appointment patterns"
+          ],
+          "estimated_hours": 16,
+          "dependencies": ["PATIENT-002"],
+          "status": "pending"
+        },
+        {
+          "id": "PATIENT-004",
+          "title": "Build Top Opportunities Dashboard",
+          "description": "Identify and display top patient opportunities",
+          "opportunities": [
+            "Highest LTV, no recent appointment",
+            "Previously high-frequency, now inactive",
+            "Due for next session (based on treatment pattern)",
+            "Opportunity scoring algorithm"
+          ],
+          "estimated_hours": 24,
+          "dependencies": ["PATIENT-003"],
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": "Phase 7: Enhanced Patient Profile",
+      "priority": "Medium",
+      "tasks": [
+        {
+          "id": "PROFILE-001",
+          "title": "Expand Patient Profile Overview",
+          "description": "Enhanced patient profile with comprehensive data",
+          "components": [
+            "Complete contact information",
+            "LTV and financial metrics",
+            "Session history and patterns",
+            "No-show tracking",
+            "Engagement timeline"
+          ],
+          "estimated_hours": 20,
+          "dependencies": ["PATIENT-001"],
+          "status": "pending"
+        },
+        {
+          "id": "PROFILE-002",
+          "title": "Build Comprehensive Conversation History",
+          "description": "Unified conversation history across all channels",
+          "channels": [
+            "Chat logs",
+            "WhatsApp messages",
+            "Phone call transcripts",
+            "Email correspondence"
+          ],
+          "estimated_hours": 24,
+          "dependencies": ["PROFILE-001"],
+          "status": "pending"
+        },
+        {
+          "id": "PROFILE-003",
+          "title": "Implement Smart Notes System",
+          "description": "AI-powered note generation and organization",
+          "features": [
+            "Automatic note extraction from conversations",
+            "Smart note categorization",
+            "Keyword highlighting",
+            "Note search and filtering",
+            "Example: 'Mentioned knee pain again on June 30 call'"
+          ],
+          "estimated_hours": 28,
+          "dependencies": ["PROFILE-002"],
+          "status": "pending"
+        },
+        {
+          "id": "PROFILE-004",
+          "title": "Create Patient Journey Tracking",
+          "description": "Visual patient trajectory vs. patient history",
+          "components": [
+            "Journey timeline visualization",
+            "Treatment progress tracking",
+            "Engagement trajectory",
+            "Predictive journey modeling"
+          ],
+          "estimated_hours": 32,
+          "dependencies": ["PROFILE-003"],
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": "Phase 8: Settings & Configuration",
+      "priority": "Medium",
+      "tasks": [
+        {
+          "id": "SETTINGS-001",
+          "title": "Build Account Information Management",
+          "description": "Comprehensive account and clinic management",
+          "features": [
+            "Clinic details management",
+            "Staff management interface",
+            "Role-based permissions",
+            "Account settings"
+          ],
+          "estimated_hours": 24,
+          "dependencies": ["NAV-001"],
+          "status": "pending"
+        },
+        {
+          "id": "SETTINGS-002",
+          "title": "Create Integrations Dashboard",
+          "description": "Manage all system integrations",
+          "integrations": [
+            "Cliniko connection status",
+            "Chatwoot integration",
+            "WhatsApp Business API",
+            "Email service integration",
+            "SMS gateway integration"
+          ],
+          "estimated_hours": 20,
+          "dependencies": ["SETTINGS-001"],
+          "status": "pending"
+        },
+        {
+          "id": "SETTINGS-003",
+          "title": "Implement Security & Access Controls",
+          "description": "Complete security and access management",
+          "features": [
+            "User roles (Owner, Receptionist, Practitioner)",
+            "2FA implementation",
+            "Data export functionality",
+            "Access logs",
+            "Permission management"
+          ],
+          "estimated_hours": 32,
+          "dependencies": ["SETTINGS-002"],
+          "status": "pending"
+        },
+        {
+          "id": "SETTINGS-004",
+          "title": "Build Notifications & Alerts System",
+          "description": "Comprehensive notification management",
+          "notifications": [
+            "Weekly ROI reports",
+            "Smart alerting system",
+            "Rebooking rate alerts",
+            "Patient NPS alerts",
+            "Booking alerts (no bookings in 24h)",
+            "Custom alert configuration"
+          ],
+          "estimated_hours": 28,
+          "dependencies": ["SETTINGS-003"],
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": "Phase 9: Advanced Analytics & AI",
+      "priority": "High",
+      "tasks": [
+        {
+          "id": "AI-001",
+          "title": "Implement Predictive Analytics",
+          "description": "AI-powered predictive insights for clinic operations",
+          "features": [
+            "Booking demand forecasting",
+            "Patient churn prediction",
+            "Revenue forecasting",
+            "Optimal scheduling recommendations"
+          ],
+          "estimated_hours": 40,
+          "dependencies": ["INSIGHTS-003", "PATIENT-004"],
+          "status": "pending"
+        },
+        {
+          "id": "AI-002",
+          "title": "Build Smart Automation Engine",
+          "description": "Advanced automation with machine learning",
+          "automations": [
+            "Intelligent appointment scheduling",
+            "Personalized patient communication",
+            "Dynamic pricing suggestions",
+            "Staff workload optimization"
+          ],
+          "estimated_hours": 48,
+          "dependencies": ["AI-001"],
+          "status": "pending"
+        },
+        {
+          "id": "AI-003",
+          "title": "Create Advanced Reporting Suite",
+          "description": "Comprehensive analytics and reporting",
+          "reports": [
+            "Custom dashboard builder",
+            "Advanced KPI tracking",
+            "Comparative analytics",
+            "Automated report generation"
+          ],
+          "estimated_hours": 36,
+          "dependencies": ["AI-002"],
+          "status": "pending"
+        }
+      ]
+    },
+    {
+      "phase": "Phase 10: Testing & Optimization",
+      "priority": "Critical",
+      "tasks": [
+        {
+          "id": "TEST-001",
+          "title": "Comprehensive Testing Suite",
+          "description": "Full application testing and quality assurance",
+          "testing_types": [
+            "Unit testing",
+            "Integration testing",
+            "End-to-end testing",
+            "Performance testing",
+            "Security testing"
+          ],
+          "estimated_hours": 60,
+          "dependencies": ["AI-003"],
+          "status": "pending"
+        },
+        {
+          "id": "TEST-002",
+          "title": "User Acceptance Testing",
+          "description": "Real-world testing with clinic staff",
+          "activities": [
+            "Receptionist workflow testing",
+            "Practitioner interface testing",
+            "Owner dashboard testing",
+            "Mobile responsiveness testing"
+          ],
+          "estimated_hours": 40,
+          "dependencies": ["TEST-001"],
+          "status": "pending"
+        },
+        {
+          "id": "TEST-003",
+          "title": "Performance Optimization",
+          "description": "Optimize application performance and user experience",
+          "optimizations": [
+            "Database query optimization",
+            "Frontend performance tuning",
+            "API response optimization",
+            "Caching implementation"
+          ],
+          "estimated_hours": 32,
+          "dependencies": ["TEST-002"],
+          "status": "pending"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "total_tasks": 43,
+    "total_estimated_hours": 1044,
+    "estimated_timeline": "6-8 months",
+    "key_priorities": [
+      "Clinic Overview Dashboard",
+      "Unified Inbox",
+      "Patient Insights",
+      "Automation ROI Tracking"
+    ],
+    "success_metrics": [
+      "Measurable ROI for clinics",
+      "Reduced admin time",
+      "Improved patient engagement",
+      "Increased booking conversions",
+      "Enhanced clinic operational efficiency"
+    ]
+  },
+  "technical_requirements": {
+    "frontend_framework": "Next.js 14+ with React",
+    "ui_library": "Tailwind CSS + Shadcn/ui",
+    "state_management": "React Query + Zustand",
+    "charts_library": "Chart.js or Recharts",
+    "real_time": "WebSockets or Server-Sent Events",
+    "testing": "Jest + React Testing Library + Playwright",
+    "deployment": "Vercel or AWS",
+    "monitoring": "Sentry + Analytics"
+  },
+  "integration_requirements": {
+    "cliniko_api": "Full integration with Cliniko practice management",
+    "chatwoot_api": "Unified messaging platform integration",
+    "whatsapp_business": "WhatsApp Business API integration", 
+    "email_service": "Email service provider integration",
+    "sms_gateway": "SMS service integration",
+    "call_transcription": "Call transcription service integration"
+  }
+} 

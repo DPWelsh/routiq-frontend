@@ -1,0 +1,165 @@
+{
+  "project": "Routiq Dashboard Phase 1 - Foundation & Navigation",
+  "version": "1.0",
+  "user_specifications": {
+    "tab_style": "Use current UI style with Routiq brand colors",
+    "month_week_toggle": "Within the tab content area, not in tab header",
+    "default_tab": "Clinic Overview",
+    "existing_data": "Start fresh - replace UnifiedDashboard completely"
+  },
+  "phase": "Phase 1: Foundation & Navigation",
+  "priority": "Critical",
+  "estimated_total_hours": 8,
+  "tasks": [
+    {
+      "id": "NAV-001",
+      "title": "Create Dashboard Tab Navigation Structure",
+      "description": "Replace UnifiedDashboard with tabbed interface using Routiq brand styling",
+      "components": [
+        "MainDashboardTabs component",
+        "Tab navigation using shadcn/ui Tabs",
+        "Routiq brand color scheme",
+        "Three main tabs: Clinic Overview, Patient Insights, Automation Summary",
+        "Clinic Overview as default active tab"
+      ],
+      "acceptance_criteria": [
+        "Tabs use Routiq brand colors and existing UI style",
+        "Clinic Overview tab is active by default",
+        "Tab switching works smoothly",
+        "Responsive design for mobile/tablet"
+      ],
+      "estimated_hours": 2,
+      "dependencies": [],
+      "status": "pending"
+    },
+    {
+      "id": "NAV-002", 
+      "title": "Implement Clinic Overview Tab with Month/Week Toggle",
+      "description": "Create the Clinic Overview tab content with Month/Week toggle within the content area",
+      "components": [
+        "ClinicOverviewTab component",
+        "Month/Week toggle buttons within tab content",
+        "Date range selection",
+        "Placeholder sections for booking metrics",
+        "Live data indicator placeholders"
+      ],
+      "acceptance_criteria": [
+        "Month/Week toggle is within tab content, not header",
+        "Toggle state is managed properly",
+        "Layout is ready for metrics components",
+        "Default view is Month"
+      ],
+      "estimated_hours": 2,
+      "dependencies": ["NAV-001"],
+      "status": "pending"
+    },
+    {
+      "id": "NAV-003",
+      "title": "Create Patient Insights Tab Structure",
+      "description": "Build Patient Insights tab with placeholder content for future implementation",
+      "components": [
+        "PatientInsightsTab component", 
+        "Placeholder sections for sentiment tracking",
+        "Patient value metrics placeholder",
+        "Risk assessment placeholder areas"
+      ],
+      "acceptance_criteria": [
+        "Tab content area is properly structured",
+        "Placeholder sections match planned features",
+        "Ready for Phase 3 implementation"
+      ],
+      "estimated_hours": 1,
+      "dependencies": ["NAV-001"],
+      "status": "pending"
+    },
+    {
+      "id": "NAV-004",
+      "title": "Create Automation Summary Tab Structure", 
+      "description": "Build Automation Summary tab with placeholder content for future implementation",
+      "components": [
+        "AutomationSummaryTab component",
+        "ROI tracking placeholder sections",
+        "Automation metrics placeholder",
+        "Admin time savings placeholder"
+      ],
+      "acceptance_criteria": [
+        "Tab content area is properly structured", 
+        "Placeholder sections match planned features",
+        "Ready for Phase 4 implementation"
+      ],
+      "estimated_hours": 1,
+      "dependencies": ["NAV-001"],
+      "status": "pending"
+    },
+    {
+      "id": "NAV-005",
+      "title": "Build Reusable Dashboard Components",
+      "description": "Create the foundational components for all dashboard sections",
+      "components": [
+        "DashboardCard component with Routiq styling",
+        "MetricWidget component (number, trend, comparison)",
+        "ChartContainer component (loading, error states)",
+        "ResponsiveGrid layout system",
+        "LoadingPlaceholder components"
+      ],
+      "acceptance_criteria": [
+        "Components follow Routiq design system",
+        "Reusable across all dashboard tabs",
+        "Responsive and accessible",
+        "TypeScript interfaces defined"
+      ],
+      "estimated_hours": 2,
+      "dependencies": ["NAV-002", "NAV-003", "NAV-004"], 
+      "status": "pending"
+    }
+  ],
+  "file_changes": [
+    {
+      "file": "src/components/dashboard/unified-dashboard.tsx",
+      "action": "replace",
+      "description": "Replace with new MainDashboardTabs component"
+    },
+    {
+      "file": "src/components/dashboard/tabs/clinic-overview-tab.tsx",
+      "action": "create",
+      "description": "New Clinic Overview tab component with Month/Week toggle"
+    },
+    {
+      "file": "src/components/dashboard/tabs/patient-insights-tab.tsx", 
+      "action": "create",
+      "description": "New Patient Insights tab component"
+    },
+    {
+      "file": "src/components/dashboard/tabs/automation-summary-tab.tsx",
+      "action": "create", 
+      "description": "New Automation Summary tab component"
+    },
+    {
+      "file": "src/components/dashboard/components/dashboard-card.tsx",
+      "action": "create",
+      "description": "Reusable dashboard card component"
+    },
+    {
+      "file": "src/components/dashboard/components/metric-widget.tsx",
+      "action": "create",
+      "description": "Reusable metric display widget"
+    },
+    {
+      "file": "src/components/dashboard/components/chart-container.tsx",
+      "action": "create",
+      "description": "Reusable chart wrapper component"
+    }
+  ],
+  "design_specifications": {
+    "color_scheme": "Routiq brand colors (routiq-core, routiq-prompt, routiq-energy, etc.)",
+    "typography": "Existing dashboard typography patterns",
+    "spacing": "Consistent with current dashboard spacing",
+    "components": "shadcn/ui components with Routiq theming",
+    "responsive": "Mobile-first responsive design"
+  },
+  "next_phases": {
+    "phase_2": "Clinic Overview content implementation with real metrics",
+    "phase_3": "Patient Insights content implementation", 
+    "phase_4": "Automation Summary content implementation"
+  }
+} 
