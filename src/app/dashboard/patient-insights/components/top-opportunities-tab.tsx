@@ -278,17 +278,25 @@ export function TopOpportunitiesTab() {
     
     const getAutomationStatusIcon = (status: string) => {
       switch (status) {
-        case 'active': return <Play className="h-3 w-3 text-blue-600" />
-        case 'paused': return <Pause className="h-3 w-3 text-gray-600" />
-        case 'priority': return <AlertTriangle className="h-3 w-3 text-orange-600" />
-        default: return <CheckCircle className="h-3 w-3 text-green-600" />
+        case 'active': return <Play className="h-4 w-4 text-blue-600" />
+        case 'paused': return <Pause className="h-4 w-4 text-gray-600" />
+        case 'priority': return <AlertTriangle className="h-4 w-4 text-orange-600" />
+        default: return <CheckCircle className="h-4 w-4 text-green-600" />
+      }
+    }
+
+    const getAutomationStatusBadge = (status: string) => {
+      switch (status) {
+        case 'active': return <Badge className="bg-blue-100 text-blue-700 border-blue-200">Active</Badge>
+        case 'paused': return <Badge className="bg-gray-100 text-gray-700 border-gray-200">Paused</Badge>
+        case 'priority': return <Badge className="bg-orange-100 text-orange-700 border-orange-200">Priority</Badge>
+        default: return <Badge className="bg-green-100 text-green-700 border-green-200">Completed</Badge>
       }
     }
 
     return (
       <Card className={`border-l-4 ${getTypeColor(opportunity.type)} border-routiq-cloud/20 hover:shadow-md transition-all duration-200`}>
-        {/* Main Opportunity Info - Compact Layout */}
-        <CardContent className="p-4 space-y-3">
+        <CardContent className="p-4 space-y-4">
           {/* Header Row */}
           <div className="flex items-start justify-between">
             <div className="flex-1">
@@ -308,44 +316,86 @@ export function TopOpportunitiesTab() {
             </div>
           </div>
 
-          {/* Compact Automation Status Row */}
-          <div 
-            className="flex items-center justify-between p-2 bg-routiq-cloud/5 rounded-lg border border-routiq-cloud/20 cursor-pointer hover:bg-routiq-cloud/10 transition-colors"
-            onClick={() => setIsAutomationExpanded(!isAutomationExpanded)}
-          >
-            <div className="flex items-center gap-2">
-              {getAutomationStatusIcon(opportunity.automationState.automationStatus)}
-              <div className="flex-1">
-                <div className="text-sm font-medium text-routiq-blackberry/80">
-                  {opportunity.automationState.currentSequence}
+          {/* 🚀 PROMINENT AUTOMATION JOURNEY SECTION */}
+          <div className="bg-gradient-to-r from-blue-50 via-purple-50 to-indigo-50 border-2 border-blue-200/50 rounded-xl p-4 space-y-3">
+            {/* Automation Header */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-500 rounded-lg">
+                  <Route className="h-5 w-5 text-white" />
                 </div>
-                <div className="text-xs text-routiq-blackberry/60">
-                  {opportunity.automationState.currentStage}
+                <div>
+                  <div className="font-semibold text-blue-900 text-sm">🤖 Active Automation</div>
+                  <div className="text-blue-700 font-medium">{opportunity.automationState.currentSequence}</div>
                 </div>
               </div>
+              {getAutomationStatusBadge(opportunity.automationState.automationStatus)}
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                <div className="w-16 bg-gray-200 rounded-full h-1">
-                  <div 
-                    className="bg-routiq-core h-1 rounded-full transition-all"
-                    style={{ width: `${opportunity.automationState.progress}%` }}
-                  ></div>
+
+            {/* Current Stage & Progress */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {getAutomationStatusIcon(opportunity.automationState.automationStatus)}
+                  <span className="text-sm font-medium text-blue-800">
+                    Current: {opportunity.automationState.currentStage}
+                  </span>
                 </div>
-                <span className="text-xs text-routiq-blackberry/60 w-8">
-                  {opportunity.automationState.progress}%
+                <span className="text-sm font-bold text-blue-700">
+                  {opportunity.automationState.progress}% Complete
                 </span>
               </div>
-              {isAutomationExpanded ? 
-                <ChevronDown className="h-4 w-4 text-routiq-blackberry/60" /> : 
-                <ChevronRight className="h-4 w-4 text-routiq-blackberry/60" />
-              }
+              
+              {/* Enhanced Progress Bar */}
+              <div className="relative">
+                <div className="w-full bg-blue-200 rounded-full h-3 shadow-inner">
+                  <div 
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full transition-all duration-500 shadow-sm relative overflow-hidden"
+                    style={{ width: `${opportunity.automationState.progress}%` }}
+                  >
+                    <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
+                  </div>
+                </div>
+              </div>
             </div>
+
+            {/* Next Action Preview */}
+            <div className="bg-white/70 rounded-lg p-3 border border-blue-200">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-blue-600" />
+                  <div>
+                    <div className="text-sm font-medium text-blue-900">Next Action</div>
+                    <div className="text-xs text-blue-700">{opportunity.automationState.nextAction}</div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-xs text-blue-600">Scheduled</div>
+                  <div className="text-sm font-medium text-blue-800">
+                    {new Date(opportunity.automationState.nextActionDate).toLocaleDateString()}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Expandable Journey Details */}
+            <button
+              onClick={() => setIsAutomationExpanded(!isAutomationExpanded)}
+              className="w-full flex items-center justify-center gap-2 py-2 text-blue-700 hover:text-blue-800 transition-colors"
+            >
+              <span className="text-sm font-medium">
+                {isAutomationExpanded ? 'Hide Journey Details' : 'View Full Journey'}
+              </span>
+              {isAutomationExpanded ? 
+                <ChevronDown className="h-4 w-4" /> : 
+                <ChevronRight className="h-4 w-4" />
+              }
+            </button>
           </div>
 
-          {/* Expandable Automation Journey */}
+          {/* Expandable Full Automation Journey */}
           {isAutomationExpanded && (
-            <div className="border-t border-routiq-cloud/20 pt-3 space-y-3 animate-in slide-in-from-top-1 duration-200">
+            <div className="border border-blue-200 rounded-lg p-4 bg-blue-50/30 animate-in slide-in-from-top-1 duration-200">
               <PatientJourneyTracker
                 patient={{
                   id: opportunity.patientId,
@@ -360,16 +410,19 @@ export function TopOpportunitiesTab() {
             </div>
           )}
 
-          {/* Suggested Action - Streamlined */}
-          <div className="flex items-center justify-between p-3 bg-gradient-to-r from-routiq-energy/10 to-routiq-energy/5 rounded-lg border border-routiq-energy/20">
-            <div className="flex items-center gap-2">
-              {getActionIcon(opportunity.actionType)}
+          {/* Suggested Action - Enhanced */}
+          <div className="flex items-center justify-between p-3 bg-gradient-to-r from-routiq-energy/20 to-routiq-energy/10 rounded-lg border-2 border-routiq-energy/30">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-routiq-core rounded-lg">
+                {getActionIcon(opportunity.actionType)}
+              </div>
               <div>
                 <div className="font-medium text-routiq-core text-sm">
-                  {opportunity.suggestedAction}
+                  💡 {opportunity.suggestedAction}
                 </div>
-                <div className="text-xs text-routiq-blackberry/60">
-                  {opportunity.confidence}% confidence
+                <div className="text-xs text-routiq-blackberry/60 flex items-center gap-1">
+                  <Star className="h-3 w-3 text-yellow-500" />
+                  {opportunity.confidence}% confidence • AI Recommended
                 </div>
               </div>
             </div>
@@ -385,7 +438,7 @@ export function TopOpportunitiesTab() {
               </Button>
               <Button 
                 size="sm" 
-                className="bg-routiq-core hover:bg-routiq-core/90 text-white text-xs px-3 py-1"
+                className="bg-routiq-core hover:bg-routiq-core/90 text-white text-xs px-3 py-1 shadow-md"
               >
                 Take Action
                 <ArrowRight className="h-3 w-3 ml-1" />
