@@ -129,43 +129,34 @@ export default function PatientInsightsPage() {
 
         {/* Main 3-Tab Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-white border border-routiq-cloud/20 h-14 rounded-xl p-1 shadow-sm">
+          <TabsList className="grid w-full grid-cols-3 bg-routiq-cloud/10 p-1 h-12">
             {filteredTabs.includes('all-patients') && (
               <TabsTrigger 
                 value="all-patients" 
-                className="flex items-center gap-3 text-base font-medium text-routiq-blackberry/70 data-[state=active]:bg-routiq-cloud data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-routiq-cloud/10 hover:text-routiq-cloud rounded-lg transition-all duration-200"
+                className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
               >
-                <Users className="h-5 w-5" />
-                <div className="text-left">
-                  <div>All Patients</div>
-                  <div className="text-xs opacity-70">Searchable patient data</div>
-                </div>
+                <Users className="h-4 w-4" />
+                <span className="font-medium">All Patients</span>
               </TabsTrigger>
             )}
             
             {filteredTabs.includes('engagement-overview') && (
               <TabsTrigger 
                 value="engagement-overview" 
-                className="flex items-center gap-3 text-base font-medium text-routiq-blackberry/70 data-[state=active]:bg-routiq-cloud data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-routiq-cloud/10 hover:text-routiq-cloud rounded-lg transition-all duration-200"
+                className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
               >
-                <TrendingUp className="h-5 w-5" />
-                <div className="text-left">
-                  <div>Engagement Overview</div>
-                  <div className="text-xs opacity-70">Risk analysis & metrics</div>
-                </div>
+                <TrendingUp className="h-4 w-4" />
+                <span className="font-medium">Engagement Overview</span>
               </TabsTrigger>
             )}
             
             {filteredTabs.includes('top-opportunities') && (
               <TabsTrigger 
                 value="top-opportunities" 
-                className="flex items-center gap-3 text-base font-medium text-routiq-blackberry/70 data-[state=active]:bg-routiq-cloud data-[state=active]:text-white data-[state=active]:shadow-lg hover:bg-routiq-cloud/10 hover:text-routiq-cloud rounded-lg transition-all duration-200"
+                className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
               >
-                <Target className="h-5 w-5" />
-                <div className="text-left">
-                  <div>Top Opportunities</div>
-                  <div className="text-xs opacity-70">Re-engagement actions</div>
-                </div>
+                <Target className="h-4 w-4" />
+                <span className="font-medium">Top Opportunities</span>
               </TabsTrigger>
             )}
           </TabsList>
