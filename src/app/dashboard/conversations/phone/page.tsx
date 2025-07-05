@@ -440,6 +440,149 @@ function ConversationPerformancePanel({
           </div>
         ) : (
           <>
+            {/* Smart Patient Summary - Key Actionable Information */}
+            <Card className="border-routiq-prompt/30 bg-gradient-to-br from-routiq-prompt/5 to-routiq-energy/5">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-routiq-prompt" />
+                    Smart Patient Summary
+                  </CardTitle>
+                  <Badge variant={patientProfile ? "default" : "secondary"} className="text-xs">
+                    {patientProfile ? "AI-Powered" : "Limited Data"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Patient Score - Likelihood of Reengagement */}
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="h-4 w-4 text-routiq-prompt" />
+                      <span className="text-xs font-medium text-routiq-core">Patient Score</span>
+                    </div>
+                    <div className={`text-lg font-bold ${
+                      patientProfile?.engagement_level === 'highly_engaged' ? 'text-green-600' :
+                      patientProfile?.engagement_level === 'moderately_engaged' ? 'text-yellow-600' :
+                      patientProfile?.engagement_level === 'low_engagement' ? 'text-orange-600' :
+                      patientProfile?.engagement_level === 'disengaged' ? 'text-red-600' :
+                      'text-gray-600'
+                    }`}>
+                      {patientProfile?.engagement_level === 'highly_engaged' ? '85%' :
+                       patientProfile?.engagement_level === 'moderately_engaged' ? '65%' :
+                       patientProfile?.engagement_level === 'low_engagement' ? '40%' :
+                       patientProfile?.engagement_level === 'disengaged' ? '15%' :
+                       'N/A'
+                      }
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70">
+                      Likelihood of reengagement
+                    </p>
+                  </div>
+
+                  {/* Risk Flag */}
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30">
+                    <div className="flex items-center gap-2 mb-2">
+                      <AlertTriangle className="h-4 w-4 text-routiq-prompt" />
+                      <span className="text-xs font-medium text-routiq-core">Risk Flag</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${
+                        patientProfile?.churn_risk === 'critical' ? 'bg-red-500' :
+                        patientProfile?.churn_risk === 'high' ? 'bg-orange-500' :
+                        patientProfile?.churn_risk === 'medium' ? 'bg-yellow-500' :
+                        patientProfile?.churn_risk === 'low' ? 'bg-green-500' :
+                        patientProfile?.activity_status === 'inactive' ? 'bg-gray-500' :
+                        patientProfile?.total_appointment_count === 0 ? 'bg-blue-500' :
+                        'bg-gray-400'
+                      }`} />
+                      <span className="font-semibold text-sm">
+                        {patientProfile?.churn_risk === 'critical' ? 'Critical Risk' :
+                         patientProfile?.churn_risk === 'high' ? 'High Risk' :
+                         patientProfile?.churn_risk === 'medium' ? 'Medium Risk' :
+                         patientProfile?.churn_risk === 'low' ? 'Low Risk' :
+                         patientProfile?.activity_status === 'inactive' ? 'Dormant' :
+                         patientProfile?.total_appointment_count === 0 ? 'New' :
+                         'Unknown'
+                        }
+                      </span>
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70 mt-1">
+                      Current patient status
+                    </p>
+                  </div>
+                </div>
+
+                {/* Key Metrics Row */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30 text-center">
+                    <div className="text-lg font-bold text-green-600">
+                      ${patientProfile?.estimated_lifetime_value || 0}
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70">LTV</p>
+                  </div>
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30 text-center">
+                    <div className="text-lg font-bold text-routiq-core">
+                      {patientProfile?.total_appointment_count || 0}
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70">Appointments</p>
+                  </div>
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30 text-center">
+                    <div className="text-lg font-bold text-routiq-prompt">
+                      {patientProfile?.upcoming_appointment_count || 0}
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70">Upcoming</p>
+                  </div>
+                </div>
+
+                {/* High Level Notes */}
+                {patientProfile?.treatment_summary && (
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FileText className="h-4 w-4 text-routiq-prompt" />
+                      <span className="text-xs font-medium text-routiq-core">Quick Notes</span>
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/80 line-clamp-2">
+                      {patientProfile.treatment_summary}
+                    </p>
+                  </div>
+                )}
+
+                {/* Action Priority Indicator */}
+                {patientProfile && (
+                  <div className={`p-3 rounded-lg border-2 ${
+                    patientProfile.action_priority <= 2 
+                      ? 'bg-red-50 border-red-200' 
+                      : patientProfile.action_priority <= 3
+                      ? 'bg-yellow-50 border-yellow-200'
+                      : 'bg-green-50 border-green-200'
+                  }`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className={`w-2 h-2 rounded-full ${
+                        patientProfile.action_priority <= 2 ? 'bg-red-500' :
+                        patientProfile.action_priority <= 3 ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`} />
+                      <span className="text-xs font-semibold">
+                        {patientProfile.action_priority <= 2 ? 'URGENT ACTION NEEDED' :
+                         patientProfile.action_priority <= 3 ? 'Follow-up Required' :
+                         'Continue Regular Care'
+                        }
+                      </span>
+                    </div>
+                    <p className="text-xs">
+                      {patientProfile.action_priority <= 2 
+                        ? "Patient at high risk - schedule immediate follow-up"
+                        : patientProfile.action_priority <= 3
+                        ? "Send appointment reminder within 48 hours"
+                        : "Patient engagement is healthy - maintain current schedule"
+                      }
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Patient Overview Card */}
             <Card className="border-routiq-cloud/30">
               <CardHeader className="pb-2">
