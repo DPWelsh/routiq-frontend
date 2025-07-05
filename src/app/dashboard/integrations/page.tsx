@@ -10,7 +10,6 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
-  Zap,
   MessageSquare,
   Webhook,
   Database,
@@ -19,7 +18,6 @@ import {
   Check,
   AlertTriangle,
   Clock,
-  Activity,
   RefreshCw,
   Copy,
   Eye,
@@ -27,7 +25,7 @@ import {
 } from 'lucide-react'
 
 export default function IntegrationsPage() {
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState('connected')
   const [showApiKey, setShowApiKey] = useState(false)
   const [webhookEnabled, setWebhookEnabled] = useState(true)
 
@@ -46,11 +44,7 @@ export default function IntegrationsPage() {
 
       {/* Tabs Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-4 bg-routiq-cloud/10 p-1 h-12">
-          <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors">
-            <Zap className="h-4 w-4" />
-            <span className="font-medium">Overview</span>
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 bg-routiq-cloud/10 p-1 h-12">
           <TabsTrigger value="connected" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors">
             <Check className="h-4 w-4" />
             <span className="font-medium">Connected</span>
@@ -64,89 +58,6 @@ export default function IntegrationsPage() {
             <span className="font-medium">API & Webhooks</span>
           </TabsTrigger>
         </TabsList>
-
-        {/* Overview Tab */}
-        <TabsContent value="overview" className="space-y-6 mt-6">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Connected Services</CardTitle>
-                <Check className="h-4 w-4 text-green-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-routiq-core">3</div>
-                <p className="text-xs text-muted-foreground">+1 from last month</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">API Calls Today</CardTitle>
-                <Activity className="h-4 w-4 text-blue-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-routiq-core">1,247</div>
-                <p className="text-xs text-muted-foreground">+12% from yesterday</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Webhook Status</CardTitle>
-                <Webhook className="h-4 w-4 text-purple-600" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold text-green-600">Active</div>
-                <p className="text-xs text-muted-foreground">All endpoints healthy</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Integration Status */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-routiq-core">Integration Health</CardTitle>
-              <CardDescription>Real-time status of your connected services</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                    <div>
-                      <h4 className="font-medium">Chatwoot Integration</h4>
-                      <p className="text-sm text-gray-600">Last sync: 2 minutes ago</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-800 border-green-200">Healthy</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 bg-green-500 rounded-full"></div>
-                    <div>
-                      <h4 className="font-medium">n8n Workflows</h4>
-                      <p className="text-sm text-gray-600">Last execution: 5 minutes ago</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-800 border-green-200">Active</Badge>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <div className="h-2 w-2 bg-yellow-500 rounded-full"></div>
-                    <div>
-                      <h4 className="font-medium">Supabase Database</h4>
-                      <p className="text-sm text-gray-600">Connection pool at 80%</p>
-                    </div>
-                  </div>
-                  <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">Warning</Badge>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
 
         {/* Connected Services Tab */}
         <TabsContent value="connected" className="space-y-6 mt-6">
@@ -299,6 +210,104 @@ export default function IntegrationsPage() {
                   <Button variant="outline" size="sm">
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Open Console
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Cliniko */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center">
+                      <Database className="h-5 w-5 text-teal-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Cliniko</CardTitle>
+                      <CardDescription>Practice management system</CardDescription>
+                    </div>
+                  </div>
+                  <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-gray-600">Practice</p>
+                    <p className="font-medium">Surf Rehab Clinic</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Last Sync</p>
+                    <p className="font-medium">8 minutes ago</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Patients Synced</p>
+                    <p className="font-medium">247</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Status</p>
+                    <p className="font-medium text-green-600">Active</p>
+                  </div>
+                </div>
+                <Separator />
+                <div className="flex justify-between">
+                  <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Configure
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Sync Now
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Nookal */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
+                      <Database className="h-5 w-5 text-orange-600" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">Nookal</CardTitle>
+                      <CardDescription>Appointment booking & management</CardDescription>
+                    </div>
+                  </div>
+                  <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p className="text-gray-600">Clinic</p>
+                    <p className="font-medium">Surf Rehab Center</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Last Sync</p>
+                    <p className="font-medium">12 minutes ago</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Appointments Today</p>
+                    <p className="font-medium">18</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-600">Status</p>
+                    <p className="font-medium text-green-600">Active</p>
+                  </div>
+                </div>
+                <Separator />
+                <div className="flex justify-between">
+                  <Button variant="outline" size="sm">
+                    <Settings className="h-4 w-4 mr-2" />
+                    Configure
+                  </Button>
+                  <Button variant="outline" size="sm">
+                    <ExternalLink className="h-4 w-4 mr-2" />
+                    Open Nookal
                   </Button>
                 </div>
               </CardContent>
