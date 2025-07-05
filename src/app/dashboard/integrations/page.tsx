@@ -61,258 +61,232 @@ export default function IntegrationsPage() {
 
         {/* Connected Services Tab */}
         <TabsContent value="connected" className="space-y-6 mt-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Chatwoot */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <MessageSquare className="h-5 w-5 text-blue-600" />
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-routiq-core">Connected Integrations</CardTitle>
+              <CardDescription>Manage your active healthcare platform connections</CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="space-y-0 divide-y divide-gray-200">
+                {/* Chatwoot */}
+                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                      <MessageSquare className="h-6 w-6 text-blue-600" />
                     </div>
-                    <div>
-                      <CardTitle className="text-lg">Chatwoot</CardTitle>
-                      <CardDescription>Customer support conversations</CardDescription>
-                    </div>
-                  </div>
-                  <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-600">Account</p>
-                    <p className="font-medium">surf-rehab.chatwoot.com</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Last Sync</p>
-                    <p className="font-medium">2 minutes ago</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Conversations Today</p>
-                    <p className="font-medium">47</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Status</p>
-                    <p className="font-medium text-green-600">Active</p>
-                  </div>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configure
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Test Connection
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* n8n */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
-                      <Webhook className="h-5 w-5 text-purple-600" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">n8n Workflows</CardTitle>
-                      <CardDescription>Automation and data processing</CardDescription>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-routiq-core">Chatwoot</h3>
+                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">Customer support conversations</p>
+                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
+                        <span>surf-rehab.chatwoot.com</span>
+                        <span>47 conversations today</span>
+                        <span>Last sync: 2 minutes ago</span>
+                      </div>
                     </div>
                   </div>
-                  <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-600">Instance</p>
-                    <p className="font-medium">routiq-workflows.n8n.cloud</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Last Execution</p>
-                    <p className="font-medium">5 minutes ago</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Active Workflows</p>
-                    <p className="font-medium">12</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Success Rate</p>
-                    <p className="font-medium text-green-600">98.5%</p>
-                  </div>
-                </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configure
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Open n8n
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Supabase */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                      <Database className="h-5 w-5 text-green-600" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">Supabase</CardTitle>
-                      <CardDescription>Database and real-time data</CardDescription>
-                    </div>
-                  </div>
-                  <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">Warning</Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-600">Project</p>
-                    <p className="font-medium">routiq-production</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Region</p>
-                    <p className="font-medium">ap-southeast-1</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Connection Pool</p>
-                    <p className="font-medium text-yellow-600">80% used</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Status</p>
-                    <p className="font-medium text-green-600">Healthy</p>
-                  </div>
-                </div>
-                <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                   <div className="flex items-center gap-2">
-                    <AlertTriangle className="h-4 w-4 text-yellow-600" />
-                    <p className="text-sm text-yellow-800">Connection pool usage is high</p>
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configure
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Test
+                    </Button>
                   </div>
                 </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configure
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Open Console
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Cliniko */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-teal-100 flex items-center justify-center">
-                      <Database className="h-5 w-5 text-teal-600" />
+                {/* n8n Workflows */}
+                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
+                      <Webhook className="h-6 w-6 text-purple-600" />
                     </div>
-                    <div>
-                      <CardTitle className="text-lg">Cliniko</CardTitle>
-                      <CardDescription>Practice management system</CardDescription>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-routiq-core">n8n Workflows</h3>
+                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">Automation and data processing</p>
+                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
+                        <span>routiq-workflows.n8n.cloud</span>
+                        <span>12 active workflows</span>
+                        <span>98.5% success rate</span>
+                      </div>
                     </div>
                   </div>
-                  <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-600">Practice</p>
-                    <p className="font-medium">Surf Rehab Clinic</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Last Sync</p>
-                    <p className="font-medium">8 minutes ago</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Patients Synced</p>
-                    <p className="font-medium">247</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Status</p>
-                    <p className="font-medium text-green-600">Active</p>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configure
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Open n8n
+                    </Button>
                   </div>
                 </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configure
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Sync Now
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Nookal */}
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
-                      <Database className="h-5 w-5 text-orange-600" />
+                {/* Twilio */}
+                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
+                      <MessageSquare className="h-6 w-6 text-red-600" />
                     </div>
-                    <div>
-                      <CardTitle className="text-lg">Nookal</CardTitle>
-                      <CardDescription>Appointment booking & management</CardDescription>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-routiq-core">Twilio</h3>
+                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">SMS & voice communications</p>
+                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
+                        <span>+61 4 0000 0000</span>
+                        <span>34 SMS sent today</span>
+                        <span>99.2% delivery rate</span>
+                      </div>
                     </div>
                   </div>
-                  <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-600">Clinic</p>
-                    <p className="font-medium">Surf Rehab Center</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Last Sync</p>
-                    <p className="font-medium">12 minutes ago</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Appointments Today</p>
-                    <p className="font-medium">18</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Status</p>
-                    <p className="font-medium text-green-600">Active</p>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configure
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Console
+                    </Button>
                   </div>
                 </div>
-                <Separator />
-                <div className="flex justify-between">
-                  <Button variant="outline" size="sm">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Configure
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Open Nookal
-                  </Button>
+
+                {/* Cliniko */}
+                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-teal-100 flex items-center justify-center">
+                      <Database className="h-6 w-6 text-teal-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-routiq-core">Cliniko</h3>
+                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">Practice management system</p>
+                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
+                        <span>Surf Rehab Clinic</span>
+                        <span>247 patients synced</span>
+                        <span>Last sync: 8 minutes ago</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configure
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <RefreshCw className="h-4 w-4 mr-2" />
+                      Sync
+                    </Button>
+                  </div>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+
+                {/* Nookal */}
+                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center">
+                      <Database className="h-6 w-6 text-orange-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-routiq-core">Nookal</h3>
+                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">Appointment booking & management</p>
+                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
+                        <span>Surf Rehab Center</span>
+                        <span>18 appointments today</span>
+                        <span>Last sync: 12 minutes ago</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configure
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Open
+                    </Button>
+                  </div>
+                </div>
+
+                {/* HICAPS */}
+                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                      <ExternalLink className="h-6 w-6 text-indigo-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-routiq-core">HICAPS</h3>
+                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">Insurance claims & payments</p>
+                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
+                        <span>Terminal: SR-001-MEL</span>
+                        <span>12 claims today</span>
+                        <span>98.5% success rate</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configure
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Test
+                    </Button>
+                  </div>
+                </div>
+
+                {/* Coviu */}
+                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
+                      <ExternalLink className="h-6 w-6 text-blue-600" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-routiq-core">Coviu</h3>
+                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                      </div>
+                      <p className="text-sm text-gray-600">Telehealth consultations</p>
+                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
+                        <span>Surf Rehab</span>
+                        <span>3 sessions today</span>
+                        <span>156 total sessions</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Configure
+                    </Button>
+                    <Button variant="outline" size="sm">
+                      <ExternalLink className="h-4 w-4 mr-2" />
+                      Open
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Available Integrations Tab */}
@@ -458,27 +432,111 @@ export default function IntegrationsPage() {
               </CardContent>
             </Card>
 
-            {/* Zoom */}
+            {/* Square */}
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                    <ExternalLink className="h-5 w-5 text-blue-600" />
+                  <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <ExternalLink className="h-5 w-5 text-green-600" />
                   </div>
                   <div>
-                    <CardTitle className="text-lg">Zoom</CardTitle>
-                    <CardDescription>Video consultations</CardDescription>
+                    <CardTitle className="text-lg">Square</CardTitle>
+                    <CardDescription>Point of sale & payments</CardDescription>
                   </div>
                 </div>
               </CardHeader>
               <CardContent className="space-y-4">
                 <p className="text-sm text-gray-600">
-                  Enable video consultations and telemedicine appointments with patients.
+                  Accept payments, process cards, and manage transactions at your clinic.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Video</Badge>
-                  <Badge variant="secondary">Recording</Badge>
-                  <Badge variant="secondary">Scheduling</Badge>
+                  <Badge variant="secondary">Payments</Badge>
+                  <Badge variant="secondary">Card Terminal</Badge>
+                  <Badge variant="secondary">Receipts</Badge>
+                </div>
+                <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
+                  Connect Square
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Physitrack */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
+                    <ExternalLink className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Physitrack</CardTitle>
+                    <CardDescription>Exercise prescription</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  Prescribe exercises, track patient compliance, and monitor progress.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">Exercise Library</Badge>
+                  <Badge variant="secondary">Patient Portal</Badge>
+                  <Badge variant="secondary">Compliance</Badge>
+                </div>
+                <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
+                  Connect Physitrack
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Google Calendar */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                    <Clock className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Google Calendar</CardTitle>
+                    <CardDescription>Appointment scheduling</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  Sync appointments with Google Calendar for seamless scheduling.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">Sync</Badge>
+                  <Badge variant="secondary">Reminders</Badge>
+                  <Badge variant="secondary">Shared Calendars</Badge>
+                </div>
+                <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
+                  Connect Google
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Medicare Online */}
+            <Card>
+              <CardHeader>
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <ExternalLink className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-lg">Medicare Online</CardTitle>
+                    <CardDescription>Medicare & DVA billing</CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  Submit Medicare and DVA claims directly from your practice management system.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Badge variant="secondary">Medicare</Badge>
+                  <Badge variant="secondary">DVA</Badge>
+                  <Badge variant="secondary">Bulk Billing</Badge>
                 </div>
                 <Button className="w-full" variant="outline">
                   Coming Soon
