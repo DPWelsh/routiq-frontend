@@ -1461,7 +1461,7 @@ export default function PhoneChatPage() {
         {/* Header */}
         <div className="p-3 border-b border-routiq-cloud/30 flex-shrink-0">
           <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-lg font-semibold text-routiq-core">Conversations</h1>
+            <h1 className="text-lg font-semibold text-routiq-core">Inbox</h1>
             <span className="text-xs text-routiq-blackberry/60 bg-routiq-cloud/20 px-2 py-1 rounded-full">
               {filteredConversations.length} of {conversations.length}
             </span>
@@ -1553,7 +1553,7 @@ export default function PhoneChatPage() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-routiq-blackberry/50 h-4 w-4" />
             <Input
-              placeholder="Search conversations..."
+              placeholder="Search inbox..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 bg-gray-100 border-gray-200 rounded-full"
