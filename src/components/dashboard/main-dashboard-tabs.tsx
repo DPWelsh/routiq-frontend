@@ -19,16 +19,21 @@ export function MainDashboardTabs() {
   const [activeTab, setActiveTab] = useState('clinic-overview')
 
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-routiq-core">
-          Dashboard Overview
-        </h1>
-        <p className="text-routiq-blackberry/70 mt-1">
-          AI-powered insights and analytics for your healthcare practice
-        </p>
-      </div>
+    <div className="min-h-screen bg-routiq-cloud/5">
+      <div className="max-w-8xl mx-auto space-y-6 p-6">
+        {/* Header */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-routiq-core">
+                Dashboard Overview
+              </h1>
+              <p className="text-routiq-blackberry/70 text-lg">
+                AI-powered insights and analytics for your healthcare practice
+              </p>
+            </div>
+          </div>
+        </div>
 
       {/* Main Dashboard Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -71,6 +76,7 @@ export function MainDashboardTabs() {
           <AutomationSummaryTab />
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   )
 } 
