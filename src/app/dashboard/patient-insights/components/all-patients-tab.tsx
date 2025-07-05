@@ -399,10 +399,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
               <thead className="bg-gray-50/50 border-b border-routiq-cloud/20">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
-                    Name
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
-                    Contact
+                    Patient Details
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
                     LTV
@@ -434,28 +431,25 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
               <tbody className="bg-white divide-y divide-routiq-cloud/20">
                 {mockPatients.map((patient) => (
                   <tr key={patient.id} className="hover:bg-routiq-cloud/10 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       <div className="flex items-center">
                         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-routiq-core to-routiq-energy flex items-center justify-center text-white font-semibold text-sm">
                           {patient.name.split(' ').map(n => n[0]).join('')}
                         </div>
                         <div className="ml-3">
-                          <div className="text-sm font-medium text-routiq-core">
+                          <div className="text-sm font-medium text-routiq-core mb-1">
                             {patient.name}
                           </div>
-                        </div>
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="space-y-1">
-                        <div className="flex items-center text-sm text-routiq-blackberry/80">
-                          <Phone className="h-3 w-3 mr-1" />
-                          {patient.phone}
-                        </div>
-                        <div className="flex items-center text-sm text-routiq-blackberry/60">
-                          <Mail className="h-3 w-3 mr-1" />
-                          {patient.email}
+                          <div className="space-y-1">
+                            <div className="flex items-center text-xs text-routiq-blackberry/80">
+                              <Phone className="h-3 w-3 mr-1" />
+                              {patient.phone}
+                            </div>
+                            <div className="flex items-center text-xs text-routiq-blackberry/60">
+                              <Mail className="h-3 w-3 mr-1" />
+                              {patient.email}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </td>
