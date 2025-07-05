@@ -28,7 +28,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { ArrowLeft, Phone, Search, MessageCircle, Clock, User, Bot, Send, MoreVertical, ThumbsUp, ThumbsDown, TrendingUp, Award, Target, MessageSquare, Star, BarChart3, Calendar, FileText, AlertTriangle, CheckCircle, Activity, Zap, Users, Filter, Mail, BotMessageSquare } from "lucide-react"
+import { ArrowLeft, Phone, Search, MessageCircle, Clock, User, Bot, Send, MoreVertical, ThumbsUp, ThumbsDown, TrendingUp, Award, Target, MessageSquare, Star, BarChart3, Calendar, FileText, AlertTriangle, CheckCircle, Activity, Zap, Users, Filter, Mail } from "lucide-react"
 import { LoadingSpinner } from "@/components/magicui"
 import { Separator } from "@/components/ui/separator"
 import Image from "next/image"
@@ -1630,15 +1630,7 @@ export default function PhoneChatPage() {
                           🔴
                         </Badge>
                       )}
-                      {getConversationStatus(conversation).includes('ai-handle') && (
-                        <Badge 
-                          variant="outline" 
-                          className="text-xs h-4 px-1 bg-blue-50 text-blue-700 border-blue-200"
-                          title="AI can handle"
-                        >
-                          🤖
-                        </Badge>
-                      )}
+
                       
                       {/* Platform Badge */}
                       <Badge 
