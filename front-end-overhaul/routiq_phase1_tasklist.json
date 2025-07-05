@@ -30,7 +30,7 @@
       ],
       "estimated_hours": 2,
       "dependencies": [],
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "NAV-002", 
@@ -51,7 +51,7 @@
       ],
       "estimated_hours": 2,
       "dependencies": ["NAV-001"],
-      "status": "pending"
+      "status": "completed"
     },
     {
       "id": "NAV-003",

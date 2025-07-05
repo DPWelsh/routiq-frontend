@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { BarChart3, Users, Zap } from 'lucide-react'
+import { ClinicOverviewTab } from './tabs/clinic-overview-tab'
 
 /**
  * Main Dashboard Tabs Component
@@ -55,22 +56,7 @@ export function MainDashboardTabs() {
 
         {/* Clinic Overview Tab Content */}
         <TabsContent value="clinic-overview" className="mt-6">
-          <div className="space-y-6">
-            {/* Placeholder for Clinic Overview content */}
-            <div className="text-center py-16 bg-routiq-cloud/5 rounded-lg border border-routiq-cloud/20">
-              <BarChart3 className="h-16 w-16 text-routiq-blackberry/40 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-routiq-core mb-2">
-                Clinic Overview
-              </h3>
-              <p className="text-routiq-blackberry/70 max-w-md mx-auto">
-                Booking metrics, active patients, and daily trends will be displayed here. 
-                Month/Week toggle and live data indicators coming soon.
-              </p>
-              <div className="mt-4 text-sm text-routiq-prompt">
-                📊 Ready for Phase 2 implementation
-              </div>
-            </div>
-          </div>
+          <ClinicOverviewTab />
         </TabsContent>
 
         {/* Patient Insights Tab Content */}
