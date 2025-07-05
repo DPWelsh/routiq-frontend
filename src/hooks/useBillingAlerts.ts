@@ -36,7 +36,7 @@ export interface UseBillingAlertsResult {
  * Requires ORGANIZATION_BILLING permission (admin/owner only)
  */
 export function useBillingAlerts(): UseBillingAlertsResult {
-  const { organizationContext, isAdmin, isOwner } = useOrganizationContext()
+  const { isAdmin, isOwner } = useOrganizationContext()
   const { billingData, isLoading: billingLoading, error: billingError } = useOrganizationBilling()
   const { usageData, isLoading: usageLoading, error: usageError } = useUsageMetrics()
   

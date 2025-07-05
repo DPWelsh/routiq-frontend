@@ -61,7 +61,6 @@ export function PerformanceDashboard({
   const contactMetrics = performanceMetrics.contact_metrics || {}
   const appointmentMetrics = performanceMetrics.appointment_metrics || {}
   const engagementHealth = performanceMetrics.engagement_health || {}
-  const riskAssessment = performanceMetrics.risk_assessment || {}
 
   // Create compatible structure for the component
   const reengagement_metrics = {

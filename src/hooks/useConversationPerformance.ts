@@ -45,16 +45,6 @@ export function useConversationPerformance(
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch performance data
-  useEffect(() => {
-    if (!routiqConversationId && !chatwootConversationId) {
-      setLoading(false)
-      return
-    }
-
-    fetchPerformance()
-  }, [routiqConversationId, chatwootConversationId])
-
   const fetchPerformance = async () => {
     try {
       setLoading(true)
@@ -83,6 +73,16 @@ export function useConversationPerformance(
       setLoading(false)
     }
   }
+
+  // Fetch performance data
+  useEffect(() => {
+    if (!routiqConversationId && !chatwootConversationId) {
+      setLoading(false)
+      return
+    }
+
+    fetchPerformance()
+  }, [routiqConversationId, chatwootConversationId, fetchPerformance])
 
   const updatePerformance = async (updates: Record<string, unknown>): Promise<boolean> => {
     try {

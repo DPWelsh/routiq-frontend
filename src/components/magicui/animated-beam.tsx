@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import React, { forwardRef, useRef } from "react";
+import React, { useRef } from "react";
 
 export interface AnimatedBeamProps {
   className?: string;
@@ -26,11 +26,11 @@ export interface AnimatedBeamProps {
 
 export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   className,
-  containerRef,
-  fromRef,
-  toRef,
-  curvature = 0,
-  reverse = false,
+  containerRef: _containerRef,
+  fromRef: _fromRef,
+  toRef: _toRef,
+  curvature: _curvature = 0,
+  reverse: _reverse = false,
   duration = Math.random() * 3 + 4,
   delay = 0,
   pathColor = "gray",
@@ -38,10 +38,10 @@ export const AnimatedBeam: React.FC<AnimatedBeamProps> = ({
   pathOpacity = 0.2,
   gradientStartColor = "#ffaa40",
   gradientStopColor = "#9c40ff",
-  startXOffset = 0,
-  startYOffset = 0,
-  endXOffset = 0,
-  endYOffset = 0,
+  startXOffset: _startXOffset = 0,
+  startYOffset: _startYOffset = 0,
+  endXOffset: _endXOffset = 0,
+  endYOffset: _endYOffset = 0,
 }) => {
   const id = React.useId();
   const svgRef = useRef<SVGSVGElement>(null);

@@ -6,21 +6,18 @@ import { MobileNavDrawer, MobileNavItem } from "@/components/layout/mobile/mobil
 import { DashboardNav } from "./nav"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useUser, useAuth } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { useOrganizationContext } from "@/hooks/useOrganizationContext"
 import { RoutiqAPI } from "@/lib/routiq-api"
 import { 
   BarChart3, 
-  MessageSquare, 
-  UserCheck,
+  MessageSquare,
   TrendingUp,
   Settings,
-  HelpCircle,
-  Building2
+  HelpCircle
 } from "lucide-react"
 import { ClerkOrganizationSwitcher } from "@/components/clerk-organization-switcher"
 
@@ -78,7 +75,6 @@ function ResponsiveDashboardNav() {
   const { isOpen, isMobile, close } = useMobileNavigationContext()
   const pathname = usePathname()
   const { user, isLoaded } = useUser()
-  const { getToken } = useAuth()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 

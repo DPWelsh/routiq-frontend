@@ -16,7 +16,6 @@ export function OrganizationContextTest() {
     error: contextError,
     organizationId,
     organizationName,
-    userRole,
     isAdmin,
     isOwner,
     canManageUsers,
@@ -27,7 +26,6 @@ export function OrganizationContextTest() {
     can,
     isLoading: rbacLoading,
     roleDisplayName,
-    roleDescription,
   } = useRBAC()
 
   if (contextLoading || rbacLoading) {

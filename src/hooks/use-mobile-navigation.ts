@@ -128,17 +128,17 @@ export function useMobileNavigation(): MobileNavigationState {
  * ```
  */
 export function useBreakpoint(breakpoint: 'sm' | 'md' | 'lg' | 'xl' | '2xl'): boolean {
-  const breakpoints = {
-    sm: 640,
-    md: 768,
-    lg: 1024,
-    xl: 1280,
-    '2xl': 1536
-  }
-
   const [isBelow, setIsBelow] = useState(false)
 
   useEffect(() => {
+    const breakpoints = {
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      '2xl': 1536
+    }
+
     function checkBreakpoint() {
       setIsBelow(window.innerWidth < breakpoints[breakpoint])
     }
@@ -150,7 +150,7 @@ export function useBreakpoint(breakpoint: 'sm' | 'md' | 'lg' | 'xl' | '2xl'): bo
     window.addEventListener('resize', checkBreakpoint)
     
     return () => window.removeEventListener('resize', checkBreakpoint)
-  }, [breakpoint, breakpoints])
+  }, [breakpoint])
 
   return isBelow
 } 

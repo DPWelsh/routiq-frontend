@@ -87,7 +87,7 @@ export function useOrganizationContext(): UseOrganizationContextResult {
     } finally {
       setIsLoading(false)
     }
-  }, [isClerkLoading, user?.id, clerkOrgId, clerkOrgName, membershipRole])
+  }, [isClerkLoading, user, clerkOrgId, clerkOrgName, membershipRole])
 
   // Fetch organization context when Clerk data is available
   useEffect(() => {

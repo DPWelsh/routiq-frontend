@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useUser, useAuth } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -12,7 +12,6 @@ import { RoutiqAPI } from "@/lib/routiq-api"
 import { 
   BarChart3, 
   MessageSquare, 
-  UserCheck,
   TrendingUp,
   Zap,
   Settings,
@@ -81,7 +80,6 @@ const navigation = [
 export function DashboardNav() {
   const pathname = usePathname()
   const { user, isLoaded } = useUser()
-  const { getToken } = useAuth()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
