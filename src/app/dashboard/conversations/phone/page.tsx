@@ -28,7 +28,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { ArrowLeft, Phone, Search, MessageCircle, Clock, User, Bot, Send, MoreVertical, ThumbsUp, ThumbsDown, TrendingUp, Award, Target, MessageSquare, Star, BarChart3, Calendar, FileText, AlertTriangle, CheckCircle, Activity, Zap, Users } from "lucide-react"
+import { ArrowLeft, Phone, Search, MessageCircle, Clock, User, Bot, Send, MoreVertical, ThumbsUp, ThumbsDown, TrendingUp, Award, Target, MessageSquare, Star, BarChart3, Calendar, FileText, AlertTriangle, CheckCircle, Activity, Zap, Users, Filter, Mail, BotMessageSquare } from "lucide-react"
 import { LoadingSpinner } from "@/components/magicui"
 import { Separator } from "@/components/ui/separator"
 import Image from "next/image"
@@ -376,11 +376,11 @@ function ConversationPerformancePanel({
     // Priority 1: User-submitted satisfaction score (conversation-specific feedback)
     if (clientSatisfactionScore) {
       console.log('✅ Using conversation-specific satisfaction score:', clientSatisfactionScore)
-      const scaledScore = clientSatisfactionScore * 2
-      return { 
-        score: scaledScore, 
-        text: `${scaledScore}/10` 
-      }
+    const scaledScore = clientSatisfactionScore * 2
+    return { 
+      score: scaledScore, 
+      text: `${scaledScore}/10` 
+    }
     }
     
     // Priority 2: Patient profile overall rating (patient engagement score)
@@ -698,35 +698,35 @@ function ConversationPerformancePanel({
               </CardHeader>
               <CardContent className="pt-0 space-y-3">
                 {/* Engagement Score */}
-                <div className="text-center">
-                  <div className="relative inline-flex items-center justify-center">
+            <div className="text-center">
+              <div className="relative inline-flex items-center justify-center">
                     <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
-                      <path
+                  <path
                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        className="text-routiq-cloud/40"
-                      />
-                      <path
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    className="text-routiq-cloud/40"
+                  />
+                  <path
                         d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
                         strokeDasharray={`${satisfaction.score === 0 ? 0 : (satisfaction.score / 10) * 100}, 100`}
                         className={getSatisfactionColor(satisfaction.score).replace('text-', 'text-')}
-                      />
-                    </svg>
-                    <div className="absolute inset-0 flex items-center justify-center">
+                  />
+                </svg>
+                <div className="absolute inset-0 flex items-center justify-center">
                       <div className={`text-lg font-bold ${getSatisfactionColor(satisfaction.score)}`}>
                         {satisfaction.text}
-                      </div>
-                    </div>
                   </div>
+                </div>
+              </div>
                   <p className="text-xs text-routiq-blackberry/70 mt-2">
                     {patientProfile ? 'Patient Engagement' : 'Client Satisfaction'}
                   </p>
-                </div>
+            </div>
 
                 {/* Risk Indicators */}
                 <div className="grid grid-cols-2 gap-3 text-xs">
@@ -776,8 +776,8 @@ function ConversationPerformancePanel({
                     </p>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+          </CardContent>
+        </Card>
 
             {/* Communication History */}
             <Card className="border-routiq-cloud/30">
@@ -792,7 +792,7 @@ function ConversationPerformancePanel({
                   <div className="text-center bg-gray-50 p-2 rounded-lg">
                     <div className="font-bold text-routiq-core">
                       {patientProfile?.total_conversations || conversation.total_messages || 0}
-                    </div>
+            </div>
                     <div className="text-routiq-blackberry/60">Total Chats</div>
                   </div>
                   <div className="text-center bg-gray-50 p-2 rounded-lg">
@@ -810,7 +810,7 @@ function ConversationPerformancePanel({
                     </div>
                     <div className="text-routiq-blackberry/60">Success Rate</div>
                   </div>
-                </div>
+          </div>
 
                 {/* Recent Communication */}
                 <div className="space-y-2">
@@ -819,7 +819,7 @@ function ConversationPerformancePanel({
                     <Badge variant="outline" className="text-xs">
                       {conversation.conversation_source || 'WhatsApp'}
                     </Badge>
-                  </div>
+            </div>
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-routiq-blackberry/60">Messages</span>
                     <span className="font-medium">{conversation.total_messages}</span>
@@ -827,10 +827,10 @@ function ConversationPerformancePanel({
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-routiq-blackberry/60">Sentiment</span>
                     <span className={`font-medium ${sentimentInfo.color}`}>
-                      {sentimentInfo.sentiment}
-                    </span>
-                  </div>
-                </div>
+              {sentimentInfo.sentiment}
+            </span>
+          </div>
+        </div>
               </CardContent>
             </Card>
 
@@ -918,84 +918,84 @@ function ConversationPerformancePanel({
                 <CardTitle className="text-sm font-medium text-routiq-core">Rate this conversation</CardTitle>
               </CardHeader>
               <CardContent className="pt-0 space-y-3">
-                <div className="flex gap-2">
-                  <Button
-                    size="sm"
-                    onClick={() => handleRating('positive')}
-                    className={`flex-1 gap-1 h-8 text-xs transition-all border ${
-                      rating === 'positive' 
-                        ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' 
-                        : 'bg-white border-green-300 text-green-600 hover:bg-green-50 hover:border-green-400'
-                    }`}
-                  >
-                    <ThumbsUp className="h-3 w-3" />
-                    Good
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => handleRating('neutral')}
-                    className={`flex-1 gap-1 h-8 text-xs transition-all border ${
-                      rating === 'neutral' 
-                        ? 'bg-gray-600 hover:bg-gray-700 text-white border-gray-600' 
-                        : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400'
-                    }`}
-                  >
-                    OK
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => handleRating('negative')}
-                    className={`flex-1 gap-1 h-8 text-xs transition-all border ${
-                      rating === 'negative' 
-                        ? 'bg-red-600 hover:bg-red-700 text-white border-red-600' 
-                        : 'bg-white border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400'
-                    }`}
-                  >
-                    <ThumbsDown className="h-3 w-3" />
-                    Poor
-                  </Button>
-                </div>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              onClick={() => handleRating('positive')}
+              className={`flex-1 gap-1 h-8 text-xs transition-all border ${
+                rating === 'positive' 
+                  ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' 
+                  : 'bg-white border-green-300 text-green-600 hover:bg-green-50 hover:border-green-400'
+              }`}
+            >
+              <ThumbsUp className="h-3 w-3" />
+              Good
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => handleRating('neutral')}
+              className={`flex-1 gap-1 h-8 text-xs transition-all border ${
+                rating === 'neutral' 
+                  ? 'bg-gray-600 hover:bg-gray-700 text-white border-gray-600' 
+                  : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50 hover:border-gray-400'
+              }`}
+            >
+              OK
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => handleRating('negative')}
+              className={`flex-1 gap-1 h-8 text-xs transition-all border ${
+                rating === 'negative' 
+                  ? 'bg-red-600 hover:bg-red-700 text-white border-red-600' 
+                  : 'bg-white border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400'
+              }`}
+            >
+              <ThumbsDown className="h-3 w-3" />
+              Poor
+            </Button>
+          </div>
 
                 {/* Feedback Section */}
-                {((showFeedback && rating) || (rating && feedback)) && (
-                  <div className="space-y-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
-                    <textarea
-                      value={feedback}
-                      onChange={(e) => setFeedback(e.target.value)}
-                      placeholder={
-                        rating === 'negative' 
+              {((showFeedback && rating) || (rating && feedback)) && (
+          <div className="space-y-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
+            <textarea
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder={
+                rating === 'negative' 
                           ? "Describe any issues with the conversation or patient interaction..."
-                          : rating === 'neutral'
+                  : rating === 'neutral'
                           ? "Share feedback about this patient interaction..."
-                          : rating === 'positive'
+                  : rating === 'positive'
                           ? "What went well in this conversation?..."
-                          : "Rate the conversation and share your thoughts..."
-                      }
+                  : "Rate the conversation and share your thoughts..."
+              }
                       className="w-full p-3 text-sm border border-gray-300 rounded-md resize-none h-20 focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400 bg-white"
-                    />
-                    <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
-                        onClick={submitFeedback} 
+            />
+            <div className="flex gap-2">
+              <Button 
+                size="sm" 
+                onClick={submitFeedback} 
                         className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white border-0"
-                        disabled={!rating}
-                      >
-                        Submit Feedback
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        onClick={() => {
-                          setRating(null)
-                          setFeedback('')
-                          setShowFeedback(false)
-                        }} 
-                        className="h-8 text-xs bg-white text-gray-600 hover:bg-gray-50 border border-gray-300"
-                      >
-                        Clear
-                      </Button>
-                    </div>
-                  </div>
-                )}
+                      disabled={!rating}
+              >
+                Submit Feedback
+              </Button>
+              <Button 
+                size="sm" 
+                onClick={() => {
+                  setRating(null)
+                  setFeedback('')
+                  setShowFeedback(false)
+                }} 
+                className="h-8 text-xs bg-white text-gray-600 hover:bg-gray-50 border border-gray-300"
+              >
+                Clear
+              </Button>
+            </div>
+          </div>
+              )}
               </CardContent>
             </Card>
           </>
@@ -1019,6 +1019,7 @@ export default function PhoneChatPage() {
   const [chatLoading, setChatLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [sourceFilter, setSourceFilter] = useState<'all' | 'whatsapp' | 'instagram'>('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'needs-followup' | 'unread' | 'ai-handle'>('all')
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -1218,6 +1219,34 @@ export default function PhoneChatPage() {
       .slice(0, 2)
   }
 
+  // Helper function to determine conversation status
+  const getConversationStatus = (conversation: PhoneConversation): string[] => {
+    const statuses: string[] = []
+    
+    // Mock logic for demonstration - in real implementation, this would be based on actual data
+    const lastMessageTime = new Date(conversation.last_message_time || conversation.latest_conversation_date || '')
+    const hoursSinceLastMessage = (Date.now() - lastMessageTime.getTime()) / (1000 * 60 * 60)
+    
+    // Needs follow-up: last message was from patient more than 4 hours ago
+    if (conversation.last_message_sender === 'user' && hoursSinceLastMessage > 4) {
+      statuses.push('needs-followup')
+    }
+    
+    // Unread: patient sent a message and we haven't responded (mock logic)
+    if (conversation.last_message_sender === 'user' && hoursSinceLastMessage < 1) {
+      statuses.push('unread')
+    }
+    
+    // AI-handle: conversations with keywords that suggest AI can handle
+    const lastMessage = conversation.last_message_content?.toLowerCase() || ''
+    if (lastMessage.includes('appointment') || lastMessage.includes('reschedule') || 
+        lastMessage.includes('cancel') || lastMessage.includes('confirm')) {
+      statuses.push('ai-handle')
+    }
+    
+    return statuses
+  }
+
   const filteredConversations = conversations.filter(conv => {
     const searchLower = searchTerm.toLowerCase()
     const matchesSearch = (
@@ -1228,7 +1257,11 @@ export default function PhoneChatPage() {
     
     const matchesSource = sourceFilter === 'all' || conv.conversation_source === sourceFilter
     
-    return matchesSearch && matchesSource
+    // Status filter logic
+    const conversationStatuses = getConversationStatus(conv)
+    const matchesStatus = statusFilter === 'all' || conversationStatuses.includes(statusFilter)
+    
+    return matchesSearch && matchesSource && matchesStatus
   })
 
   // Only log when conversations change, not on every render
@@ -1456,31 +1489,82 @@ export default function PhoneChatPage() {
           </div>
           
           {/* Source Filter Buttons */}
-          <div className="flex gap-1 mb-3">
-            <Button
-              variant={sourceFilter === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSourceFilter('all')}
-              className="text-xs h-7"
-            >
-              All ({conversations.length})
-            </Button>
-            <Button
-              variant={sourceFilter === 'whatsapp' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSourceFilter('whatsapp')}
-              className="text-xs h-7"
-            >
-              WhatsApp ({conversations.filter(c => c.conversation_source === 'whatsapp').length})
-            </Button>
-            <Button
-              variant={sourceFilter === 'instagram' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSourceFilter('instagram')}
-              className="text-xs h-7"
-            >
-              Instagram ({conversations.filter(c => c.conversation_source === 'instagram').length})
-            </Button>
+          <div className="mb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <MessageCircle className="h-3 w-3 text-routiq-blackberry/50" />
+              <span className="text-xs text-routiq-blackberry/60 font-medium">Platform</span>
+            </div>
+            <div className="flex gap-1 flex-wrap">
+              <Button
+                variant={sourceFilter === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSourceFilter('all')}
+                className="text-xs h-7"
+              >
+                All ({conversations.length})
+              </Button>
+              <Button
+                variant={sourceFilter === 'whatsapp' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSourceFilter('whatsapp')}
+                className="text-xs h-7"
+              >
+                WhatsApp ({conversations.filter(c => c.conversation_source === 'whatsapp').length})
+              </Button>
+              <Button
+                variant={sourceFilter === 'instagram' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSourceFilter('instagram')}
+                className="text-xs h-7"
+              >
+                Instagram ({conversations.filter(c => c.conversation_source === 'instagram').length})
+              </Button>
+            </div>
+          </div>
+          
+          {/* Status Filter Buttons */}
+          <div className="mb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Filter className="h-3 w-3 text-routiq-blackberry/50" />
+              <span className="text-xs text-routiq-blackberry/60 font-medium">Status</span>
+            </div>
+            <div className="flex gap-1 flex-wrap">
+              <Button
+                variant={statusFilter === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('all')}
+                className="text-xs h-7"
+              >
+                All
+              </Button>
+              <Button
+                variant={statusFilter === 'needs-followup' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('needs-followup')}
+                className="text-xs h-7 gap-1"
+              >
+                <Clock className="h-3 w-3" />
+                Follow-up ({conversations.filter(c => getConversationStatus(c).includes('needs-followup')).length})
+              </Button>
+              <Button
+                variant={statusFilter === 'unread' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('unread')}
+                className="text-xs h-7 gap-1"
+              >
+                <Mail className="h-3 w-3" />
+                Unread ({conversations.filter(c => getConversationStatus(c).includes('unread')).length})
+              </Button>
+              <Button
+                variant={statusFilter === 'ai-handle' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('ai-handle')}
+                className="text-xs h-7 gap-1"
+              >
+                <BotMessageSquare className="h-3 w-3" />
+                AI-handle ({conversations.filter(c => getConversationStatus(c).includes('ai-handle')).length})
+              </Button>
+            </div>
           </div>
           
           {/* Search */}
@@ -1540,6 +1624,35 @@ export default function PhoneChatPage() {
                     </p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                      {/* Status Indicators */}
+                      {getConversationStatus(conversation).includes('needs-followup') && (
+                        <Badge 
+                          variant="outline" 
+                          className="text-xs h-4 px-1 bg-yellow-50 text-yellow-700 border-yellow-200"
+                          title="Needs follow-up"
+                        >
+                          ⚠️
+                        </Badge>
+                      )}
+                      {getConversationStatus(conversation).includes('unread') && (
+                        <Badge 
+                          variant="outline" 
+                          className="text-xs h-4 px-1 bg-red-50 text-red-700 border-red-200"
+                          title="Unread"
+                        >
+                          🔴
+                        </Badge>
+                      )}
+                      {getConversationStatus(conversation).includes('ai-handle') && (
+                        <Badge 
+                          variant="outline" 
+                          className="text-xs h-4 px-1 bg-blue-50 text-blue-700 border-blue-200"
+                          title="AI can handle"
+                        >
+                          🤖
+                        </Badge>
+                      )}
+                      
                       {/* Platform Badge */}
                       <Badge 
                         variant="outline" 
