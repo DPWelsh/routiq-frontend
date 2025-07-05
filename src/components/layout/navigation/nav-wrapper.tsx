@@ -179,9 +179,6 @@ function ResponsiveDashboardNav() {
 
       {/* Main Navigation Section */}
       <div className="mb-6">
-        <p className="text-xs font-semibold text-routiq-core/60 uppercase tracking-wider mb-4">
-          MAIN NAVIGATION
-        </p>
         
         <div className="space-y-1">
           {navigation

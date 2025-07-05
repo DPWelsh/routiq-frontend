@@ -158,9 +158,6 @@ export function DashboardNav() {
       {/* Main Navigation Section */}
       <div className="flex-1 overflow-hidden">
         <div className="px-3 py-3">
-          <p className="text-xs font-semibold text-routiq-core/60 uppercase tracking-wider mb-2">
-            MAIN NAVIGATION
-          </p>
         </div>
 
         <div className="px-3 space-y-1 overflow-y-auto max-h-[calc(100vh-200px)]">
