@@ -1352,8 +1352,8 @@ export default function PhoneChatPage() {
           </div>
         </div>
 
-        {/* Conversation List - Fixed height with internal scroll */}
-        <div className="overflow-y-auto" style={{ height: 'calc(100vh - 240px)' }}>
+        {/* Conversation List - Scrollable */}
+        <div className="flex-1 overflow-y-auto min-h-0">
           {filteredConversations.map((conversation) => (
             <div
               key={conversation.phone}
@@ -1479,7 +1479,7 @@ export default function PhoneChatPage() {
             </div>
 
             {/* Messages Area */}
-            <div className="overflow-y-auto p-3 bg-routiq-cloud/5" style={{ height: 'calc(100vh - 220px)' }}>
+            <div className="flex-1 overflow-y-auto p-3 bg-routiq-cloud/5 min-h-0">
               {chatLoading ? (
                 <div className="flex items-center justify-center h-full">
                   <LoadingSpinner text="Loading messages..." />
@@ -1554,7 +1554,7 @@ export default function PhoneChatPage() {
 
       {/* Performance Panel */}
       {selectedChat && selectedChat.conversation && (
-        <div className="w-80 bg-white border-l border-routiq-cloud/30 flex flex-col">
+        <div className="w-80 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
           <ConversationPerformancePanel 
             conversation={selectedChat.conversation}
             messages={selectedChat.messages}
