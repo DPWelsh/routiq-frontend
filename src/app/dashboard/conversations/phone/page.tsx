@@ -1289,7 +1289,7 @@ export default function PhoneChatPage() {
   }
 
   return (
-    <div className="h-full flex overflow-hidden">
+    <div className="flex overflow-hidden" style={{ height: 'calc(100vh - 80px)' }}>
       {/* Sidebar - Conversation List */}
       <div className="w-80 bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
         {/* Header */}
