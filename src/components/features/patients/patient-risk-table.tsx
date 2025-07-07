@@ -39,8 +39,13 @@ import {
   PhoneCall,
   Send,
   CalendarPlus,
+  FileText,
+  Eye,
+  User,
+  Stethoscope,
 } from "lucide-react"
 import { PatientRiskData } from '@/lib/routiq-api'
+import { useLogOutreach } from '@/hooks/useReengagementData'
 import { formatDistanceToNow } from 'date-fns'
 
 // Move actionOptions outside component to prevent re-creation
@@ -74,16 +79,21 @@ const actionOptions = [
 interface PatientRiskTableProps {
   data: PatientRiskData[]
   onPatientClick?: (phone: string) => void
-  organizationId?: string  // Optional: for webhook integration
+  organizationId?: string
 }
 
-export function PatientRiskTable({ data, onPatientClick, organizationId: propOrgId }: PatientRiskTableProps) {
-  const [sorting, setSorting] = useState<SortingState>([
-    { id: 'risk_score', desc: true } // Default sort by risk score descending
-  ])
+export function PatientRiskTable({ data, onPatientClick, organizationId }: PatientRiskTableProps) {
+  const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState('')
+  const [pageIndex, setPageIndex] = useState(0)
+  const [pageSize, setPageSize] = useState(25)
   const [loadingActions, setLoadingActions] = useState<Set<string>>(new Set())
+  const [selectedPatient, setSelectedPatient] = useState<PatientRiskData | null>(null)
+  const [showNotes, setShowNotes] = useState<string | null>(null)
+
+  // Outreach logging mutation
+  const logOutreachMutation = useLogOutreach(organizationId || '')
 
   const formatDate = (dateString: string | null) => {
     if (!dateString) return 'Never'
@@ -143,226 +153,106 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
   }
 
   const handlePatientAction = useCallback(async (patient: PatientRiskData, actionType: string) => {
-    const patientId = patient.patient_id
-    // Hardcoded for testing - will replace with org context later
-    const organizationId = "org_2xwiHJY6BaRUIX1DanXG6ZX7"
-    
-    // Add to loading set
-    setLoadingActions(prev => new Set(prev).add(patientId))
+    const patientId = patient.id;
     
     try {
-      const response = await fetch(
-        `https://routiq-backend-prod.up.railway.app/api/v1/webhooks/${organizationId}/trigger`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            webhook_type: actionType,
-            patient_id: patient.patient_id,
-            trigger_data: {
-              patient_name: patient.patient_name,
-              patient_email: patient.email,
-              patient_phone: patient.phone,
-              risk_level: patient.risk_level,
-              engagement_status: patient.engagement_status,
-              recommended_action: patient.recommended_action,
-              action_priority: patient.action_priority,
-              lifetime_value_aud: patient.lifetime_value_aud,
-              triggered_from: 'patient_dashboard',
-              description: `${actionType} for ${patient.patient_name}`
-            },
-            user_id: 'dashboard_user', // TODO: Get from auth context
-            trigger_source: 'dashboard'
-          })
-        }
-      )
-
-      const data = await response.json()
-
-      if (data.success) {
-        console.log(`✅ ${actionType} triggered successfully for ${patient.patient_name} (${data.execution_time_ms}ms)`)
-        console.log(`📋 Webhook Log ID: ${data.log_id}`)
-        // TODO: Add success toast notification
-      } else {
-        console.error(`❌ Failed to trigger ${actionType}:`, data.error || 'Unknown error')
-        // TODO: Add error toast notification
+      setLoadingActions(prev => new Set(prev).add(patientId))
+      
+             // Determine the outreach method and log it
+       let method: 'sms' | 'email' | 'phone' = 'phone'; // default
+       const outcome: 'success' | 'no_response' | 'failed' = 'success'; // assume success for now
+      
+      switch (actionType) {
+        case 'send_sms':
+          method = 'sms';
+          break;
+        case 'send_email':
+          method = 'email';
+          break;
+        case 'make_call':
+          method = 'phone';
+          break;
       }
+
+      // Log the outreach attempt
+      await logOutreachMutation.mutateAsync({
+        patient_id: patientId,
+        method,
+        outcome,
+        notes: `${actionType} initiated from dashboard`
+      });
+
+      console.log(`✅ ${actionType} action completed for patient ${patient.name} (${patientId})`);
+      
     } catch (error) {
-      console.error('🚨 Network error triggering webhook:', error)
+      console.error('🚨 Error triggering outreach:', error);
       // TODO: Add error toast notification
     } finally {
-      // Remove from loading set
       setLoadingActions(prev => {
-        const next = new Set(prev)
-        next.delete(patientId)
-        return next
-      })
+        const next = new Set(prev);
+        next.delete(patientId);
+        return next;
+      });
     }
-  }, [setLoadingActions])
+  }, [logOutreachMutation]);
 
-  const getRiskBadge = (riskLevel: string, engagementStatus: string, riskScore: number) => {
+  const getRiskBadge = (riskLevel: string, riskScore: number) => {
     const riskColors = {
-      high: 'bg-red-100 text-red-800 border-red-200',
+      critical: 'bg-red-100 text-red-800 border-red-200',
+      high: 'bg-orange-100 text-orange-800 border-orange-200',
       medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      low: 'bg-green-100 text-green-800 border-green-200'
-    }
-    
-    const engagementColors = {
-      active: 'bg-green-100 text-green-800 border-green-200',
-      dormant: 'bg-orange-100 text-orange-800 border-orange-200',
-      stale: 'bg-gray-100 text-gray-800 border-gray-200'
+      low: 'bg-blue-100 text-blue-800 border-blue-200',
+      engaged: 'bg-green-100 text-green-800 border-green-200'
     }
     
     return (
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
-          <Badge className={`${riskColors[riskLevel as keyof typeof riskColors] || riskColors.low} text-xs font-medium`}>
-            {riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)} Risk
-          </Badge>
-          <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
-            {riskScore}/100
-          </span>
-        </div>
-        <Badge className={`${engagementColors[engagementStatus as keyof typeof engagementColors] || engagementColors.stale} text-xs font-medium`}>
-          {engagementStatus.charAt(0).toUpperCase() + engagementStatus.slice(1)}
+      <div className="flex items-center gap-2">
+        <Badge className={`${riskColors[riskLevel as keyof typeof riskColors] || riskColors.low} text-xs font-medium`}>
+          {riskLevel.charAt(0).toUpperCase() + riskLevel.slice(1)} Risk
         </Badge>
+        <span className="text-xs font-mono bg-gray-100 px-2 py-1 rounded">
+          {riskScore}/100
+        </span>
       </div>
     )
   }
 
-  const columns = useMemo<ColumnDef<PatientRiskData>[]>(() => [
+  const columns: ColumnDef<PatientRiskData>[] = [
     {
-      accessorKey: 'patient_name',
+      accessorKey: 'name',
       header: ({ column }) => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-auto p-0 font-medium hover:bg-transparent"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="h-8 px-2"
         >
           Patient
-          <ArrowUpDown className="ml-2 h-3 w-3" />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-1 min-w-[180px]">
-          <div className="font-medium text-gray-900">{row.original.patient_name}</div>
-          <div className="text-xs text-gray-500 flex items-center gap-1">
-            <Activity className="h-3 w-3" />
-            {row.original.activity_status}
-          </div>
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'risk_score',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-auto p-0 font-medium hover:bg-transparent"
-        >
-          Risk Level
-          <ArrowUpDown className="ml-2 h-3 w-3" />
-        </Button>
-      ),
-             cell: ({ row }) => getRiskBadge(row.original.risk_level, row.original.engagement_status, row.original.risk_score),
-      sortingFn: (rowA, rowB) => rowA.original.risk_score - rowB.original.risk_score,
-    },
-    {
-      accessorKey: 'contact',
-      header: 'Contact',
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-1 min-w-[200px]">
-          <div className="flex items-center gap-1 text-sm">
-            <Phone className="h-3 w-3 text-blue-500" />
-            <button 
-              onClick={() => onPatientClick?.(row.original.phone)}
-              className="text-blue-600 hover:text-blue-800 hover:underline"
-            >
-              {formatPhoneNumber(row.original.phone)}
-            </button>
-          </div>
-          <div className="flex items-center gap-1 text-sm text-gray-600">
-            <Mail className="h-3 w-3 text-gray-400" />
-            <span className="truncate">{row.original.email || 'No email'}</span>
-          </div>
-        </div>
-      ),
-      enableSorting: false,
-    },
-    {
-      accessorKey: 'appointments',
-      header: 'Appointments',
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-1 min-w-[120px]">
-          <div className="flex items-center gap-1 text-sm">
-            <Calendar className="h-3 w-3 text-blue-500" />
-            <span>{row.original.upcoming_appointment_count} upcoming</span>
-          </div>
-          <div className="flex items-center gap-1 text-sm text-gray-600">
-            <Clock className="h-3 w-3 text-orange-500" />
-            <span>{row.original.recent_appointment_count} recent</span>
-          </div>
-          <div className="text-xs text-gray-500">
-            Total: {row.original.total_appointment_count}
-          </div>
-        </div>
-      ),
-      enableSorting: false,
-    },
-    {
-      accessorKey: 'engagement',
-      header: 'Engagement',
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-1 min-w-[140px]">
-          <div className="flex items-center gap-1 text-sm">
-            <MessageSquare className="h-3 w-3 text-purple-500" />
-            <span>{row.original.conversations_90d} conversations</span>
-          </div>
-          {row.original.attendance_rate_percent !== null && (
-            <div className="flex items-center gap-1 text-sm">
-              <Target className="h-3 w-3 text-green-500" />
-              <span>{row.original.attendance_rate_percent}% attendance</span>
-            </div>
+          {column.getIsSorted() === 'asc' ? (
+            <ArrowUp className="ml-2 h-3 w-3" />
+          ) : column.getIsSorted() === 'desc' ? (
+            <ArrowDown className="ml-2 h-3 w-3" />
+          ) : (
+            <ArrowUpDown className="ml-2 h-3 w-3" />
           )}
-          <div className="text-xs text-gray-500">
-            {row.original.engagement_benchmark.replace('_', ' ')}
-          </div>
-        </div>
-      ),
-      enableSorting: false,
-    },
-    {
-      accessorKey: 'lifetime_value_aud',
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-auto p-0 font-medium hover:bg-transparent"
-        >
-          Lifetime Value
-          <ArrowUpDown className="ml-2 h-3 w-3" />
         </Button>
       ),
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-1 min-w-[120px]">
-          <div className="flex items-center gap-1 text-sm font-medium">
-            <DollarSign className="h-3 w-3 text-green-500" />
-            <span className="text-green-700">
-              {formatCurrency(row.original.lifetime_value_aud)}
-            </span>
+      cell: ({ row }) => {
+        const patient = row.original;
+        return (
+          <div className="space-y-1">
+            <div className="font-medium">{patient.name}</div>
+            <div className="text-sm text-gray-500">{patient.phone}</div>
+            <div className="text-xs text-gray-400">{patient.email}</div>
           </div>
-          <div className="text-xs text-gray-500">
-            Total revenue
-          </div>
-        </div>
-      ),
-      sortingFn: (rowA, rowB) => {
-        const aValue = rowA.original.lifetime_value_aud || 0
-        const bValue = rowB.original.lifetime_value_aud || 0
-        return aValue - bValue
+        );
+      },
+    },
+    {
+      accessorKey: 'risk_level',
+      header: 'Risk Assessment',
+      cell: ({ row }) => {
+        const patient = row.original;
+        return getRiskBadge(patient.risk_level, patient.risk_score);
       },
     },
     {
@@ -370,128 +260,141 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
       header: ({ column }) => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-auto p-0 font-medium hover:bg-transparent"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className="h-8 px-2"
         >
           Last Contact
-          <ArrowUpDown className="ml-2 h-3 w-3" />
+          {column.getIsSorted() === 'asc' ? (
+            <ArrowUp className="ml-2 h-3 w-3" />
+          ) : column.getIsSorted() === 'desc' ? (
+            <ArrowDown className="ml-2 h-3 w-3" />
+          ) : (
+            <ArrowUpDown className="ml-2 h-3 w-3" />
+          )}
         </Button>
       ),
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-1 min-w-[100px]">
-          <div className="text-sm font-medium">
-            {row.original.days_since_last_contact !== null 
-              ? `${Math.round(row.original.days_since_last_contact)} days ago`
-              : 'Never'
-            }
+      cell: ({ row }) => {
+        const days = row.getValue('days_since_last_contact') as number;
+        return (
+          <div className="flex items-center gap-2">
+            <Clock className="h-4 w-4 text-gray-400" />
+            <span className={days > 30 ? 'text-red-600 font-medium' : days > 14 ? 'text-orange-600' : 'text-gray-600'}>
+              {days} days ago
+            </span>
           </div>
-          <div className="text-xs text-gray-500">
-            {formatDate(row.original.last_communication_date)}
-          </div>
-        </div>
-      ),
+        );
+      },
     },
     {
-      accessorKey: 'next_appointment_time',
-      header: 'Next Appointment',
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-1 min-w-[120px]">
-          {row.original.next_appointment_time ? (
-            <>
-              <div className="text-sm">
-                {row.original.days_to_next_appointment !== null
-                  ? `In ${Math.round(row.original.days_to_next_appointment)} days`
-                  : 'Scheduled'
-                }
-              </div>
-              <div className="text-xs text-gray-500">
-                {formatDate(row.original.next_appointment_time)}
-              </div>
-            </>
-          ) : (
-            <div className="text-sm text-gray-500">None scheduled</div>
-          )}
-        </div>
-      ),
-      enableSorting: false,
+      accessorKey: 'recommended_action',
+      header: 'Recommended Action',
+      cell: ({ row }) => {
+        const action = row.getValue('recommended_action') as string;
+        const priority = row.original.action_priority;
+        
+        const priorityColors = {
+          1: 'text-red-600 bg-red-50',
+          2: 'text-orange-600 bg-orange-50',
+          3: 'text-yellow-600 bg-yellow-50',
+          4: 'text-blue-600 bg-blue-50',
+          5: 'text-green-600 bg-green-50'
+        };
+        
+        return (
+          <div className="space-y-1">
+            <div className={`text-sm px-2 py-1 rounded ${priorityColors[priority as keyof typeof priorityColors] || priorityColors[3]}`}>
+              {action}
+            </div>
+            <div className="text-xs text-gray-500">Priority: {priority}</div>
+          </div>
+        );
+      },
     },
-
+    {
+      accessorKey: 'treatment_notes',
+      header: 'Patient Notes',
+      cell: ({ row }) => {
+        const patient = row.original;
+        const notesCount = patient.treatment_notes?.length || 0;
+        
+        return (
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowNotes(showNotes === patient.id ? null : patient.id)}
+              className="h-8 px-2"
+            >
+              <FileText className="h-4 w-4" />
+              <span className="ml-1">{notesCount} notes</span>
+            </Button>
+            {notesCount > 0 && (
+              <Badge variant="outline" className="text-xs">
+                Latest: {patient.treatment_notes?.[0]?.category || 'N/A'}
+              </Badge>
+            )}
+          </div>
+        );
+      },
+    },
     {
       id: 'actions',
-      header: 'Action',
+      header: 'Actions',
       cell: ({ row }) => {
-        const patient = row.original
-        const isLoading = loadingActions.has(patient.patient_id)
+        const patient = row.original;
+        const isLoading = loadingActions.has(patient.id);
         
-        // Only show action dropdown for high priority patients
-        const shouldShowAction = patient.action_priority <= 2 || patient.risk_level === 'high'
-        
-        if (!shouldShowAction) {
-          return <div className="text-sm text-gray-400">No action needed</div>
-        }
-
         return (
-          <div className="min-w-[160px]">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  disabled={isLoading}
-                  size="sm"
-                  variant="outline"
-                  className="w-full text-xs border-gray-300 hover:bg-gray-50 hover:text-gray-900"
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    <>
-                      <Zap className="h-3 w-3 mr-1" />
-                      n8n workflows
-                      <ChevronDown className="h-3 w-3 ml-1" />
-                    </>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-64">
-                {actionOptions.map((action) => {
-                  const IconComponent = action.icon
-                  const isAvailable = action.status?.includes('✅')
-                  return (
-                    <DropdownMenuItem
-                      key={action.id}
-                      onClick={() => handlePatientAction(patient, action.id)}
-                      className={`cursor-pointer ${!isAvailable ? 'opacity-60' : ''}`}
-                      disabled={!isAvailable}
-                    >
-                      <IconComponent className={`h-4 w-4 mr-2 ${action.color}`} />
-                      <div className="flex flex-col flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-sm">{action.label}</span>
-                          <span className="text-xs">{action.status}</span>
-                        </div>
-                        <span className="text-xs text-gray-500">{action.description}</span>
-                      </div>
-                    </DropdownMenuItem>
-                  )
-                })}
-                <div className="border-t mt-1 pt-1">
-                  <div className="px-2 py-1 text-xs text-gray-500">
-                    🚀 Connected to N8N Workflows
-                  </div>
-                </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <div className="text-xs text-gray-500 mt-1 text-center">
-              Priority {patient.action_priority}
-            </div>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePatientAction(patient, 'make_call')}
+              disabled={isLoading}
+              className="h-8 px-2"
+            >
+              {isLoading ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <PhoneCall className="h-3 w-3" />
+              )}
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePatientAction(patient, 'send_sms')}
+              disabled={isLoading}
+              className="h-8 px-2"
+            >
+              <MessageSquare className="h-3 w-3" />
+            </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => handlePatientAction(patient, 'send_email')}
+              disabled={isLoading}
+              className="h-8 px-2"
+            >
+              <Mail className="h-3 w-3" />
+            </Button>
+
+            {onPatientClick && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => onPatientClick(patient.phone)}
+                className="h-8 px-2"
+              >
+                <Eye className="h-3 w-3" />
+              </Button>
+            )}
           </div>
-        )
+        );
       },
-      enableSorting: false,
     },
-  ], [onPatientClick, loadingActions, handlePatientAction])
+  ];
 
   const table = useReactTable({
     data,
@@ -507,87 +410,146 @@ export function PatientRiskTable({ data, onPatientClick, organizationId: propOrg
       sorting,
       columnFilters,
       globalFilter,
-    },
-    initialState: {
       pagination: {
-        pageSize: 1000, // Show all patients - set high enough to display everything
+        pageIndex,
+        pageSize,
       },
     },
-  })
+    onPaginationChange: (updater) => {
+      if (typeof updater === 'function') {
+        const newPagination = updater({ pageIndex, pageSize });
+        setPageIndex(newPagination.pageIndex);
+        setPageSize(newPagination.pageSize);
+      }
+    },
+  });
 
   return (
     <div className="space-y-4">
-      {/* Search and Controls */}
+      {/* Search and Filters */}
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Input
-            placeholder="Search patients..."
-            value={globalFilter ?? ""}
-            onChange={(event) => setGlobalFilter(String(event.target.value))}
-            className="max-w-sm"
-          />
-          <div className="text-sm text-gray-500">
-            {table.getFilteredRowModel().rows.length} patients
-          </div>
+        <Input
+          placeholder="Search patients..."
+          value={globalFilter}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+          className="max-w-sm"
+        />
+        
+        <div className="flex items-center gap-2">
+          <Badge variant="outline">
+            Total: {data.length} patients
+          </Badge>
+          <Badge variant="outline">
+            Critical: {data.filter(p => p.risk_level === 'critical').length}
+          </Badge>
+          <Badge variant="outline">
+            High Risk: {data.filter(p => p.risk_level === 'high').length}
+          </Badge>
         </div>
       </div>
 
       {/* Table */}
-      <div className="rounded-md border bg-white overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className="text-left py-3 px-4 font-medium text-gray-900 border-r last:border-r-0"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="border-b hover:bg-gray-50 transition-colors"
-                  >
+      <div className="rounded-md border">
+        <table className="w-full">
+          <thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id} className="border-b bg-gray-50">
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id} className="text-left p-3">
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(header.column.columnDef.header, header.getContext())}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+          <tbody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <React.Fragment key={row.id}>
+                  <tr className="border-b hover:bg-gray-50">
                     {row.getVisibleCells().map((cell) => (
-                      <td 
-                        key={cell.id} 
-                        className="py-3 px-4 border-r last:border-r-0 align-top"
-                      >
+                      <td key={cell.id} className="p-3">
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </td>
                     ))}
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={columns.length}
-                    className="h-24 text-center text-gray-500"
-                  >
-                    No patients found.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                  
+                  {/* Expandable Notes Section */}
+                  {showNotes === row.original.id && row.original.treatment_notes && (
+                    <tr className="bg-blue-50 border-b">
+                      <td colSpan={columns.length} className="p-4">
+                        <div className="space-y-3">
+                          <h4 className="font-medium text-blue-900 flex items-center gap-2">
+                            <Stethoscope className="h-4 w-4" />
+                            Treatment Notes for {row.original.name}
+                          </h4>
+                          <div className="space-y-2 max-h-60 overflow-y-auto">
+                            {row.original.treatment_notes.map((note) => (
+                              <div key={note.id} className="bg-white p-3 rounded border">
+                                <div className="flex items-center justify-between mb-2">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="outline" className="text-xs">
+                                      {note.category}
+                                    </Badge>
+                                    <span className="text-sm font-medium text-gray-700">
+                                      {note.provider}
+                                    </span>
+                                  </div>
+                                  <span className="text-xs text-gray-500">
+                                    {formatDistanceToNow(new Date(note.date), { addSuffix: true })}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-gray-700">{note.note}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={columns.length} className="p-8 text-center text-gray-500">
+                  No patients found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
       </div>
 
-
+      {/* Pagination */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+        
+        <div className="text-sm text-gray-500">
+          Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()} 
+          ({table.getFilteredRowModel().rows.length} total)
+        </div>
+      </div>
     </div>
-  )
+  );
 } 

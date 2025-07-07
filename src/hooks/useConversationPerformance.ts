@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { useAuth } from '@clerk/nextjs'
+import { useState, useEffect, useCallback } from 'react'
 
 interface ConversationPerformanceData {
   id: string
@@ -40,27 +39,15 @@ export function useConversationPerformance(
   routiqConversationId?: string,
   chatwootConversationId?: number
 ): PerformanceHookResult {
-  const { getToken } = useAuth()
   const [performance, setPerformance] = useState<ConversationPerformanceData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch performance data
-  useEffect(() => {
-    if (!routiqConversationId && !chatwootConversationId) {
-      setLoading(false)
-      return
-    }
-
-    fetchPerformance()
-  }, [routiqConversationId, chatwootConversationId])
-
-  const fetchPerformance = async () => {
+  const fetchPerformance = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const token = await getToken()
       const params = new URLSearchParams({
         limit: '1',
         analytics: 'false',
@@ -75,7 +62,7 @@ export function useConversationPerformance(
       }
 
       // TODO: Replace with RoutiqAPI call when performance endpoints are available
-      console.log('🔍 Using mock performance data')
+      console.log('🔄 Performance hook: No performance endpoint available, using patient profile data where possible')
         setPerformance(null)
     } catch (err) {
       console.error('Error fetching performance:', err)
@@ -83,12 +70,20 @@ export function useConversationPerformance(
     } finally {
       setLoading(false)
     }
-  }
+  }, [routiqConversationId, chatwootConversationId])
+
+  // Fetch performance data
+  useEffect(() => {
+    if (!routiqConversationId && !chatwootConversationId) {
+      setLoading(false)
+      return
+    }
+
+    fetchPerformance()
+  }, [routiqConversationId, chatwootConversationId, fetchPerformance])
 
   const updatePerformance = async (updates: Record<string, unknown>): Promise<boolean> => {
     try {
-      const token = await getToken()
-      
       const payload = {
         routiqConversationId,
         chatwootConversationId,

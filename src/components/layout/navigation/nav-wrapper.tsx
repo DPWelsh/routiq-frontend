@@ -6,20 +6,18 @@ import { MobileNavDrawer, MobileNavItem } from "@/components/layout/mobile/mobil
 import { DashboardNav } from "./nav"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useUser, useAuth } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { useOrganizationContext } from "@/hooks/useOrganizationContext"
 import { RoutiqAPI } from "@/lib/routiq-api"
 import { 
   BarChart3, 
-  MessageSquare, 
-  UserCheck,
+  MessageSquare,
+  TrendingUp,
   Settings,
-  HelpCircle,
-  Building2
+  HelpCircle
 } from "lucide-react"
 import { ClerkOrganizationSwitcher } from "@/components/clerk-organization-switcher"
 
@@ -40,7 +38,7 @@ interface DashboardStats {
 
 const navigation = [
   { 
-    name: "Overview", 
+    name: "Dashboard", 
     href: "/dashboard", 
     icon: BarChart3, 
     roles: ["ADMIN", "USER"],
@@ -48,19 +46,19 @@ const navigation = [
     badge: null
   },
   { 
-    name: "Conversations", 
+    name: "Inbox", 
     href: "/dashboard/conversations/phone", 
     icon: MessageSquare, 
     roles: ["ADMIN", "USER"],
-    description: "Phone chat interface",
+    description: "Unified messaging center",
     badge: null
   },
   { 
-    name: "Patients", 
-    href: "/dashboard/patients", 
-    icon: UserCheck, 
+    name: "Patient Insights", 
+    href: "/dashboard/patient-insights", 
+    icon: TrendingUp, 
     roles: ["ADMIN", "USER"],
-    description: "Patient management",
+    description: "Patient journey tracking",
     badge: null
   },
   { 
@@ -77,7 +75,6 @@ function ResponsiveDashboardNav() {
   const { isOpen, isMobile, close } = useMobileNavigationContext()
   const pathname = usePathname()
   const { user, isLoaded } = useUser()
-  const { getToken } = useAuth()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -178,14 +175,11 @@ function ResponsiveDashboardNav() {
 
       {/* Main Navigation Section */}
       <div className="mb-6">
-        <p className="text-xs font-semibold text-routiq-core/60 uppercase tracking-wider mb-4">
-          MAIN NAVIGATION
-        </p>
         
         <div className="space-y-1">
           {navigation
             .filter(item => item.roles.includes(userRole))
-            .filter(item => !["Conversations", "Patients"].includes(item.name)) // Hide Conversations and Patients from mobile
+            .filter(item => !["Inbox"].includes(item.name)) // Hide Inbox from mobile
             .map((item) => {
               const isActive = pathname === item.href || 
                 (item.href !== "/dashboard" && pathname.startsWith(item.href))

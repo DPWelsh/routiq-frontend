@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useUser, useAuth } from "@clerk/nextjs"
+import { useUser } from "@clerk/nextjs"
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -12,7 +12,8 @@ import { RoutiqAPI } from "@/lib/routiq-api"
 import { 
   BarChart3, 
   MessageSquare, 
-  UserCheck,
+  TrendingUp,
+  Zap,
   Settings,
   ChevronRight,
   HelpCircle
@@ -35,7 +36,7 @@ interface DashboardStats {
 
 const navigation = [
   { 
-    name: "Overview", 
+    name: "Dashboard", 
     href: "/dashboard", 
     icon: BarChart3, 
     roles: ["ADMIN", "USER"],
@@ -43,19 +44,27 @@ const navigation = [
     badge: null
   },
   { 
-    name: "Conversations", 
+    name: "Inbox", 
     href: "/dashboard/conversations/phone", 
     icon: MessageSquare, 
     roles: ["ADMIN", "USER"],
-    description: "Phone chat interface",
+    description: "Unified messaging center",
     badge: null
   },
   { 
-    name: "Patients", 
-    href: "/dashboard/patients", 
-    icon: UserCheck, 
+    name: "Patient Insights", 
+    href: "/dashboard/patient-insights", 
+    icon: TrendingUp, 
     roles: ["ADMIN", "USER"],
-    description: "Patient management",
+    description: "Patient journey tracking",
+    badge: null
+  },
+  { 
+    name: "Integrations", 
+    href: "/dashboard/integrations", 
+    icon: Zap, 
+    roles: ["ADMIN", "USER"],
+    description: "Connected services",
     badge: null
   },
   { 
@@ -71,7 +80,6 @@ const navigation = [
 export function DashboardNav() {
   const pathname = usePathname()
   const { user, isLoaded } = useUser()
-  const { getToken } = useAuth()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -148,9 +156,6 @@ export function DashboardNav() {
       {/* Main Navigation Section */}
       <div className="flex-1 overflow-hidden">
         <div className="px-3 py-3">
-          <p className="text-xs font-semibold text-routiq-core/60 uppercase tracking-wider mb-2">
-            MAIN NAVIGATION
-          </p>
         </div>
 
         <div className="px-3 space-y-1 overflow-y-auto max-h-[calc(100vh-200px)]">

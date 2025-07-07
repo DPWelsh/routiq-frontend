@@ -3,8 +3,6 @@
  * Uses Next.js API routes as proxies to avoid CORS issues
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
-
 interface ApiOptions extends RequestInit {
   timeout?: number
 }

@@ -141,17 +141,336 @@ export interface SyncDashboardResponse {
 // Reengagement API Types
 export interface ReengagementDashboard {
   organization_id: string;
-  total_patients: number;
-  immediate_actions_required: number;
-  risk_distribution: Array<{
+  summary: {
+    total_patients: number;
+    risk_breakdown: {
+      critical: { count: number; avg_score: number };
+      high: { count: number; avg_score: number };
+      medium: { count: number; avg_score: number };
+      low: { count: number; avg_score: number };
+      engaged: { count: number; avg_score: number };
+    };
+    immediate_actions_needed: number;
+  };
+  top_priority_patients: Array<{
+    id: string;
+    name: string;
     risk_level: 'critical' | 'high' | 'medium' | 'low' | 'engaged';
-    count: number;
-    percentage: number;
+    risk_score: number;
+    action: string;
+    days_since_contact: number;
   }>;
-  message?: string;
+  last_updated: string;
+}
+
+export interface RiskMetricsResponse {
+  organization_id: string;
+  risk_summary: {
+    critical: number;    // 45+ days no contact
+    high: number;        // 30-44 days no contact  
+    medium: number;      // 14-29 days no contact
+    low: number;         // 7-13 days no contact
+    engaged: number;     // Recent contact
+  };
+  alerts: {
+    missed_appointments_14d: number;
+    failed_communications: number;
+    no_future_appointments: number;
+  };
+  immediate_actions_required: number;
+  last_updated: string;
+}
+
+export interface PerformanceMetricsResponse {
+  organization_id: string;
+  timeframe: string;
+  performance_metrics: {
+    total_patients: number;
+    engagement_health: {
+      currently_active: number;
+      currently_dormant: number;
+      currently_stale: number;
+    };
+    risk_assessment: {
+      high_risk: number;
+      critical_risk: number;
+      urgent_actions: number;
+    };
+    contact_metrics: {
+      avg_contact_success_score: number;
+      contact_rate_percent: number;
+      success_prediction_breakdown: {
+        very_high: number;
+        high: number;
+        medium: number;
+        low: number;
+      };
+    };
+    appointment_metrics: {
+      upcoming_appointments: number;
+      avg_attendance_rate: number;
+    };
+    financial_metrics: {
+      total_lifetime_value: number;
+      avg_lifetime_value: number;
+    };
+  };
+}
+
+export interface PrioritizedPatientsResponse {
+  patients: PatientRiskData[];
+  summary: {
+    total_returned: number;
+    filters_applied: {
+      risk_level?: string;
+      limit?: number;
+    };
+  };
   timestamp: string;
 }
 
+export interface TrendsResponse {
+  period: string;
+  daily_trends: Array<{
+    date: string;
+    new_at_risk: number;
+    reengaged_successfully: number;
+    outreach_attempts: number;
+    appointments_scheduled: number;
+  }>;
+  channel_performance_trends: {
+    sms: { success_rate_trend: string; change_pct: number };
+    email: { success_rate_trend: string; change_pct: number };
+    phone: { success_rate_trend: string; change_pct: number };
+  };
+  risk_distribution_changes: {
+    critical_trend: string;
+    high_trend: string;
+    overall_improvement: boolean;
+  };
+  current_risk_distribution: {
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+    engaged: number;
+  };
+}
+
+export interface OutreachLogRequest {
+  patient_id: string;
+  method: 'sms' | 'email' | 'phone';
+  outcome: 'success' | 'no_response' | 'failed';
+  notes?: string;
+}
+
+// NEW: Patient Profiles API interfaces (Backend API structure)
+export interface PatientProfile {
+  patient_id: string;
+  organization_id: string;
+  patient_name: string;
+  email: string | null;
+  phone: string | null;
+  cliniko_patient_id: string;
+  is_active: boolean;
+  activity_status: 'active' | 'inactive' | 'recently_active';
+  contact_type: string;
+  treatment_summary: string | null;
+  last_treatment_note: string | null;
+  patient_status: string;
+  medical_record_number: string | null;
+  
+  // Appointment data
+  total_appointment_count: number;
+  recent_appointment_count: number;
+  upcoming_appointment_count: number;
+  first_appointment_date: string | null;
+  last_appointment_date: string | null;
+  next_appointment_time: string | null;
+  next_appointment_type: string | null;
+  primary_appointment_type: string | null;
+  treatment_notes: string | null;
+  current_appointment_type: string | null;
+  current_appointment_status: string | null;
+  current_appointment_notes: string | null;
+  next_appointment_date: string | null;
+  next_appointment_status: string | null;
+  next_appointment_notes: string | null;
+  
+  // Conversation data
+  total_conversations: number;
+  active_conversations: number;
+  last_conversation_date: string | null;
+  days_since_last_conversation: number | null;
+  overall_sentiment: string | null;
+  avg_sentiment_score: number | null;
+  escalation_count: number;
+  quality_rating_avg: number | null;
+  
+  // Message data
+  total_messages: number;
+  patient_messages: number;
+  agent_messages: number;
+  last_message_date: string | null;
+  last_message_sentiment: string | null;
+  avg_message_sentiment: string | null;
+  days_since_last_message: number | null;
+  
+  // Outreach data
+  total_outreach_attempts: number;
+  successful_outreach: number;
+  last_outreach_date: string | null;
+  last_outreach_method: string | null;
+  last_outreach_outcome: string | null;
+  outreach_success_rate: number;
+  days_since_last_outreach: number | null;
+  
+  // Engagement metrics
+  engagement_level: 'highly_engaged' | 'moderately_engaged' | 'low_engagement' | 'disengaged';
+  churn_risk: 'critical' | 'high' | 'medium' | 'low';
+  estimated_lifetime_value: number;
+  contact_success_prediction: 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
+  action_priority: 1 | 2 | 3 | 4 | 5;
+  
+  // Date calculations
+  days_since_last_appointment: number | null;
+  days_until_next_appointment: number | null;
+  days_until_next_appointment_detailed: number | null;
+  
+  // Metadata
+  patient_created_at: string;
+  patient_updated_at: string;
+  last_synced_at: string;
+  view_generated_at: string;
+}
+
+export interface PatientProfilesResponse {
+  success: boolean;
+  organization_id: string;
+  patient_profiles: PatientProfile[];
+  count: number;
+  timestamp: string;
+}
+
+export interface SinglePatientProfileResponse {
+  success: boolean;
+  organization_id: string;
+  patient_id: string;
+  profile: PatientProfile;
+  timestamp: string;
+}
+
+export interface PatientProfilesSummaryResponse {
+  success: boolean;
+  organization_id: string;
+  summary: {
+    total_patients: number;
+    highly_engaged: number;
+    moderately_engaged: number;
+    low_engagement: number;
+    disengaged: number;
+    critical_risk: number;
+    high_risk: number;
+    medium_risk: number;
+    low_risk: number;
+  };
+  timestamp: string;
+}
+
+// Field mapping functions
+export function mapPatientProfileToRiskData(profile: PatientProfile): PatientRiskData {
+  return {
+    id: profile.patient_id,
+    name: profile.patient_name,
+    phone: profile.phone || '',
+    email: profile.email || '',
+    risk_level: profile.churn_risk === 'critical' ? 'critical' : 
+               profile.churn_risk === 'high' ? 'high' :
+               profile.churn_risk === 'medium' ? 'medium' :
+               profile.churn_risk === 'low' ? 'low' : 'engaged',
+    risk_score: profile.action_priority * 20, // Convert 1-5 scale to 0-100
+    days_since_last_contact: profile.days_since_last_conversation || 
+                            profile.days_since_last_appointment || 0,
+    last_appointment_date: profile.last_appointment_date || null,
+    next_scheduled_appointment: profile.next_appointment_time,
+    recommended_action: getRecommendedAction(profile),
+    action_priority: profile.action_priority,
+    previous_response_rate: profile.outreach_success_rate || 0,
+    total_lifetime_appointments: profile.total_appointment_count,
+    missed_appointments_last_90d: 0, // Not available in new API
+    
+    // Patient Notes - Create from available treatment data
+    treatment_notes: profile.treatment_notes || profile.last_treatment_note ? 
+      [{
+        id: `${profile.patient_id}-treatment`,
+        date: profile.last_appointment_date || profile.patient_updated_at,
+        note: profile.treatment_notes || profile.last_treatment_note || '',
+        provider: 'System',
+        category: 'treatment' as const
+      }] : [],
+    
+    // Enhanced metrics
+    engagement_status: profile.activity_status === 'active' ? 'active' : 
+                      profile.activity_status === 'recently_active' ? 'active' : 'dormant',
+    attendance_rate_percent: null, // Not available in new API
+    conversations_90d: profile.total_conversations,
+    last_conversation_sentiment: profile.overall_sentiment || 'neutral',
+    contact_success_prediction: profile.contact_success_prediction,
+    lifetime_value_aud: profile.estimated_lifetime_value
+  };
+}
+
+function getRecommendedAction(profile: PatientProfile): string {
+  if (profile.churn_risk === 'critical') {
+    return 'Immediate contact required - Critical risk';
+  }
+  if (profile.churn_risk === 'high') {
+    return 'Contact within 24h - High risk';
+  }
+  if (profile.days_since_last_appointment && profile.days_since_last_appointment > 30) {
+    return 'Schedule follow-up appointment';
+  }
+  if (profile.upcoming_appointment_count === 0) {
+    return 'Book next appointment';
+  }
+  return `Priority ${profile.action_priority} - ${profile.engagement_level}`;
+}
+
+export interface PatientRiskData {
+  id: string;
+  name: string;
+  phone: string;
+  email: string;
+  risk_level: 'critical' | 'high' | 'medium' | 'low' | 'engaged';
+  risk_score: number;
+  days_since_last_contact: number;
+  last_appointment_date: string | null;
+  next_scheduled_appointment: string | null;
+  recommended_action: string;
+  action_priority: number;
+  previous_response_rate: number;
+  total_lifetime_appointments: number;
+  missed_appointments_last_90d: number;
+  
+  // Patient Notes - NEW
+  treatment_notes: Array<{
+    id: string;
+    date: string;
+    note: string;
+    provider: string;
+    category: 'treatment' | 'communication' | 'scheduling' | 'insurance' | 'other';
+  }>;
+  
+  // Enhanced metrics
+  engagement_status: 'active' | 'dormant' | 'stale';
+  attendance_rate_percent: number | null;
+  conversations_90d: number;
+  last_conversation_sentiment: string;
+  contact_success_prediction: 'very_high' | 'high' | 'medium' | 'low' | 'very_low';
+  lifetime_value_aud: number | null;
+}
+
+// Legacy interfaces for backward compatibility
 export interface PatientAtRisk {
   patient_id: string;
   patient_name: string;
@@ -173,64 +492,48 @@ export interface PatientsAtRiskResponse {
   timestamp: string;
 }
 
-export interface RiskMetricsResponse {
-  organization_id: string;
-  summary: {
-    total_patients: number;
-    engagement_distribution: {
-      active: number;
-      dormant: number;
-      stale: number;
-    };
-    risk_distribution: {
-      high: number;
-      medium: number;
-      low: number;
-    };
-    action_priorities: {
-      urgent: number;
-      important: number;
-      monitor: number;
-      maintain: number;
-    };
-    avg_risk_score: number;
+// Dashboard Analytics API Types (based on backend test results)
+export interface DashboardAnalyticsResponse {
+  booking_metrics: {
+    total_bookings: number;
+    period_comparison: number;
+    bookings_via_ai: number;
   };
-  patients: PatientRiskData[];
-  view_version: string;            // "v1.4-cleaner-business-logic"
-  calculated_at: string;
-  timestamp: string;
+  patient_metrics: {
+    total_patients: number;
+    active_patients: number;
+    new_patients: number;
+  };
+  financial_metrics: {
+    total_revenue: number;
+    avg_revenue_per_patient: number;
+  };
+  automation_metrics: {
+    total_roi: number;
+    automation_bookings: number;
+    efficiency_score: number;
+  };
+  timeframe: string;
+  last_updated: string;
 }
 
-export interface PatientRiskData {
-  patient_id: string;
-  patient_name: string;
-  email: string;
-  phone: string;
-  is_active: boolean;
-  activity_status: string;
-  risk_score: number;              // 0-100
-  risk_level: "high" | "medium" | "low";
-  engagement_status: "active" | "dormant" | "stale";
-  days_since_last_contact: number | null;
-  days_to_next_appointment: number | null;
-  last_appointment_date: string | null;
-  next_appointment_time: string | null;
-  last_communication_date: string | null;
-  recent_appointment_count: number;
-  upcoming_appointment_count: number;
-  total_appointment_count: number;
-  missed_appointments_90d: number;
-  scheduled_appointments_90d: number;
-  attendance_rate_percent: number | null;
-  conversations_90d: number;
-  last_conversation_sentiment: string;
-  action_priority: number;         // 1-5 (1=most urgent)
-  is_stale: boolean;
-  recommended_action: string;
-  contact_success_prediction: "very_high" | "high" | "medium" | "low" | "very_low";
-  attendance_benchmark: "above_industry_avg" | "at_industry_avg" | "below_industry_avg";
-  engagement_benchmark: "good_engagement" | "average_engagement" | "poor_engagement";
-  lifetime_value_aud: number | null;  // Patient's total revenue in AUD
+export interface DashboardChartsResponse {
+  booking_trends: Array<{
+    date: string;
+    bookings: number;
+    revenue: number;
+  }>;
+  patient_satisfaction_trend: Array<{
+    date: string;
+    satisfaction_score: number;
+    response_count: number;
+  }>;
+  automation_performance: Array<{
+    date: string;
+    ai_bookings: number;
+    total_bookings: number;
+    efficiency: number;
+  }>;
 }
 
 export class RoutiqAPI {
@@ -602,7 +905,7 @@ export class RoutiqAPI {
     try {
       await this.getSyncStatus();
       features.basic_sync = true;
-    } catch (_error) {
+    } catch {
       console.log('Basic sync not available');
     }
 
@@ -610,7 +913,7 @@ export class RoutiqAPI {
       await this.getActivePatientsummary(organizationId);
       features.active_patients = true;
       features.dashboard = true;
-    } catch (_error) {
+    } catch {
       console.log('Advanced features not yet available');
     }
 
@@ -618,18 +921,224 @@ export class RoutiqAPI {
   }
 
   // ========================================
-  // REENGAGEMENT ENDPOINTS
+  // REENGAGEMENT ENDPOINTS - Updated to match new API
   // ========================================
 
   /**
-   * Get reengagement dashboard with risk metrics
+   * Get risk metrics summary for dashboard cards
+   * Priority 1: Risk Dashboard
+   */
+  async getRiskMetrics(organizationId: string): Promise<RiskMetricsResponse> {
+    return this.request(`/api/v1/reengagement/${organizationId}/risk-metrics`);
+  }
+
+  /**
+   * Get reengagement performance metrics
+   * Priority 2: Performance Tracking
+   */
+  async getPerformanceMetrics(organizationId: string, timeframe: 'last_7_days' | 'last_30_days' | 'last_90_days' = 'last_30_days'): Promise<PerformanceMetricsResponse> {
+    return this.request(`/api/v1/reengagement/${organizationId}/performance?timeframe=${timeframe}`);
+  }
+
+  /**
+   * Get prioritized patient list with risk scores and recommendations
+   * Priority 3: Prioritized Patient List
+   * 
+   * UPDATED: Now uses new patient-profiles API with field mapping
+   */
+  async getPrioritizedPatients(organizationId: string, options?: {
+    risk_level?: 'critical' | 'high' | 'medium' | 'low' | 'engaged' | 'all';
+    limit?: number;
+  }): Promise<PrioritizedPatientsResponse> {
+    // Use new patient profiles API method
+    return this.getPrioritizedPatientsFromProfiles(organizationId, options);
+  }
+
+  /**
+   * Get reengagement trends over time
+   * Priority 4: Trends & Analytics
+   */
+  async getReengagementTrends(organizationId: string, options?: {
+    period?: '7d' | '30d' | '90d' | '6m' | '1y';
+    metrics?: 'risk_levels' | 'success_rates' | 'channel_performance';
+  }): Promise<TrendsResponse> {
+    const params = new URLSearchParams();
+    if (options?.period) params.append('period', options.period);
+    if (options?.metrics) params.append('metrics', options.metrics);
+    
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return this.request(`/api/v1/reengagement/${organizationId}/trends${query}`);
+  }
+
+  /**
+   * Log outreach attempt for performance tracking
+   */
+  async logOutreachAttempt(organizationId: string, request: OutreachLogRequest): Promise<{ success: boolean; message: string }> {
+    return this.request(`/api/v1/reengagement/${organizationId}/log-outreach`, {
+      method: 'POST',
+      body: JSON.stringify(request)
+    });
+  }
+
+  /**
+   * Get comprehensive dashboard data (single endpoint)
+   * Complete Dashboard Integration
    */
   async getReengagementDashboard(organizationId: string): Promise<ReengagementDashboard> {
     return this.request(`/api/v1/reengagement/${organizationId}/dashboard`);
   }
 
+  // ========================================
+  // NEW: Patient Profiles API (Backend Team's Latest API)
+  // ========================================
+
   /**
-   * Get patients at risk prioritized by action needed
+   * Get patient profiles with search and pagination
+   * No authentication required - uses dashboard pattern
+   */
+  async getPatientProfiles(organizationId: string, options?: {
+    limit?: number;
+    offset?: number;
+    search?: string;
+  }): Promise<PatientProfilesResponse> {
+    const params = new URLSearchParams();
+    if (options?.limit) params.set('limit', options.limit.toString());
+    if (options?.offset) params.set('offset', options.offset.toString());
+    if (options?.search) params.set('search', options.search);
+    
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    
+    // Direct fetch without authentication headers for patient profiles
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/reengagement/${organizationId}/patient-profiles${queryString}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Patient Profiles API Error ${response.status}: ${errorText}`);
+    }
+    
+    return response.json();
+  }
+
+  /**
+   * Get individual patient profile by ID
+   * No authentication required - uses dashboard pattern
+   */
+  async getPatientProfile(organizationId: string, patientId: string): Promise<SinglePatientProfileResponse> {
+    // Direct fetch without authentication headers
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/reengagement/${organizationId}/patient-profiles/${patientId}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Patient Profile API Error ${response.status}: ${errorText}`);
+    }
+    
+    return response.json();
+  }
+
+  /**
+   * Get patient profiles summary statistics
+   * No authentication required - uses dashboard pattern
+   */
+  async getPatientProfilesSummary(organizationId: string): Promise<PatientProfilesSummaryResponse> {
+    // Direct fetch without authentication headers
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/reengagement/${organizationId}/patient-profiles/summary`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Patient Profiles Summary API Error ${response.status}: ${errorText}`);
+    }
+    
+    return response.json();
+  }
+
+  /**
+   * Get debug patient profiles (5 sample patients)
+   * No authentication required - uses dashboard pattern
+   */
+  async getPatientProfilesDebug(organizationId: string): Promise<PatientProfilesResponse> {
+    // Direct fetch without authentication headers
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/reengagement/${organizationId}/patient-profiles/debug`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Patient Profiles Debug API Error ${response.status}: ${errorText}`);
+    }
+    
+    const data = await response.json();
+    
+    // Debug endpoint returns debug_profiles, convert to standard format
+    return {
+      success: data.success,
+      organization_id: data.organization_id,
+      patient_profiles: data.debug_profiles || data.patient_profiles, // Handle both formats
+      count: data.count,
+      timestamp: data.timestamp
+    };
+  }
+
+  /**
+   * Get patient profiles with automatic mapping to PatientRiskData format
+   * This provides backward compatibility with existing frontend code
+   */
+  async getPrioritizedPatientsFromProfiles(organizationId: string, options?: {
+    risk_level?: 'critical' | 'high' | 'medium' | 'low' | 'engaged' | 'all';
+    limit?: number;
+    search?: string;
+  }): Promise<PrioritizedPatientsResponse> {
+    // Get data from new patient profiles API
+    const profilesResponse = await this.getPatientProfiles(organizationId, {
+      limit: options?.limit,
+      search: options?.search
+    });
+
+    // Map backend data to frontend format
+    let patients = profilesResponse.patient_profiles.map(mapPatientProfileToRiskData);
+
+    // Apply risk level filtering
+    if (options?.risk_level && options.risk_level !== 'all') {
+      patients = patients.filter(patient => patient.risk_level === options.risk_level);
+    }
+
+    return {
+      patients,
+      summary: {
+        total_returned: patients.length,
+        filters_applied: {
+          risk_level: options?.risk_level,
+          limit: options?.limit
+        }
+      },
+      timestamp: profilesResponse.timestamp
+    };
+  }
+
+  // Legacy methods for backward compatibility
+  /**
+   * @deprecated Use getPrioritizedPatientsFromProfiles instead
    */
   async getPatientsAtRisk(organizationId: string, options?: {
     risk_level?: 'critical' | 'high' | 'medium' | 'low' | 'all';
@@ -646,17 +1155,30 @@ export class RoutiqAPI {
   }
 
   /**
-   * Get risk assessment metrics with alerts and risk stratification
-   */
-  async getRiskMetrics(organizationId: string): Promise<RiskMetricsResponse> {
-    return this.request(`/api/v1/reengagement/${organizationId}/risk-metrics`);
-  }
-
-  /**
    * Get database summary - Clerk admin endpoint
    */
   async getDatabaseSummary(): Promise<DatabaseSummaryResponse> {
     return this.request('/api/v1/clerk-admin/database-summary');
+  }
+
+  /**
+   * Get dashboard analytics data with timeframe filtering
+   */
+  async getDashboardAnalytics(organizationId: string, timeframe: '7d' | '30d' | '90d' | '1y' = '30d'): Promise<DashboardAnalyticsResponse> {
+    const params = new URLSearchParams({ timeframe });
+    return this.request<DashboardAnalyticsResponse>(
+      `/api/v1/dashboard/${organizationId}/analytics?${params.toString()}`
+    );
+  }
+
+  /**
+   * Get dashboard charts data for visualizations
+   */
+  async getDashboardCharts(organizationId: string, timeframe: '7d' | '30d' | '90d' | '1y' = '30d'): Promise<DashboardChartsResponse> {
+    const params = new URLSearchParams({ timeframe });
+    return this.request<DashboardChartsResponse>(
+      `/api/v1/dashboard/${organizationId}/charts?${params.toString()}`
+    );
   }
 }
 

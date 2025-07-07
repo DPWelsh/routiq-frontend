@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { DashboardNav } from "@/components/layout/navigation/nav-wrapper"
 import { DashboardHeader } from "@/components/layout/header/header-wrapper"
-import { LoadingSpinner } from "@/components/magicui"
 import { MobileNavigationProvider } from "@/components/providers/mobile-navigation-provider"
 
 interface ClientDashboardLayoutProps {

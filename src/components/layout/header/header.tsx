@@ -56,7 +56,7 @@ export function DashboardHeader() {
         return 'Dashboard Overview'
       case '/dashboard/conversations':
       case '/dashboard/conversations/phone':
-        return 'Phone Conversations'
+        return 'Inbox'
       case '/dashboard/patients':
         return 'Patients'
       case '/dashboard/performance':
@@ -72,7 +72,7 @@ export function DashboardHeader() {
       default:
         // Handle dynamic routes like /dashboard/conversations/phone?phone=...
         if (pathname.startsWith('/dashboard/conversations/phone')) {
-          return 'Phone Conversations'
+          return 'Inbox'
         }
         return 'Dashboard'
     }
@@ -84,7 +84,7 @@ export function DashboardHeader() {
         return 'Healthcare analytics and patient engagement insights'
       case '/dashboard/conversations':
       case '/dashboard/conversations/phone':
-        return 'Real-time phone conversations and AI bot analysis'
+        return 'Unified messaging center for patient communications'
       case '/dashboard/patients':
         return 'Patient management, churn analysis, and rebooking insights'
       case '/dashboard/performance':
@@ -100,7 +100,7 @@ export function DashboardHeader() {
       default:
         // Handle dynamic routes like /dashboard/conversations/phone?phone=...
         if (pathname.startsWith('/dashboard/conversations/phone')) {
-          return 'Real-time phone conversations and AI bot analysis'
+          return 'Unified messaging center for patient communications'
         }
         return 'Professional healthcare analytics platform'
     }

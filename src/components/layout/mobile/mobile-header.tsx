@@ -200,8 +200,8 @@ interface MobileHeaderWrapperProps {
 }
 
 export function MobileHeaderWrapper({
-  pageTitle,
-  user,
+  pageTitle: _pageTitle,
+  user: _user,
   className
 }: MobileHeaderWrapperProps) {
   // This would normally use useMobileNavigation() hook

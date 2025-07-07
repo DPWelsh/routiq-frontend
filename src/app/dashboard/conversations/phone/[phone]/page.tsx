@@ -166,7 +166,7 @@ export default function PhoneConversationPage() {
             className="mb-6 gap-2 border-routiq-core/20 hover:bg-routiq-core/5"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Conversations
+            Back to Inbox
           </Button>
           
           <Card className="border-routiq-energy bg-white">
@@ -203,7 +203,7 @@ export default function PhoneConversationPage() {
           className="gap-2 border-routiq-core/20 hover:bg-routiq-core/5"
         >
           <ArrowLeft className="h-4 w-4" />
-          Back to Conversations
+          Back to Inbox
         </Button>
 
         {/* Header Card */}

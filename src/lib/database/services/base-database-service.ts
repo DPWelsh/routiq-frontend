@@ -1,5 +1,5 @@
 import { logger } from '../../logging/logger'
-import { DatabaseError, ErrorFactory } from '../../errors'
+import { ErrorFactory } from '../../errors'
 
 /**
  * Base Database Service

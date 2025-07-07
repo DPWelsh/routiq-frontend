@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Calendar, Clock, Phone, Mail, MoreHorizontal, RefreshCw, User, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Calendar, Clock, Phone, Mail, MoreHorizontal, RefreshCw, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { BlurFade, NumberTicker } from '@/components/magicui'
 import { cn } from '@/lib/utils'
 
@@ -51,7 +51,7 @@ interface UpcomingAppointmentsProps {
 }
 
 export function UpcomingAppointments({ 
-  limit = 10, 
+  limit: _limit = 10, 
   showRefresh = true, 
   compact = false,
   onPatientClick,
@@ -82,7 +82,7 @@ export function UpcomingAppointments({
       setError(error instanceof Error ? error.message : 'Unknown error')
       setData(null)
     }
-  }, [limit])
+  }, [])
 
   const handleRefresh = async () => {
     if (refreshing || loading) return

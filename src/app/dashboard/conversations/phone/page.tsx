@@ -28,12 +28,14 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { ArrowLeft, Phone, Search, MessageCircle, Clock, User, Bot, Send, MoreVertical, ThumbsUp, ThumbsDown, TrendingUp, Award, Target, MessageSquare, Star, BarChart3 } from "lucide-react"
+import { ArrowLeft, Phone, Search, MessageCircle, Clock, User, Bot, Send, MoreVertical, ThumbsUp, ThumbsDown, TrendingUp, Award, Target, MessageSquare, Star, BarChart3, Calendar, FileText, AlertTriangle, CheckCircle, Activity, Zap, Users, Filter, Mail } from "lucide-react"
 import { LoadingSpinner } from "@/components/magicui"
 import { Separator } from "@/components/ui/separator"
 import Image from "next/image"
 import { useAuth } from '@clerk/nextjs'
 import { useConversationPerformance } from '@/hooks/useConversationPerformance'
+import { usePatientProfileByPhone, usePatientPerformanceMetrics } from '@/hooks/usePatientProfileByPhone'
+import type { PatientProfile } from '@/lib/routiq-api'
 
 /**
  * ⚠️  DO NOT MODIFY: These interfaces match the phone-centric API responses
@@ -101,6 +103,16 @@ function ConversationPerformancePanel({
     submitRating,
     updatePerformance 
   } = useConversationPerformance(conversation?.conversation_id)
+
+  // Get patient profile data by phone number
+  const { 
+    data: patientProfile, 
+    isLoading: patientLoading, 
+    error: patientError 
+  } = usePatientProfileByPhone(conversation?.phone || '')
+
+  // Get performance metrics from patient profile
+  const patientMetrics = usePatientPerformanceMetrics(patientProfile || null)
 
   // Initialize satisfaction score independently
   useEffect(() => {
@@ -179,55 +191,78 @@ function ConversationPerformancePanel({
     )
   }
 
-  // Calculate performance metrics from real data or use defaults
-  const performanceScore = performance?.overallPerformanceScore || Math.round(
-    // Fallback calculation based on message patterns
-    (conversation.total_messages > 15 ? 70 : 85) + // More messages = lower score (complexity)
-    (messages.filter(m => m.sender_type === 'user').length > 0 ? 10 : 0) + // User engagement
-    (messages.filter(m => m.sender_type === 'agent').length > 2 ? 5 : 0) // Bot responsiveness
-  )
+  // Use patient profile data for metrics, with fallback to conversation data
+  const performanceScore = patientProfile ? 
+    // Calculate score from patient engagement and risk factors
+    (patientMetrics.overallRating === 'good' ? 85 : 
+     patientMetrics.overallRating === 'ok' ? 70 : 55)
+    : 
+    // Fallback calculation if no patient data
+    Math.round(
+      (conversation.total_messages > 15 ? 70 : 85) + 
+      (messages.filter(m => m.sender_type === 'user').length > 0 ? 10 : 0) + 
+      (messages.filter(m => m.sender_type === 'agent').length > 2 ? 5 : 0)
+    )
 
-  const resolutionStatus = performance?.status || 
-    (conversation.total_messages > 10 ? "resolved" : "active")
+  const resolutionStatus = patientProfile ? 
+    patientMetrics.status : 
+    (performance?.status || (conversation.total_messages > 10 ? "resolved" : "active"))
 
   // Format status for display
   const formatStatusDisplay = (status: string) => {
     return status.charAt(0).toUpperCase() + status.slice(1).replace('-', ' ')
   }
 
-  // Convert satisfaction score to text rating - INDEPENDENT from user feedback
+  // Get overall rating from patient profile data
   const getOverallRating = () => {
-    console.log('🔍 Debug getOverallRating:', {
-      performance,
-      overallPerformanceScore: performance?.overallPerformanceScore,
-      hasPerformance: !!performance,
-      performanceKeys: performance ? Object.keys(performance) : null
-    })
+    if (patientProfile) {
+      // Use patient profile metrics for accurate rating
+      return patientMetrics.overallRating
+    }
     
-    // Use overallPerformanceScore (calculated separately) NOT satisfactionScore (user feedback)
+    // Fallback to performance data or conversation analysis
     let overallScore = performance?.overallPerformanceScore
     
-    // Fallback calculation if no overall score exists yet
     if (!overallScore && conversation) {
       // Temporary calculation based on conversation patterns
       overallScore = Math.round(
-        (conversation.total_messages > 15 ? 65 : 80) + // More messages = lower score (complexity)
-        (messages.filter(m => m.sender_type === 'user').length > 0 ? 10 : 0) + // User engagement
-        (messages.filter(m => m.sender_type === 'agent').length > 2 ? 5 : 0) // Bot responsiveness
+        (conversation.total_messages > 15 ? 65 : 80) + 
+        (messages.filter(m => m.sender_type === 'user').length > 0 ? 10 : 0) + 
+        (messages.filter(m => m.sender_type === 'agent').length > 2 ? 5 : 0)
       )
     }
     
     if (!overallScore) return 'unrated'
     
-    // Convert percentage-based score to rating
     if (overallScore >= 80) return 'good'
     if (overallScore >= 60) return 'ok'
-    return 'bad'
+    return 'poor'
   }
 
-  // Calculate dummy sentiment score based on conversation data
+  // Get sentiment from patient profile or fallback to conversation analysis
   const getSentimentInfo = () => {
-    // Dummy calculation based on message patterns and performance
+    // Use patient profile sentiment if available
+    if (patientProfile) {
+      const sentiment = patientMetrics.sentiment
+      const displaySentiment = sentiment.charAt(0).toUpperCase() + sentiment.slice(1)
+      let color = 'text-gray-600'
+      
+      switch (sentiment) {
+        case 'positive':
+          color = 'text-green-600'
+          break
+        case 'negative':
+          color = 'text-red-600'
+          break
+        case 'neutral':
+          color = 'text-gray-600'
+          break
+      }
+
+      return { sentiment: displaySentiment, color }
+    }
+
+    // Fallback: analyze conversation messages
     const messageCount = conversation.total_messages
     const hasPositiveKeywords = messages.some(m => 
       m.content?.toLowerCase().includes('thank') || 
@@ -240,7 +275,6 @@ function ConversationPerformancePanel({
       m.content?.toLowerCase().includes('bad')
     )
 
-    // Dummy sentiment logic
     let sentiment = 'Neutral'
     let color = 'text-gray-600'
     
@@ -337,22 +371,39 @@ function ConversationPerformancePanel({
     }
   }
 
-  // Get client satisfaction score for donut chart (1-10 scale) - INDEPENDENT from status
+  // Get client satisfaction from patient profile or user feedback
   const getClientSatisfaction = () => {
-    console.log('🔍 getClientSatisfaction using independent state:', {
-      clientSatisfactionScore,
-      performanceSatisfactionScore: performance?.satisfactionScore,
-      independent: true
-    })
-    
-    if (!clientSatisfactionScore) return { score: 0, text: 'unrated' }
-    
-    // Convert 1-5 scale to 1-10 scale and add text
+    // Priority 1: User-submitted satisfaction score (conversation-specific feedback)
+    if (clientSatisfactionScore) {
+      console.log('✅ Using conversation-specific satisfaction score:', clientSatisfactionScore)
     const scaledScore = clientSatisfactionScore * 2
     return { 
       score: scaledScore, 
       text: `${scaledScore}/10` 
     }
+    }
+    
+    // Priority 2: Patient profile overall rating (patient engagement score)
+    if (patientProfile && patientMetrics.overallRating !== 'unrated') {
+      console.log('✅ Using patient profile data:', {
+        patientName: patientProfile.patient_name,
+        phone: patientProfile.phone,
+        engagementLevel: patientProfile.engagement_level,
+        overallRating: patientMetrics.overallRating
+      })
+      const rating = patientMetrics.overallRating
+      if (rating === 'good') {
+        return { score: 8, text: 'good' }
+      } else if (rating === 'ok') {
+        return { score: 6, text: 'ok' }
+      } else if (rating === 'poor') {
+        return { score: 3, text: 'poor' }
+      }
+    }
+    
+    // Fallback: unrated
+    console.log('🔄 Using fallback data - no patient profile found for:', conversation?.phone)
+    return { score: 0, text: 'unrated' }
   }
 
   const satisfaction = getClientSatisfaction()
@@ -369,44 +420,291 @@ function ConversationPerformancePanel({
       {/* Header */}
       <div className="p-3 border-b border-routiq-cloud/30 flex-shrink-0">
         <div className="flex items-center gap-2">
-          <BarChart3 className="h-4 w-4 text-routiq-prompt" />
-          <h3 className="font-medium text-routiq-core text-sm">Performance</h3>
+          <Users className="h-4 w-4 text-routiq-prompt" />
+          <h3 className="font-medium text-routiq-core text-sm">Clinical Profile</h3>
         </div>
       </div>
 
-      {/* Performance Score - Scrollable Content */}
-      <div className="flex-1 overflow-y-auto min-h-0 p-3 space-y-3">
-        {performanceLoading ? (
-          <div className="text-center text-gray-500 text-sm">
-            Loading performance data...
+      {/* Patient Profile Content - Scrollable Container */}
+      <div className="flex-1 overflow-hidden min-h-0">
+        <div className="h-full overflow-y-auto p-3 space-y-4">
+        {(performanceLoading || patientLoading) ? (
+          <div className="text-center text-gray-500 text-sm py-8">
+            <Activity className="h-6 w-6 mx-auto mb-2 animate-pulse" />
+            Loading patient profile...
           </div>
-        ) : performanceError ? (
-          <div className="text-center text-red-500 text-sm">
-            Error loading performance data
+        ) : (performanceError || patientError) ? (
+          <div className="text-center text-red-500 text-sm py-8">
+            <AlertTriangle className="h-6 w-6 mx-auto mb-2" />
+            Error loading patient data
           </div>
         ) : (
           <>
-        <Card>
-          <CardContent className="p-3">
+            {/* Smart Patient Summary - Key Actionable Information */}
+            <Card className="border-routiq-prompt/30 bg-gradient-to-br from-routiq-prompt/5 to-routiq-energy/5">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <Zap className="h-4 w-4 text-routiq-prompt" />
+                  Smart Patient Summary
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Patient Score - Likelihood of Reengagement */}
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="h-4 w-4 text-routiq-prompt" />
+                      <span className="text-xs font-medium text-routiq-core">Patient Score</span>
+                    </div>
+                    <div className={`text-lg font-bold ${
+                      patientProfile?.engagement_level === 'highly_engaged' ? 'text-green-600' :
+                      patientProfile?.engagement_level === 'moderately_engaged' ? 'text-yellow-600' :
+                      patientProfile?.engagement_level === 'low_engagement' ? 'text-orange-600' :
+                      patientProfile?.engagement_level === 'disengaged' ? 'text-red-600' :
+                      'text-gray-600'
+                    }`}>
+                      {patientProfile?.engagement_level === 'highly_engaged' ? '85%' :
+                       patientProfile?.engagement_level === 'moderately_engaged' ? '65%' :
+                       patientProfile?.engagement_level === 'low_engagement' ? '40%' :
+                       patientProfile?.engagement_level === 'disengaged' ? '15%' :
+                       'N/A'
+                      }
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70">
+                      Likelihood of reengagement
+                    </p>
+                  </div>
+
+                  {/* Risk Flag */}
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30">
+                    <div className="flex items-center gap-2 mb-2">
+                      <AlertTriangle className="h-4 w-4 text-routiq-prompt" />
+                      <span className="text-xs font-medium text-routiq-core">Risk Flag</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${
+                        patientProfile?.churn_risk === 'critical' ? 'bg-red-500' :
+                        patientProfile?.churn_risk === 'high' ? 'bg-orange-500' :
+                        patientProfile?.churn_risk === 'medium' ? 'bg-yellow-500' :
+                        patientProfile?.churn_risk === 'low' ? 'bg-green-500' :
+                        patientProfile?.activity_status === 'inactive' ? 'bg-gray-500' :
+                        patientProfile?.total_appointment_count === 0 ? 'bg-blue-500' :
+                        'bg-gray-400'
+                      }`} />
+                      <span className="font-semibold text-sm">
+                        {patientProfile?.churn_risk === 'critical' ? 'Critical Risk' :
+                         patientProfile?.churn_risk === 'high' ? 'High Risk' :
+                         patientProfile?.churn_risk === 'medium' ? 'Medium Risk' :
+                         patientProfile?.churn_risk === 'low' ? 'Low Risk' :
+                         patientProfile?.activity_status === 'inactive' ? 'Dormant' :
+                         patientProfile?.total_appointment_count === 0 ? 'New' :
+                         'Unknown'
+                        }
+                      </span>
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70 mt-1">
+                      Current patient status
+                    </p>
+                  </div>
+                </div>
+
+                {/* Key Metrics Row */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30 text-center">
+                    <div className="text-lg font-bold text-green-600">
+                      ${patientProfile?.estimated_lifetime_value || 0}
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70">LTV</p>
+                  </div>
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30 text-center">
+                    <div className="text-lg font-bold text-routiq-core">
+                      {patientProfile?.total_appointment_count || 0}
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70">Appts</p>
+                  </div>
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30 text-center">
+                    <div className="text-lg font-bold text-routiq-prompt">
+                      {patientProfile?.upcoming_appointment_count || 0}
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/70">Upcoming</p>
+                  </div>
+                </div>
+
+                {/* High Level Notes */}
+                {patientProfile?.treatment_summary && (
+                  <div className="bg-white/80 p-3 rounded-lg border border-routiq-cloud/30">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FileText className="h-4 w-4 text-routiq-prompt" />
+                      <span className="text-xs font-medium text-routiq-core">Quick Notes</span>
+                    </div>
+                    <p className="text-xs text-routiq-blackberry/80 line-clamp-2">
+                      {patientProfile.treatment_summary}
+                    </p>
+                  </div>
+                )}
+
+                {/* Action Priority Indicator */}
+                {patientProfile && (
+                  <div className={`p-3 rounded-lg border-2 ${
+                    patientProfile.action_priority <= 2 
+                      ? 'bg-red-50 border-red-200' 
+                      : patientProfile.action_priority <= 3
+                      ? 'bg-yellow-50 border-yellow-200'
+                      : 'bg-green-50 border-green-200'
+                  }`}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className={`w-2 h-2 rounded-full ${
+                        patientProfile.action_priority <= 2 ? 'bg-red-500' :
+                        patientProfile.action_priority <= 3 ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`} />
+                      <span className="text-xs font-semibold">
+                        {patientProfile.action_priority <= 2 ? 'URGENT ACTION NEEDED' :
+                         patientProfile.action_priority <= 3 ? 'Follow-up Required' :
+                         'Continue Regular Care'
+                        }
+                      </span>
+                    </div>
+                    <p className="text-xs">
+                      {patientProfile.action_priority <= 2 
+                        ? "Patient at high risk - schedule immediate follow-up"
+                        : patientProfile.action_priority <= 3
+                        ? "Send appointment reminder within 48 hours"
+                        : "Patient engagement is healthy - maintain current schedule"
+                      }
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Patient Overview Card */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                    <User className="h-4 w-4" />
+                    Patient Overview
+                  </CardTitle>
+                  <Badge variant={patientProfile ? "default" : "secondary"} className="text-xs">
+                    {patientProfile ? "Verified" : "Unverified"}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                {/* Basic Info */}
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Name</span>
+                    <span className="font-medium text-routiq-core">{conversation.patient_name}</span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Phone</span>
+                    <span className="font-medium text-routiq-core">{conversation.phone}</span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Email</span>
+                    <span className="font-medium text-routiq-core text-xs break-all">
+                      {conversation.email || patientProfile?.email || 'Not provided'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Patient ID</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.cliniko_patient_id || conversation.patient_id || 'N/A'}
+                    </span>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Clinical Metrics */}
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Lifetime Value</span>
+                    <span className="font-bold text-green-600">
+                      ${patientProfile?.estimated_lifetime_value || 0}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Total Sessions</span>
+                    <span className="font-bold text-routiq-core">
+                      {patientProfile?.total_appointment_count || 0}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Recent Sessions</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.recent_appointment_count || 0} (90 days)
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-routiq-blackberry/60 block mb-1">Upcoming</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.upcoming_appointment_count || 0}
+                    </span>
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Timeline Info */}
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="text-routiq-blackberry/60">Last Appointment</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.last_appointment_date 
+                        ? new Date(patientProfile.last_appointment_date).toLocaleDateString()
+                        : 'None recorded'
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-routiq-blackberry/60">Last Contact</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.last_conversation_date 
+                        ? new Date(patientProfile.last_conversation_date).toLocaleDateString()
+                        : conversation.last_message_time
+                        ? new Date(conversation.last_message_time).toLocaleDateString()
+                        : 'Today'
+                      }
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-routiq-blackberry/60">Next Appointment</span>
+                    <span className="font-medium text-routiq-core">
+                      {patientProfile?.next_appointment_time 
+                        ? new Date(patientProfile.next_appointment_time).toLocaleDateString()
+                        : 'Not scheduled'
+                      }
+                    </span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Engagement & Risk Assessment */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <Activity className="h-4 w-4" />
+                  Clinical Assessment
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                {/* Engagement Score */}
             <div className="text-center">
-              {/* Compact Donut Chart */}
               <div className="relative inline-flex items-center justify-center">
-                <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 36 36">
-                  {/* Background circle */}
+                    <svg className="w-20 h-20 transform -rotate-90" viewBox="0 0 36 36">
                   <path
-                    d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831
-                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
                     className="text-routiq-cloud/40"
                   />
-                  {/* Progress circle */}
                   <path
-                    d="M18 2.0845
-                      a 15.9155 15.9155 0 0 1 0 31.831
-                      a 15.9155 15.9155 0 0 1 0 -31.831"
+                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                     fill="none"
                     stroke="currentColor"
                     strokeWidth="2"
@@ -414,55 +712,207 @@ function ConversationPerformancePanel({
                         className={getSatisfactionColor(satisfaction.score).replace('text-', 'text-')}
                   />
                 </svg>
-                {/* Center text */}
                 <div className="absolute inset-0 flex items-center justify-center">
                       <div className={`text-lg font-bold ${getSatisfactionColor(satisfaction.score)}`}>
                         {satisfaction.text}
                   </div>
                 </div>
               </div>
-                  <p className="text-xs text-routiq-blackberry/70 mt-2">Client Satisfaction</p>
+                  <p className="text-xs text-routiq-blackberry/70 mt-2">
+                    {patientProfile ? 'Patient Engagement' : 'Client Satisfaction'}
+                  </p>
             </div>
+
+                {/* Risk Indicators */}
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="bg-gray-50 p-2 rounded-lg">
+                    <span className="text-routiq-blackberry/60 block mb-1">Churn Risk</span>
+                    <div className="flex items-center gap-1">
+                      <div className={`w-2 h-2 rounded-full ${
+                        patientProfile?.churn_risk === 'critical' ? 'bg-red-500' :
+                        patientProfile?.churn_risk === 'high' ? 'bg-orange-500' :
+                        patientProfile?.churn_risk === 'medium' ? 'bg-yellow-500' :
+                        'bg-green-500'
+                      }`} />
+                      <span className="font-medium capitalize">
+                        {patientProfile?.churn_risk || 'Unknown'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="bg-gray-50 p-2 rounded-lg">
+                    <span className="text-routiq-blackberry/60 block mb-1">Activity Status</span>
+                    <div className="flex items-center gap-1">
+                      <div className={`w-2 h-2 rounded-full ${
+                        patientProfile?.activity_status === 'active' ? 'bg-green-500' :
+                        patientProfile?.activity_status === 'recently_active' ? 'bg-yellow-500' :
+                        'bg-gray-400'
+                      }`} />
+                      <span className="font-medium capitalize">
+                        {patientProfile?.activity_status?.replace('_', ' ') || 'Unknown'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Priority */}
+                {patientProfile && (
+                  <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Zap className="h-4 w-4 text-blue-600" />
+                      <span className="text-sm font-medium text-blue-900">Priority Action</span>
+                    </div>
+                    <p className="text-xs text-blue-800">
+                      {patientProfile.action_priority <= 2 
+                        ? "🔴 High Priority - Schedule follow-up appointment immediately"
+                        : patientProfile.action_priority <= 3
+                        ? "🟡 Medium Priority - Send appointment reminder within 48 hours"
+                        : "🟢 Low Priority - Continue regular engagement schedule"
+                      }
+                    </p>
+                  </div>
+                )}
           </CardContent>
         </Card>
 
-        {/* Key Metrics */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
-            <div className="flex items-center gap-2">
-              <Target className="h-3 w-3 text-routiq-blackberry/60" />
-              <span className="text-xs text-routiq-core">Status</span>
+            {/* Communication History */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <MessageCircle className="h-4 w-4" />
+                  Communication History
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                <div className="grid grid-cols-3 gap-2 text-xs">
+                  <div className="text-center bg-gray-50 p-2 rounded-lg">
+                    <div className="font-bold text-routiq-core">
+                      {patientProfile?.total_conversations || conversation.total_messages || 0}
             </div>
-            <Select value={resolutionStatus} onValueChange={handleStatusChange}>
-              <SelectTrigger className="w-44 h-6 text-xs border-gray-300 bg-white hover:bg-gray-50 text-gray-700 focus:text-gray-700">
-                <SelectValue>{formatStatusDisplay(resolutionStatus)}</SelectValue>
-              </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg min-w-44">
-                <SelectItem value="open" className="text-gray-700 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800">Open</SelectItem>
-                <SelectItem value="requires-follow-up" className="text-gray-700 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800">Requires Follow-up</SelectItem>
-                <SelectItem value="resolved" className="text-gray-700 hover:bg-gray-100 hover:text-gray-800 focus:bg-gray-100 focus:text-gray-800">Resolved</SelectItem>
-              </SelectContent>
-            </Select>
+                    <div className="text-routiq-blackberry/60">Total Chats</div>
+                  </div>
+                  <div className="text-center bg-gray-50 p-2 rounded-lg">
+                    <div className="font-bold text-routiq-core">
+                      {patientProfile?.total_outreach_attempts || 0}
+                    </div>
+                    <div className="text-routiq-blackberry/60">Outreach</div>
+                  </div>
+                  <div className="text-center bg-gray-50 p-2 rounded-lg">
+                    <div className="font-bold text-green-600">
+                      {patientProfile?.outreach_success_rate 
+                        ? `${(patientProfile.outreach_success_rate * 100).toFixed(0)}%`
+                        : 'N/A'
+                      }
+                    </div>
+                    <div className="text-routiq-blackberry/60">Success Rate</div>
+                  </div>
           </div>
 
-          {/* Sentiment Score - Always show with dummy value for now */}
-          <div className="flex items-center justify-between p-2 bg-gray-50 rounded-lg border border-gray-100">
-            <div className="flex items-center gap-2">
-              <Star className="h-3 w-3 text-routiq-blackberry/60" />
-              <span className="text-xs text-routiq-core">Sentiment</span>
+                {/* Recent Communication */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-routiq-blackberry/60">Current Conversation</span>
+                    <Badge variant="outline" className="text-xs">
+                      {conversation.conversation_source || 'WhatsApp'}
+                    </Badge>
             </div>
-            <span className={`text-xs font-medium ${sentimentInfo.color}`}>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-routiq-blackberry/60">Messages</span>
+                    <span className="font-medium">{conversation.total_messages}</span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-routiq-blackberry/60">Sentiment</span>
+                    <span className={`font-medium ${sentimentInfo.color}`}>
               {sentimentInfo.sentiment}
             </span>
           </div>
         </div>
+              </CardContent>
+            </Card>
 
-        <Separator />
+            {/* Smart Notes & Treatment Summary */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Clinical Notes
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
+                {/* Treatment Summary */}
+                {patientProfile?.treatment_summary && (
+                  <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                    <div className="text-xs font-medium text-blue-900 mb-1">Treatment Summary</div>
+                    <p className="text-xs text-blue-800">{patientProfile.treatment_summary}</p>
+                  </div>
+                )}
 
-        {/* Rating Section */}
-        <div className="space-y-2">
-          <h4 className="font-medium text-routiq-core text-sm">Rate this conversation</h4>
-          
+                {/* Latest Treatment Note */}
+                {patientProfile?.last_treatment_note && (
+                  <div className="bg-green-50 p-3 rounded-lg border border-green-200">
+                    <div className="text-xs font-medium text-green-900 mb-1">Latest Note</div>
+                    <p className="text-xs text-green-800">{patientProfile.last_treatment_note}</p>
+                  </div>
+                )}
+
+                {/* Smart Conversation Insights */}
+                <div className="bg-purple-50 p-3 rounded-lg border border-purple-200">
+                  <div className="text-xs font-medium text-purple-900 mb-2 flex items-center gap-1">
+                    <Zap className="h-3 w-3" />
+                    Conversation Insights
+                  </div>
+                  {messages.length > 0 ? (
+                    <div className="space-y-1 text-xs text-purple-800">
+                      {messages.some(m => m.content?.toLowerCase().includes('pain')) && (
+                        <p>• Mentioned pain in recent conversation</p>
+                      )}
+                      {messages.some(m => m.content?.toLowerCase().includes('appointment')) && (
+                        <p>• Discussed appointment scheduling</p>
+                      )}
+                      {messages.some(m => m.content?.toLowerCase().includes('cancel')) && (
+                        <p>• ⚠️ Mentioned cancellation concerns</p>
+                      )}
+                      {messages.some(m => m.content?.toLowerCase().includes('better') || m.content?.toLowerCase().includes('improve')) && (
+                        <p>• ✅ Reported improvement in condition</p>
+                      )}
+                      {messages.length === 0 && <p>No recent conversation insights available</p>}
+                    </div>
+                  ) : (
+                    <p className="text-xs text-purple-600">No conversation data to analyze</p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Actions */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core flex items-center gap-2">
+                  <CheckCircle className="h-4 w-4" />
+                  Quick Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-2">
+                <Button size="sm" className="w-full h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white">
+                  <Calendar className="h-3 w-3 mr-1" />
+                  Schedule Follow-up
+                </Button>
+                <Button size="sm" variant="outline" className="w-full h-8 text-xs">
+                  <FileText className="h-3 w-3 mr-1" />
+                  Add Treatment Note
+                </Button>
+                <Button size="sm" variant="outline" className="w-full h-8 text-xs">
+                  <Phone className="h-3 w-3 mr-1" />
+                  Call Patient
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Conversation Rating */}
+            <Card className="border-routiq-cloud/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium text-routiq-core">Rate this conversation</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-0 space-y-3">
           <div className="flex gap-2">
             <Button
               size="sm"
@@ -501,7 +951,7 @@ function ConversationPerformancePanel({
             </Button>
           </div>
 
-              {/* Conditional feedback box - show when rating is selected OR existing feedback exists */}
+                {/* Feedback Section */}
               {((showFeedback && rating) || (rating && feedback)) && (
           <div className="space-y-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
             <textarea
@@ -509,20 +959,20 @@ function ConversationPerformancePanel({
               onChange={(e) => setFeedback(e.target.value)}
               placeholder={
                 rating === 'negative' 
-                  ? "Describe any issues, errors, or problems with the AI bot's responses..."
+                          ? "Describe any issues with the conversation or patient interaction..."
                   : rating === 'neutral'
-                  ? "Share any thoughts or suggestions about this conversation..."
+                          ? "Share feedback about this patient interaction..."
                   : rating === 'positive'
-                  ? "Share your feedback to help improve our AI bot..."
+                          ? "What went well in this conversation?..."
                   : "Rate the conversation and share your thoughts..."
               }
-              className="w-full p-3 text-sm border border-gray-300 rounded-md resize-none h-24 focus:outline-none focus:ring-2 focus:ring-gray-400/30 focus:border-gray-400 bg-white"
+                      className="w-full p-3 text-sm border border-gray-300 rounded-md resize-none h-20 focus:outline-none focus:ring-2 focus:ring-blue-400/30 focus:border-blue-400 bg-white"
             />
             <div className="flex gap-2">
               <Button 
                 size="sm" 
                 onClick={submitFeedback} 
-                className="flex-1 h-8 text-xs bg-gray-600 hover:bg-gray-700 text-white border-0"
+                        className="flex-1 h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white border-0"
                       disabled={!rating}
               >
                 Submit Feedback
@@ -541,9 +991,11 @@ function ConversationPerformancePanel({
             </div>
           </div>
               )}
-        </div>
+              </CardContent>
+            </Card>
           </>
         )}
+        </div>
       </div>
     </div>
   )
@@ -562,6 +1014,7 @@ export default function PhoneChatPage() {
   const [chatLoading, setChatLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [sourceFilter, setSourceFilter] = useState<'all' | 'whatsapp' | 'instagram'>('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'needs-followup' | 'unread'>('all')
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -761,6 +1214,29 @@ export default function PhoneChatPage() {
       .slice(0, 2)
   }
 
+  // Helper function to determine conversation status
+  const getConversationStatus = (conversation: PhoneConversation): string[] => {
+    const statuses: string[] = []
+    
+    // Mock logic for demonstration - in real implementation, this would be based on actual data
+    const lastMessageTime = new Date(conversation.last_message_time || conversation.latest_conversation_date || '')
+    const hoursSinceLastMessage = (Date.now() - lastMessageTime.getTime()) / (1000 * 60 * 60)
+    
+    // Needs follow-up: last message was from patient more than 4 hours ago
+    if (conversation.last_message_sender === 'user' && hoursSinceLastMessage > 4) {
+      statuses.push('needs-followup')
+    }
+    
+    // Unread: patient sent a message and we haven't responded (mock logic)
+    if (conversation.last_message_sender === 'user' && hoursSinceLastMessage < 1) {
+      statuses.push('unread')
+    }
+    
+
+    
+    return statuses
+  }
+
   const filteredConversations = conversations.filter(conv => {
     const searchLower = searchTerm.toLowerCase()
     const matchesSearch = (
@@ -771,7 +1247,11 @@ export default function PhoneChatPage() {
     
     const matchesSource = sourceFilter === 'all' || conv.conversation_source === sourceFilter
     
-    return matchesSearch && matchesSource
+    // Status filter logic
+    const conversationStatuses = getConversationStatus(conv)
+    const matchesStatus = statusFilter === 'all' || conversationStatuses.includes(statusFilter)
+    
+    return matchesSearch && matchesSource && matchesStatus
   })
 
   // Only log when conversations change, not on every render
@@ -801,6 +1281,137 @@ export default function PhoneChatPage() {
         return 'bg-gray-200/80 text-gray-800 mr-auto max-w-[70%] rounded-r-2xl rounded-tl-2xl rounded-bl-md'
     }
   }
+
+  // Add test mode for demonstrating patient profile integration with working API
+  const testPatientIntegration = () => {
+    console.log('🧪 Test mode: Creating conversation with Teresa Theiss (real patient data)')
+    
+    // Create a mock conversation with Teresa Theiss's actual phone number
+    const testConversation: PhoneConversation = {
+      phone: '6281935454615', // Teresa Theiss's actual phone number from database
+      patient_name: 'Teresa Theiss',
+      email: 'teresa.theiss@gmx.de',
+      conversation_id: 'test_teresa_001',
+      conversation_source: 'whatsapp',
+      total_messages: 6,
+      last_message_time: new Date().toISOString(),
+      last_message_content: 'Thank you for the appointment reminder!',
+      last_message_sender: 'user'
+    }
+
+    const testMessages: PhoneMessage[] = [
+      {
+        id: 1,
+        content: 'Hi, I wanted to confirm my upcoming appointment next week',
+        sender_type: 'user',
+        timestamp: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+        metadata: {},
+        external_id: 'test_msg_1'
+      },
+      {
+        id: 2,
+        content: 'Hello Teresa! Yes, you have an appointment scheduled for July 1st at 6:15 AM. Would you like me to confirm the details?',
+        sender_type: 'agent',
+        timestamp: new Date(Date.now() - 3000000).toISOString(), // 50 min ago
+        metadata: {},
+        external_id: 'test_msg_2'
+      },
+      {
+        id: 3,
+        content: 'Perfect, that works for me. Is there anything I need to prepare?',
+        sender_type: 'user',
+        timestamp: new Date(Date.now() - 2400000).toISOString(), // 40 min ago
+        metadata: {},
+        external_id: 'test_msg_3'
+      },
+      {
+        id: 4,
+        content: 'Just bring your usual items and arrive 10 minutes early. We\'ll take care of the rest!',
+        sender_type: 'agent',
+        timestamp: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
+        metadata: {},
+        external_id: 'test_msg_4'
+      },
+      {
+        id: 5,
+        content: 'Thank you for the reminder and the help!',
+        sender_type: 'user',
+        timestamp: new Date(Date.now() - 600000).toISOString(), // 10 min ago
+        metadata: {},
+        external_id: 'test_msg_5'
+      },
+      {
+        id: 6,
+        content: 'You\'re welcome, Teresa! See you next week.',
+        sender_type: 'agent',
+        timestamp: new Date().toISOString(),
+        metadata: {},
+        external_id: 'test_msg_6'
+      }
+    ]
+
+    console.log('🧪 Test conversation details:', {
+      phone: testConversation.phone,
+      patientName: testConversation.patient_name,
+      messageCount: testMessages.length,
+      expectedProfile: 'Teresa Theiss - disengaged, low risk, $750 LTV'
+    })
+
+    // Update state with test data
+    setSelectedChat({
+      conversation: testConversation,
+      messages: testMessages
+    })
+    setLoading(false)
+    
+    console.log('✅ Test conversation loaded - check performance panel for patient profile data')
+  }
+
+  // Add API test function
+  const testAPIDirectly = async () => {
+    console.log('🧪 Testing Patient Profiles API directly from browser...')
+    
+    try {
+      const response = await fetch(
+        'https://routiq-backend-prod.up.railway.app/api/v1/reengagement/org_2xwHiNrj68eaRUlX10anlXGvzX7/patient-profiles?search=6281935454615&limit=5',
+        {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        }
+      )
+      
+      console.log('📡 Direct API test response status:', response.status)
+      
+      if (response.ok) {
+        const data = await response.json()
+        console.log('✅ Direct API test successful:', {
+          success: data.success,
+          count: data.count,
+          profilesFound: data.patient_profiles?.length || 0
+        })
+        
+        if (data.patient_profiles && data.patient_profiles.length > 0) {
+          const teresa = data.patient_profiles.find((p: PatientProfile) => p.phone === '6281935454615')
+          if (teresa) {
+            console.log('✅ Found Teresa in direct API test:', {
+              name: teresa.patient_name,
+              phone: teresa.phone,
+              engagement: teresa.engagement_level,
+              risk: teresa.churn_risk,
+              ltv: teresa.estimated_lifetime_value
+            })
+          }
+        }
+      } else {
+        console.log('❌ Direct API test failed:', response.status, response.statusText)
+      }
+    } catch (error) {
+      console.error('❌ Direct API test error:', error)
+    }
+  }
+
+  // Add test button to the UI (only in development)
+  const isDevelopment = process.env.NODE_ENV === 'development'
 
   if (loading) {
     return (
@@ -844,51 +1455,105 @@ export default function PhoneChatPage() {
   }
 
   return (
-    <div className="h-full flex overflow-hidden">
+    <div className="flex overflow-hidden" style={{ height: 'calc(100vh - 80px)' }}>
       {/* Sidebar - Conversation List */}
-      <div className="w-80 bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
+      <div className="w-96 bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
         {/* Header */}
         <div className="p-3 border-b border-routiq-cloud/30 flex-shrink-0">
           <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-lg font-semibold text-routiq-core">Conversations</h1>
+            <h1 className="text-lg font-semibold text-routiq-core">Inbox</h1>
             <span className="text-xs text-routiq-blackberry/60 bg-routiq-cloud/20 px-2 py-1 rounded-full">
               {filteredConversations.length} of {conversations.length}
             </span>
+            {isDevelopment && (
+              <Button 
+                onClick={testPatientIntegration} 
+                variant="outline" 
+                size="sm" 
+                className="text-xs h-6 px-2 ml-auto"
+                title="Test Patient Integration"
+              >
+                🧪
+              </Button>
+            )}
           </div>
           
           {/* Source Filter Buttons */}
-          <div className="flex gap-1 mb-3">
-            <Button
-              variant={sourceFilter === 'all' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSourceFilter('all')}
-              className="text-xs h-7"
-            >
-              All ({conversations.length})
-            </Button>
-            <Button
-              variant={sourceFilter === 'whatsapp' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSourceFilter('whatsapp')}
-              className="text-xs h-7"
-            >
-              WhatsApp ({conversations.filter(c => c.conversation_source === 'whatsapp').length})
-            </Button>
-            <Button
-              variant={sourceFilter === 'instagram' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setSourceFilter('instagram')}
-              className="text-xs h-7"
-            >
-              Instagram ({conversations.filter(c => c.conversation_source === 'instagram').length})
-            </Button>
+          <div className="mb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <MessageCircle className="h-3 w-3 text-routiq-blackberry/50" />
+              <span className="text-xs text-routiq-blackberry/60 font-medium">Platform</span>
+            </div>
+            <div className="flex gap-1 flex-wrap">
+              <Button
+                variant={sourceFilter === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSourceFilter('all')}
+                className="text-xs h-7"
+              >
+                All ({conversations.length})
+              </Button>
+              <Button
+                variant={sourceFilter === 'whatsapp' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSourceFilter('whatsapp')}
+                className="text-xs h-7"
+              >
+                WhatsApp ({conversations.filter(c => c.conversation_source === 'whatsapp').length})
+              </Button>
+              <Button
+                variant={sourceFilter === 'instagram' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSourceFilter('instagram')}
+                className="text-xs h-7"
+              >
+                Instagram ({conversations.filter(c => c.conversation_source === 'instagram').length})
+              </Button>
+            </div>
+          </div>
+          
+          {/* Status Filter Buttons */}
+          <div className="mb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Filter className="h-3 w-3 text-routiq-blackberry/50" />
+              <span className="text-xs text-routiq-blackberry/60 font-medium">Status</span>
+            </div>
+            <div className="flex gap-1 flex-wrap">
+              <Button
+                variant={statusFilter === 'all' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('all')}
+                className="text-xs h-7"
+              >
+                All
+              </Button>
+              <Button
+                variant={statusFilter === 'needs-followup' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('needs-followup')}
+                className="text-xs h-7 gap-1"
+              >
+                <Clock className="h-3 w-3" />
+                Follow-up ({conversations.filter(c => getConversationStatus(c).includes('needs-followup')).length})
+              </Button>
+              <Button
+                variant={statusFilter === 'unread' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setStatusFilter('unread')}
+                className="text-xs h-7 gap-1"
+              >
+                <Mail className="h-3 w-3" />
+                Unread ({conversations.filter(c => getConversationStatus(c).includes('unread')).length})
+              </Button>
+
+            </div>
           </div>
           
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-routiq-blackberry/50 h-4 w-4" />
             <Input
-              placeholder="Search conversations..."
+              placeholder="Search inbox..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="pl-10 bg-gray-100 border-gray-200 rounded-full"
@@ -896,8 +1561,8 @@ export default function PhoneChatPage() {
           </div>
         </div>
 
-        {/* Conversation List - Fixed height with internal scroll */}
-        <div className="overflow-y-auto" style={{ height: 'calc(100vh - 240px)' }}>
+        {/* Conversation List - Scrollable */}
+        <div className="flex-1 overflow-y-auto min-h-0">
           {filteredConversations.map((conversation) => (
             <div
               key={conversation.phone}
@@ -941,6 +1606,27 @@ export default function PhoneChatPage() {
                     </p>
                     </div>
                     <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+                      {/* Status Indicators */}
+                      {getConversationStatus(conversation).includes('needs-followup') && (
+                        <Badge 
+                          variant="outline" 
+                          className="text-xs h-4 px-1 bg-yellow-50 text-yellow-700 border-yellow-200"
+                          title="Needs follow-up"
+                        >
+                          ⚠️
+                        </Badge>
+                      )}
+                      {getConversationStatus(conversation).includes('unread') && (
+                        <Badge 
+                          variant="outline" 
+                          className="text-xs h-4 px-1 bg-red-50 text-red-700 border-red-200"
+                          title="Unread"
+                        >
+                          🔴
+                        </Badge>
+                      )}
+
+                      
                       {/* Platform Badge */}
                       <Badge 
                         variant="outline" 
@@ -1023,7 +1709,7 @@ export default function PhoneChatPage() {
             </div>
 
             {/* Messages Area */}
-            <div className="overflow-y-auto p-3 bg-routiq-cloud/5" style={{ height: 'calc(100vh - 220px)' }}>
+            <div className="flex-1 overflow-y-auto p-3 bg-routiq-cloud/5 min-h-0">
               {chatLoading ? (
                 <div className="flex items-center justify-center h-full">
                   <LoadingSpinner text="Loading messages..." />
@@ -1098,7 +1784,7 @@ export default function PhoneChatPage() {
 
       {/* Performance Panel */}
       {selectedChat && selectedChat.conversation && (
-        <div className="w-80 bg-white border-l border-routiq-cloud/30 flex flex-col">
+        <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
           <ConversationPerformancePanel 
             conversation={selectedChat.conversation}
             messages={selectedChat.messages}

@@ -12,8 +12,6 @@ type SyncResponse = SyncTriggerResponse
  * Implements the architecture's smart caching and refresh strategy
  */
 export function useDashboardData(organizationId: string | null) {
-  const queryClient = useQueryClient()
-
   // Single API call to get all dashboard data - direct to backend via RoutiqAPI
   const getDashboardData = useCallback(async (): Promise<DashboardResponse | null> => {
     console.log('useDashboardData: getDashboardData called with organizationId:', organizationId)

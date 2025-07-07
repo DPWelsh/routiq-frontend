@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useClerkOrganization } from '@/hooks/useClerkOrganization'
-import { RoutiqAPI } from '@/lib/routiq-api'
 
 export interface ClientOrganizationContext {
   organizationId: string
@@ -92,8 +91,10 @@ export function useOrganizationContext(): UseOrganizationContextResult {
 
   // Fetch organization context when Clerk data is available
   useEffect(() => {
-    fetchOrganizationContext()
-  }, [fetchOrganizationContext])
+    if (!isClerkLoading && user && clerkOrgId) {
+      fetchOrganizationContext()
+    }
+  }, [isClerkLoading, user, clerkOrgId, fetchOrganizationContext])
 
   // Computed values for convenience
   const organizationId = organizationContext?.organizationId || null
