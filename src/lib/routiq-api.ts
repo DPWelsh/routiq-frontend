@@ -3,8 +3,10 @@
  * Integrates with Routiq Backend Production API
  */
 
-// Production backend URL
-const API_BASE = 'https://routiq-backend-prod.up.railway.app';
+// API base URL - use local routes in development to avoid CORS issues
+const API_BASE = process.env.NODE_ENV === 'development' 
+  ? 'http://localhost:3000/api'  // Use local API routes
+  : 'https://routiq-backend-prod.up.railway.app';
 
 // Type declaration for Clerk global
 declare global {
@@ -409,6 +411,10 @@ export class RoutiqAPI {
       completed_at: string;
     }>;
   }> {
+    // Use local API route in development to avoid CORS issues
+    if (process.env.NODE_ENV === 'development') {
+      return this.request(`/dashboard/stats-v2`);
+    }
     return this.request(`/api/v1/dashboard/${organizationId}`);
   }
 
