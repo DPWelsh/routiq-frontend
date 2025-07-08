@@ -15,6 +15,7 @@ import { RoutiqAPI } from "@/lib/routiq-api"
 import { 
   BarChart3, 
   MessageSquare,
+  Mail,
   TrendingUp,
   Settings,
   HelpCircle
@@ -47,14 +48,22 @@ const navigation = [
   },
   { 
     name: "Inbox", 
-    href: "/dashboard/conversations/phone", 
-    icon: MessageSquare, 
+    href: "/dashboard/inbox", 
+    icon: Mail, 
     roles: ["ADMIN", "USER"],
-    description: "Unified messaging center",
+    description: "Traditional message inbox",
     badge: null
   },
   { 
-    name: "Patient Insights", 
+    name: "Engagement Centre", 
+    href: "/dashboard/conversations", 
+    icon: MessageSquare, 
+    roles: ["ADMIN", "USER"],
+    description: "Smart patient communication analytics",
+    badge: null
+  },
+  { 
+    name: "Patient Overview", 
     href: "/dashboard/patient-insights", 
     icon: TrendingUp, 
     roles: ["ADMIN", "USER"],
@@ -99,13 +108,13 @@ function ResponsiveDashboardNav() {
             label: "0"
           },
           activePatients: {
-            total: dashboardData.summary.active_patients,
-            label: dashboardData.summary.active_patients.toString()
+            total: dashboardData?.summary?.active_patients || 0,
+            label: (dashboardData?.summary?.active_patients || 0).toString()
           },
           messages: {
             total: 0 // No message data yet
           },
-          lastUpdated: dashboardData.summary.last_sync_time
+          lastUpdated: dashboardData?.summary?.last_sync_time || new Date().toISOString()
         }
         
         setStats(transformedStats)
@@ -179,7 +188,7 @@ function ResponsiveDashboardNav() {
         <div className="space-y-1">
           {navigation
             .filter(item => item.roles.includes(userRole))
-            .filter(item => !["Inbox"].includes(item.name)) // Hide Inbox from mobile
+            .filter(item => !["Engagement Centre", "Inbox"].includes(item.name)) // Hide messaging features from mobile
             .map((item) => {
               const isActive = pathname === item.href || 
                 (item.href !== "/dashboard" && pathname.startsWith(item.href))

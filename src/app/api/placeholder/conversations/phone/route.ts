@@ -108,8 +108,10 @@ export async function GET(request: NextRequest) {
       
       return NextResponse.json({
         success: true,
-        conversation: conversationDetail,
-        messages: messages
+        data: {
+          conversation: conversationDetail,
+          messages: messages
+        }
       })
     }
     

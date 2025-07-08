@@ -154,6 +154,43 @@ select:focus {
   .border-routiq-energy { border-color: rgb(var(--routiq-energy)); }
   .border-routiq-prompt { border-color: rgb(var(--routiq-prompt)); }
   .border-routiq-cloud { border-color: rgb(var(--routiq-cloud)); }
+  
+  /* Stripe-style utilities */
+  .stripe-card {
+    @apply bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 ease-in-out;
+  }
+  
+  .stripe-card-header {
+    @apply px-6 py-4 border-b border-gray-200;
+  }
+  
+  .stripe-card-content {
+    @apply px-6 py-4;
+  }
+  
+  .stripe-metric-card {
+    @apply bg-white border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow duration-200 ease-in-out;
+  }
+  
+  .stripe-button {
+    @apply inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background;
+  }
+  
+  .stripe-button-primary {
+    @apply bg-routiq-cloud text-white hover:bg-routiq-cloud/90;
+  }
+  
+  .stripe-button-secondary {
+    @apply bg-gray-100 text-gray-900 hover:bg-gray-200;
+  }
+  
+  .stripe-text-muted {
+    @apply text-gray-500;
+  }
+  
+  .stripe-text-primary {
+    @apply text-gray-900;
+  }
 }
 
 /* Magic UI Animations */

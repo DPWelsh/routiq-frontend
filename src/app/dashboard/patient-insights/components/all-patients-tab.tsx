@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Badge } from "@/components/ui/badge"
 import { 
   Search,
   Filter,
@@ -17,39 +18,42 @@ import {
   Download,
   Plus,
   TrendingUp,
-  Target,
   Play,
   Pause,
   AlertCircle,
   CheckCircle,
   Clock,
-  ArrowRight
+  ArrowRight,
+  Star,
+  UserX,
+  CalendarX,
+  ShieldAlert,
+  CircleDollarSign,
+  UserCheck,
+  Crown,
+  Zap,
+  Target,
+  Heart,
+  MessageCircle
 } from 'lucide-react'
 
 interface AllPatientsTabProps {
   searchTerm: string
 }
 
-interface AutomationState {
-  currentSequence: string
-  currentStage: string
-  progress: number
-  nextAction: string
-  nextActionDate: string
-  automationStatus: 'active' | 'paused' | 'priority' | 'completed'
-}
+type FilterType = 'all' | 'at-risk' | 'high-ltv' | 'no-shows' | 'dormant' | 'vips' | 'top-opportunities'
 
 /**
- * All Patients Tab - PI-002: Patient Data Table Infrastructure
+ * Patient Overview - Comprehensive Patient Database
  * 
- * Features:
- * - Searchable table with Name, Phone, Email search
- * - Sortable columns: Name, LTV, Avg. Spend, Sessions, Last Appt, Status
- * - Status indicators: Active (green), Dormant (yellow), At-Risk (red)
- * - Pagination and real-time updates
+ * Structure:
+ * 1. Search & Filters (Top Bar) - Universal search + Quick filters
+ * 2. Summary KPIs (Strip Below Search) - Clickable visual filters
+ * 3. Patient Database Table - Core patient data with specific columns
  */
 export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
   const [tableSearchTerm, setTableSearchTerm] = useState(searchTerm || '')
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all')
   const [sortBy, setSortBy] = useState<string>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [currentPage, setCurrentPage] = useState(1)
@@ -63,19 +67,20 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       phone: '+61 423 567 890',
       email: 'sarah.johnson@email.com',
       ltv: 2450,
-      avgSpend: 180,
       totalSessions: 14,
       lastAppointment: '2024-01-15',
       lastContacted: '2024-01-20',
       noShows: 1,
       status: 'Active',
-      automationState: {
-        currentSequence: 'Routine Care Maintenance',
-        currentStage: 'Follow-up Scheduled',
+      riskLevel: 'low',
+      isVip: false,
+      automation: {
+        title: 'Routine Care',
+        description: 'Follow-up Scheduled',
         progress: 75,
+        automationStatus: 'Active',
         nextAction: 'Appointment Reminder',
-        nextActionDate: '2024-01-28',
-        automationStatus: 'active'
+        nextDate: '28/01/2024'
       }
     },
     {
@@ -83,20 +88,21 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       name: 'Michael Chen',
       phone: '+61 456 789 123',
       email: 'michael.chen@email.com',
-      ltv: 1850,
-      avgSpend: 165,
-      totalSessions: 11,
-      lastAppointment: '2023-12-08',
-      lastContacted: '2024-01-10',
+      ltv: 4850,
+      totalSessions: 23,
+      lastAppointment: '2024-01-12',
+      lastContacted: '2024-01-18',
       noShows: 0,
-      status: 'Dormant',
-      automationState: {
-        currentSequence: 'Reengagement Campaign',
-        currentStage: 'Email Sent - Awaiting Response',
-        progress: 40,
-        nextAction: 'SMS Follow-up',
-        nextActionDate: '2024-01-25',
-        automationStatus: 'active'
+      status: 'Active',
+      riskLevel: 'low',
+      isVip: true,
+      automation: {
+        title: 'VIP Care Journey',
+        description: 'Satisfaction Survey Sent',
+        progress: 90,
+        automationStatus: 'Active',
+        nextAction: 'Loyalty Program Invite',
+        nextDate: '30/01/2024'
       }
     },
     {
@@ -105,19 +111,20 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       phone: '+61 789 123 456',
       email: 'emma.wilson@email.com',
       ltv: 890,
-      avgSpend: 145,
       totalSessions: 6,
       lastAppointment: '2023-11-22',
       lastContacted: '2023-12-15',
       noShows: 3,
       status: 'At-Risk',
-      automationState: {
-        currentSequence: 'High-Risk Intervention',
-        currentStage: 'Phone Call Scheduled',
+      riskLevel: 'high',
+      isVip: false,
+      automation: {
+        title: 'High-Risk Intervention',
+        description: 'Phone Call Scheduled',
         progress: 60,
+        automationStatus: 'Priority',
         nextAction: 'Personal Outreach Call',
-        nextActionDate: '2024-01-24',
-        automationStatus: 'priority'
+        nextDate: '24/01/2024'
       }
     },
     {
@@ -126,19 +133,20 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       phone: '+61 321 654 987',
       email: 'james.rodriguez@email.com',
       ltv: 3200,
-      avgSpend: 200,
       totalSessions: 16,
       lastAppointment: '2024-01-18',
       lastContacted: '2024-01-22',
       noShows: 0,
       status: 'Active',
-      automationState: {
-        currentSequence: 'VIP Care Journey',
-        currentStage: 'Satisfaction Survey Sent',
-        progress: 90,
-        nextAction: 'Loyalty Program Invite',
-        nextActionDate: '2024-01-30',
-        automationStatus: 'active'
+      riskLevel: 'low',
+      isVip: true,
+      automation: {
+        title: 'VIP Care Journey',
+        description: 'Premium Service Review',
+        progress: 85,
+        automationStatus: 'Active',
+        nextAction: 'Concierge Check-in',
+        nextDate: '26/01/2024'
       }
     },
     {
@@ -147,131 +155,164 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       phone: '+61 654 987 321',
       email: 'lisa.thompson@email.com',
       ltv: 1340,
-      avgSpend: 155,
       totalSessions: 9,
       lastAppointment: '2023-10-30',
       lastContacted: '2023-11-28',
       noShows: 2,
+      status: 'Dormant',
+      riskLevel: 'medium',
+      isVip: false,
+      automation: {
+        title: 'Reengagement Campaign',
+        description: 'Email Sent - Awaiting Response',
+        progress: 40,
+        automationStatus: 'Active',
+        nextAction: 'SMS Follow-up',
+        nextDate: '25/01/2024'
+      }
+    },
+    {
+      id: '6',
+      name: 'David Kim',
+      phone: '+61 987 654 321',
+      email: 'david.kim@email.com',
+      ltv: 5600,
+      totalSessions: 28,
+      lastAppointment: '2024-01-20',
+      lastContacted: '2024-01-21',
+      noShows: 0,
+      status: 'Active',
+      riskLevel: 'low',
+      isVip: true,
+      automation: {
+        title: 'VIP Care Journey',
+        description: 'Wellness Program Enrollment',
+        progress: 95,
+        automationStatus: 'Active',
+        nextAction: 'Health Assessment',
+        nextDate: '29/01/2024'
+      }
+    },
+    {
+      id: '7',
+      name: 'Anna Martinez',
+      phone: '+61 234 567 890',
+      email: 'anna.martinez@email.com',
+      ltv: 720,
+      totalSessions: 4,
+      lastAppointment: '2023-09-15',
+      lastContacted: '2023-10-01',
+      noShows: 4,
       status: 'At-Risk',
-      automationState: {
-        currentSequence: 'Win-Back Campaign',
-        currentStage: 'Paused - No Response',
+      riskLevel: 'high',
+      isVip: false,
+      automation: {
+        title: 'High-Risk Intervention',
+        description: 'Urgent Retention Protocol',
         progress: 25,
-        nextAction: 'Review & Restart',
-        nextActionDate: '2024-01-26',
-        automationStatus: 'paused'
+        automationStatus: 'Priority',
+        nextAction: 'Emergency Contact',
+        nextDate: '23/01/2024'
       }
     }
   ]
+
+  // Calculate summary statistics
+  const totalPatients = mockPatients.length
+  const activePatients = mockPatients.filter(p => p.status === 'Active').length
+  const dormantPatients = mockPatients.filter(p => p.status === 'Dormant').length
+  const atRiskPatients = mockPatients.filter(p => p.status === 'At-Risk').length
+  const topOpportunityPatients = mockPatients.filter(p => {
+    const daysSinceContact = Math.floor((Date.now() - new Date(p.lastContacted).getTime()) / (1000 * 60 * 60 * 24))
+    return (p.ltv >= 3000 && (p.status === 'At-Risk' || p.status === 'Dormant')) || 
+           (p.isVip && daysSinceContact > 10)
+  }).length
+
+  // Filter patients based on active filter
+  const getFilteredPatients = () => {
+    let filtered = mockPatients
+
+    // Apply search filter
+    if (tableSearchTerm) {
+      filtered = filtered.filter(patient => 
+        patient.name.toLowerCase().includes(tableSearchTerm.toLowerCase()) ||
+        patient.phone.includes(tableSearchTerm) ||
+        patient.email.toLowerCase().includes(tableSearchTerm.toLowerCase())
+      )
+    }
+
+    // Apply active filter
+    switch (activeFilter) {
+      case 'at-risk':
+        filtered = filtered.filter(p => p.status === 'At-Risk')
+        break
+      case 'high-ltv':
+        filtered = filtered.filter(p => p.ltv >= 3000)
+        break
+      case 'no-shows':
+        filtered = filtered.filter(p => p.noShows >= 2)
+        break
+      case 'dormant':
+        filtered = filtered.filter(p => p.status === 'Dormant')
+        break
+      case 'vips':
+        filtered = filtered.filter(p => p.isVip)
+        break
+      case 'top-opportunities':
+        filtered = filtered.filter(p => {
+          const daysSinceContact = Math.floor((Date.now() - new Date(p.lastContacted).getTime()) / (1000 * 60 * 60 * 24))
+          return (p.ltv >= 3000 && (p.status === 'At-Risk' || p.status === 'Dormant')) || 
+                 (p.isVip && daysSinceContact > 10)
+        })
+        break
+      default:
+        // 'all' - no additional filtering
+        break
+    }
+
+    return filtered
+  }
+
+  const filteredPatients = getFilteredPatients()
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'Active':
         return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-1"></div>
+          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-emerald-100 to-green-100 text-emerald-800 shadow-sm border border-emerald-200">
+            <div className="w-2 h-2 bg-emerald-500 rounded-full mr-1.5 animate-pulse"></div>
             Active
           </span>
         )
       case 'Dormant':
         return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-            <div className="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-1"></div>
+          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 shadow-sm border border-yellow-200">
+            <div className="w-2 h-2 bg-yellow-500 rounded-full mr-1.5"></div>
             Dormant
           </span>
         )
       case 'At-Risk':
         return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-            <div className="w-1.5 h-1.5 bg-red-500 rounded-full mr-1"></div>
+          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-red-100 to-rose-100 text-red-800 shadow-sm border border-red-200">
+            <div className="w-2 h-2 bg-red-500 rounded-full mr-1.5 animate-pulse"></div>
             At-Risk
           </span>
         )
       default:
         return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-gray-100 to-slate-100 text-gray-800 shadow-sm border border-gray-200">
             Unknown
           </span>
         )
     }
-  }
-
-  const getAutomationStatusBadge = (automationStatus: string) => {
-    switch (automationStatus) {
-      case 'active':
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            <Play className="w-3 h-3 mr-1" />
-            Active
-          </span>
-        )
-      case 'paused':
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-            <Pause className="w-3 h-3 mr-1" />
-            Paused
-          </span>
-        )
-      case 'priority':
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-            <AlertCircle className="w-3 h-3 mr-1" />
-            Priority
-          </span>
-        )
-      case 'completed':
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            <CheckCircle className="w-3 h-3 mr-1" />
-            Completed
-          </span>
-        )
-      default:
-        return (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-            Unknown
-          </span>
-        )
-    }
-  }
-
-  const getAutomationStateDisplay = (automationState: AutomationState | null) => {
-    if (!automationState) return <span className="text-gray-500 text-sm">No automation</span>
-    
-    return (
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          <div className="text-sm font-medium text-routiq-core">
-            {automationState.currentSequence}
-          </div>
-          {getAutomationStatusBadge(automationState.automationStatus)}
-        </div>
-        <div className="text-xs text-routiq-blackberry/70">
-          {automationState.currentStage}
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="flex-1 bg-gray-200 rounded-full h-1.5">
-            <div 
-              className="bg-routiq-core h-1.5 rounded-full transition-all duration-300"
-              style={{ width: `${automationState.progress}%` }}
-            ></div>
-          </div>
-          <span className="text-xs text-routiq-blackberry/60">{automationState.progress}%</span>
-        </div>
-        <div className="flex items-center gap-1 text-xs text-routiq-blackberry/60">
-          <Clock className="w-3 h-3" />
-          <span>Next: {automationState.nextAction}</span>
-          <ArrowRight className="w-3 h-3" />
-          <span>{formatDate(automationState.nextActionDate)}</span>
-        </div>
-      </div>
-    )
   }
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-AU', {
       style: 'currency',
-      currency: 'AUD'
+      currency: 'AUD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
     }).format(amount)
   }
 
@@ -283,111 +324,373 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
     })
   }
 
+  const getAutomationStatusBadge = (automationStatus: string) => {
+    switch (automationStatus) {
+      case 'Active':
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+            <Play className="w-3 h-3 mr-1" />
+            Active
+          </span>
+        )
+      case 'Priority':
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">
+            <AlertCircle className="w-3 h-3 mr-1" />
+            Priority
+          </span>
+        )
+      default:
+        return (
+          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+            Paused
+          </span>
+        )
+    }
+  }
+
+  const getAutomationIcon = (title: string) => {
+    switch (title) {
+      case 'VIP Care Journey':
+        return <Crown className="w-4 h-4 text-purple-600" />
+      case 'High-Risk Intervention':
+        return <AlertTriangle className="w-4 h-4 text-red-600" />
+      case 'Reengagement Campaign':
+        return <MessageCircle className="w-4 h-4 text-blue-600" />
+      case 'Routine Care':
+        return <Heart className="w-4 h-4 text-green-600" />
+      default:
+        return <Zap className="w-4 h-4 text-gray-600" />
+    }
+  }
+
+  const renderAutomationStatus = (automation: any) => {
+    return (
+      <div className="space-y-2">
+        {/* Title and Status */}
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-2">
+            {getAutomationIcon(automation.title)}
+            <div>
+              <div className="text-sm font-medium text-gray-900">{automation.title}</div>
+              <div className="text-xs text-gray-600">{automation.description}</div>
+            </div>
+          </div>
+          {getAutomationStatusBadge(automation.automationStatus)}
+        </div>
+        
+        {/* Progress Bar */}
+        <div className="space-y-1">
+          <div className="flex justify-between items-center">
+            <div className="w-full bg-gray-200 rounded-full h-1.5 mr-2">
+              <div 
+                className={`h-1.5 rounded-full ${
+                  automation.automationStatus === 'Priority' ? 'bg-orange-500' : 'bg-blue-500'
+                }`}
+                style={{ width: `${automation.progress}%` }}
+              ></div>
+            </div>
+            <span className="text-xs text-gray-500 font-medium">{automation.progress}%</span>
+          </div>
+        </div>
+        
+        {/* Next Action */}
+        <div className="flex items-center text-xs text-gray-600">
+          <Clock className="w-3 h-3 mr-1" />
+          <span className="mr-1">Next:</span>
+          <span className="font-medium">{automation.nextAction}</span>
+          <ArrowRight className="w-3 h-3 mx-1" />
+          <span>{automation.nextDate}</span>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
-      {/* Quick Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="border-routiq-cloud/20 bg-white/60">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Users className="h-8 w-8 text-routiq-core bg-routiq-cloud/20 p-2 rounded-lg" />
-              <div>
-                <div className="text-2xl font-bold text-routiq-core">247</div>
-                <div className="text-sm text-routiq-blackberry/60">Total Patients</div>
-              </div>
+      {/* 1. Search & Filters (Top Bar) */}
+      <div className="space-y-6">
+        {/* Main Patient Search - Prominent */}
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex-1 max-w-2xl">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+              <Input
+                placeholder="Search by name, phone, or email..."
+                value={tableSearchTerm}
+                onChange={(e) => setTableSearchTerm(e.target.value)}
+                className="pl-12 h-12 text-base border-gray-300 focus:border-routiq-core shadow-sm bg-white"
+              />
             </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-routiq-cloud/20 bg-white/60">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <TrendingUp className="h-8 w-8 text-green-600 bg-green-100 p-2 rounded-lg" />
-              <div>
-                <div className="text-2xl font-bold text-green-600">89</div>
-                <div className="text-sm text-routiq-blackberry/60">Active Patients</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-routiq-cloud/20 bg-white/60">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Target className="h-8 w-8 text-amber-600 bg-amber-100 p-2 rounded-lg" />
-              <div>
-                <div className="text-2xl font-bold text-amber-600">23</div>
-                <div className="text-sm text-routiq-blackberry/60">At Risk</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card className="border-routiq-cloud/20 bg-white/60">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <Filter className="h-8 w-8 text-routiq-prompt bg-routiq-prompt/20 p-2 rounded-lg" />
-              <div>
-                <div className="text-2xl font-bold text-routiq-prompt">12</div>
-                <div className="text-sm text-routiq-blackberry/60">Opportunities</div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Table Header with Search and Filters */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 bg-white p-4 rounded-lg border border-routiq-cloud/20">
-        <div className="flex items-center gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-routiq-blackberry/50 h-4 w-4" />
-            <Input
-              placeholder="Search by name, phone, or email..."
-              value={tableSearchTerm}
-              onChange={(e) => setTableSearchTerm(e.target.value)}
-              className="pl-10 w-80 border-routiq-cloud/30 focus:border-routiq-core"
-            />
           </div>
           
-          <Button variant="outline" className="border-routiq-cloud/30 hover:bg-routiq-cloud/10">
-            <Filter className="h-4 w-4 mr-2" />
-            Advanced Filters
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm" className="border-gray-300">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+            
+            <Button className="bg-routiq-core hover:bg-routiq-core/90 text-white">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Patient
+            </Button>
+          </div>
         </div>
-        
-        <div className="flex items-center gap-3">
-          <select 
-            value={itemsPerPage}
-            onChange={(e) => setItemsPerPage(Number(e.target.value))}
-            className="border border-routiq-cloud/30 rounded px-3 py-2 text-sm"
-          >
-            <option value={25}>25 per page</option>
-            <option value={50}>50 per page</option>
-            <option value={100}>100 per page</option>
-          </select>
+
+        {/* Quick Filters - Improved UX with Color-Coded Icons */}
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-sm font-medium text-gray-700 mr-1">Quick Filters:</span>
           
-          <Button variant="outline" size="sm" className="border-routiq-cloud/30">
-            <Download className="h-4 w-4 mr-2" />
-            Export
+          <Button
+            variant={activeFilter === 'all' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveFilter('all')}
+            className={activeFilter === 'all' 
+              ? 'bg-gradient-to-r from-routiq-core to-routiq-energy hover:from-routiq-core/90 hover:to-routiq-energy/90 text-white shadow-lg' 
+              : 'border-gray-300 hover:bg-gradient-to-r hover:from-routiq-core/5 hover:to-routiq-energy/5 text-gray-700 hover:border-routiq-core/40 hover:text-routiq-core transition-all duration-200'
+            }
+          >
+            <Users className="h-4 w-4 mr-1.5" />
+            All Patients
           </Button>
           
-          <Button className="bg-routiq-core hover:bg-routiq-core/90 text-white">
-            <Plus className="h-4 w-4 mr-2" />
-            Add Patient
+          <Button
+            variant={activeFilter === 'at-risk' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveFilter('at-risk')}
+            className={activeFilter === 'at-risk' 
+              ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg shadow-red-200' 
+              : 'border-red-200 text-red-700 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:border-red-400 hover:text-red-800 transition-all duration-200 hover:shadow-md hover:shadow-red-100'
+            }
+          >
+            <ShieldAlert className="h-4 w-4 mr-1.5" />
+            At Risk
+          </Button>
+          
+          <Button
+            variant={activeFilter === 'high-ltv' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveFilter('high-ltv')}
+            className={activeFilter === 'high-ltv' 
+              ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-lg shadow-green-200' 
+              : 'border-emerald-200 text-emerald-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-100 hover:border-emerald-400 hover:text-emerald-800 transition-all duration-200 hover:shadow-md hover:shadow-emerald-100'
+            }
+          >
+            <CircleDollarSign className="h-4 w-4 mr-1.5" />
+            High LTV
+          </Button>
+          
+          <Button
+            variant={activeFilter === 'no-shows' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveFilter('no-shows')}
+            className={activeFilter === 'no-shows' 
+              ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-200' 
+              : 'border-orange-200 text-orange-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-amber-100 hover:border-orange-400 hover:text-orange-800 transition-all duration-200 hover:shadow-md hover:shadow-orange-100'
+            }
+          >
+            <CalendarX className="h-4 w-4 mr-1.5" />
+            No Shows
+          </Button>
+          
+          <Button
+            variant={activeFilter === 'dormant' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveFilter('dormant')}
+            className={activeFilter === 'dormant' 
+              ? 'bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white shadow-lg shadow-yellow-200' 
+              : 'border-yellow-200 text-yellow-700 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-amber-100 hover:border-yellow-400 hover:text-yellow-800 transition-all duration-200 hover:shadow-md hover:shadow-yellow-100'
+            }
+          >
+            <UserCheck className="h-4 w-4 mr-1.5" />
+            Dormant
+          </Button>
+          
+          <Button
+            variant={activeFilter === 'vips' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveFilter('vips')}
+            className={activeFilter === 'vips' 
+              ? 'bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg shadow-purple-200' 
+              : 'border-purple-200 text-purple-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-100 hover:border-purple-400 hover:text-purple-800 transition-all duration-200 hover:shadow-md hover:shadow-purple-100'
+            }
+          >
+            <Crown className="h-4 w-4 mr-1.5" />
+            VIPs
+          </Button>
+          
+          <Button
+            variant={activeFilter === 'top-opportunities' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setActiveFilter('top-opportunities')}
+            className={activeFilter === 'top-opportunities' 
+              ? 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white shadow-lg shadow-amber-200' 
+              : 'border-amber-200 text-amber-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-yellow-100 hover:border-amber-400 hover:text-amber-800 transition-all duration-200 hover:shadow-md hover:shadow-amber-100'
+            }
+          >
+            <Star className="h-4 w-4 mr-1.5" />
+            Top Opportunities
           </Button>
         </div>
       </div>
 
-      {/* Patient Data Table */}
-      <Card className="border-routiq-cloud/20">
-        <CardHeader className="border-b border-routiq-cloud/20 bg-gray-50/50">
+      {/* 2. Summary KPIs (Strip Below Search Bar) - Clickable Visual Filters */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        {/* 1. All Patients */}
+        <Card 
+          className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
+            activeFilter === 'all' 
+              ? 'border-routiq-core bg-gradient-to-br from-routiq-core/10 via-routiq-energy/5 to-routiq-core/15 shadow-lg shadow-routiq-core/20' 
+              : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-routiq-core/5 hover:to-routiq-energy/5 hover:border-routiq-core/30 hover:shadow-md'
+          }`}
+          onClick={() => setActiveFilter('all')}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
+                activeFilter === 'all' 
+                  ? 'bg-gradient-to-br from-routiq-core to-routiq-energy shadow-lg' 
+                  : 'bg-gradient-to-br from-gray-100 to-gray-200'
+              }`}>
+                <Users className={`h-6 w-6 ${activeFilter === 'all' ? 'text-white' : 'text-gray-500'}`} />
+              </div>
+              <div>
+                <div className={`text-xl font-bold ${activeFilter === 'all' ? 'text-routiq-core' : 'text-gray-600'}`}>
+                  {totalPatients}
+                </div>
+                <div className={`text-xs font-medium ${activeFilter === 'all' ? 'text-routiq-core/70' : 'text-gray-500'}`}>
+                  All Patients
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* 2. Active Patients */}
+        <Card className="border-gray-200 bg-gradient-to-br from-gray-50 to-white">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+                <TrendingUp className="h-6 w-6 text-gray-500" />
+              </div>
+              <div>
+                <div className="text-xl font-bold text-gray-600">
+                  {activePatients}
+                </div>
+                <div className="text-xs font-medium text-gray-500">
+                  Active
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* 3. Dormant Patients */}
+        <Card 
+          className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
+            activeFilter === 'dormant' 
+              ? 'border-yellow-300 bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 shadow-lg shadow-yellow-200' 
+              : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-yellow-50 hover:to-amber-50 hover:border-yellow-300 hover:shadow-md hover:shadow-yellow-100'
+          }`}
+          onClick={() => setActiveFilter('dormant')}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
+                activeFilter === 'dormant' 
+                  ? 'bg-gradient-to-br from-yellow-400 to-amber-500 shadow-lg' 
+                  : 'bg-gradient-to-br from-gray-100 to-gray-200'
+              }`}>
+                <UserCheck className={`h-6 w-6 ${activeFilter === 'dormant' ? 'text-white' : 'text-gray-500'}`} />
+              </div>
+              <div>
+                <div className={`text-xl font-bold ${activeFilter === 'dormant' ? 'text-yellow-700' : 'text-gray-600'}`}>
+                  {dormantPatients}
+                </div>
+                <div className={`text-xs font-medium ${activeFilter === 'dormant' ? 'text-yellow-600/80' : 'text-gray-500'}`}>
+                  Dormant
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* 4. At Risk Patients */}
+        <Card 
+          className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
+            activeFilter === 'at-risk' 
+              ? 'border-red-300 bg-gradient-to-br from-red-50 via-rose-50 to-red-100 shadow-lg shadow-red-200' 
+              : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-red-50 hover:to-rose-50 hover:border-red-300 hover:shadow-md hover:shadow-red-100'
+          }`}
+          onClick={() => setActiveFilter('at-risk')}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
+                activeFilter === 'at-risk' 
+                  ? 'bg-gradient-to-br from-red-500 to-rose-600 shadow-lg' 
+                  : 'bg-gradient-to-br from-gray-100 to-gray-200'
+              }`}>
+                <AlertTriangle className={`h-6 w-6 ${activeFilter === 'at-risk' ? 'text-white' : 'text-gray-500'}`} />
+              </div>
+              <div>
+                <div className={`text-xl font-bold ${activeFilter === 'at-risk' ? 'text-red-700' : 'text-gray-600'}`}>
+                  {atRiskPatients}
+                </div>
+                <div className={`text-xs font-medium ${activeFilter === 'at-risk' ? 'text-red-600/80' : 'text-gray-500'}`}>
+                  At Risk
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+        
+        {/* 5. Top Opportunities */}
+        <Card 
+          className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
+            activeFilter === 'top-opportunities' 
+              ? 'border-amber-300 bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100 shadow-lg shadow-amber-200' 
+              : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-amber-50 hover:to-yellow-50 hover:border-amber-300 hover:shadow-md hover:shadow-amber-100'
+          }`}
+          onClick={() => setActiveFilter('top-opportunities')}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
+                activeFilter === 'top-opportunities' 
+                  ? 'bg-gradient-to-br from-amber-500 to-yellow-500 shadow-lg' 
+                  : 'bg-gradient-to-br from-gray-100 to-gray-200'
+              }`}>
+                <Star className={`h-6 w-6 ${activeFilter === 'top-opportunities' ? 'text-white' : 'text-gray-500'}`} />
+              </div>
+              <div>
+                <div className={`text-xl font-bold ${activeFilter === 'top-opportunities' ? 'text-amber-700' : 'text-gray-600'}`}>
+                  {topOpportunityPatients}
+                </div>
+                <div className={`text-xs font-medium ${activeFilter === 'top-opportunities' ? 'text-amber-600/80' : 'text-gray-500'}`}>
+                  Top Opportunities
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* 3. Patient Database Table (Core Section) */}
+      <Card className="border-gray-200">
+        <CardHeader className="border-b border-gray-200 bg-gray-50/50">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-routiq-core flex items-center gap-2">
+            <CardTitle className="text-gray-900 flex items-center gap-2">
               <Users className="h-5 w-5" />
               Patient Database
             </CardTitle>
-            <div className="text-sm text-routiq-blackberry/60">
-              Showing {mockPatients.length} of {mockPatients.length} patients
+            <div className="text-sm text-gray-600">
+              Showing {filteredPatients.length} of {totalPatients} patients
+              {activeFilter !== 'all' && (
+                <Badge variant="secondary" className="ml-2">
+                  {activeFilter.replace('-', ' ')}
+                </Badge>
+              )}
             </div>
           </div>
         </CardHeader>
@@ -396,124 +699,137 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50/50 border-b border-routiq-cloud/20">
+              <thead className="bg-gray-50/50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-72">
                     Patient Details
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
                     LTV
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
-                    Avg. Spend
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
+                    No. Sessions
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
-                    Sessions
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
                     Last Appt
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
+                    No-Shows
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
                     Last Contact
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
-                    No-shows
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-routiq-blackberry/70 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-64">
                     Automation Journey
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider w-32">
+                    Patient Status
                   </th>
                 </tr>
               </thead>
               
-              <tbody className="bg-white divide-y divide-routiq-cloud/20">
-                {mockPatients.map((patient) => (
-                  <tr key={patient.id} className="hover:bg-routiq-cloud/10 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-routiq-core to-routiq-energy flex items-center justify-center text-white font-semibold text-sm">
-                          {patient.name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        <div className="ml-3">
-                          <div className="text-sm font-medium text-routiq-core mb-1">
-                            {patient.name}
-                          </div>
-                          <div className="space-y-1">
-                            <div className="flex items-center text-xs text-routiq-blackberry/80">
-                              <Phone className="h-3 w-3 mr-1" />
-                              {patient.phone}
-                            </div>
-                            <div className="flex items-center text-xs text-routiq-blackberry/60">
-                              <Mail className="h-3 w-3 mr-1" />
-                              {patient.email}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-semibold text-routiq-core">
-                        {formatCurrency(patient.ltv)}
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-routiq-blackberry/80">
-                        {formatCurrency(patient.avgSpend)}
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-routiq-blackberry/80">
-                        {patient.totalSessions}
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-routiq-blackberry/80">
-                        {formatDate(patient.lastAppointment)}
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-routiq-blackberry/80">
-                        {formatDate(patient.lastContacted)}
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-routiq-blackberry/80">
-                        {patient.noShows}
-                      </div>
-                    </td>
-                    
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(patient.status)}
-                    </td>
-                    
-                    <td className="px-6 py-4">
-                      {getAutomationStateDisplay(patient.automationState as AutomationState)}
-                    </td>
-                  </tr>
-                ))}
+              <tbody className="bg-white divide-y divide-gray-200">
+                                 {filteredPatients.map((patient) => (
+                   <tr key={patient.id} className="hover:bg-gray-50 transition-colors">
+                     <td className="px-6 py-4 border-r border-gray-200 w-72">
+                       <div className="flex items-center">
+                         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-routiq-core to-routiq-energy flex items-center justify-center text-white font-semibold text-sm relative">
+                           {patient.name.split(' ').map(n => n[0]).join('')}
+                           {patient.isVip && (
+                             <Star className="absolute -top-1 -right-1 h-4 w-4 text-yellow-400 fill-yellow-400" />
+                           )}
+                         </div>
+                         <div className="ml-3">
+                           <div className="text-sm font-medium text-gray-900 mb-1">
+                             {patient.name}
+                             {patient.isVip && (
+                               <Badge variant="secondary" className="ml-2 text-xs bg-purple-100 text-purple-800">
+                                 VIP
+                               </Badge>
+                             )}
+                           </div>
+                           <div className="space-y-1">
+                             <div className="flex items-center text-xs text-gray-600">
+                               <Phone className="h-3 w-3 mr-1" />
+                               {patient.phone}
+                             </div>
+                             <div className="flex items-center text-xs text-gray-500">
+                               <Mail className="h-3 w-3 mr-1" />
+                               {patient.email}
+                             </div>
+                           </div>
+                         </div>
+                       </div>
+                     </td>
+                     
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
+                       <div className="text-sm font-semibold text-gray-900">
+                         {formatCurrency(patient.ltv)}
+                       </div>
+                     </td>
+                     
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
+                       <div className="text-sm font-medium text-gray-800">
+                         {patient.totalSessions}
+                       </div>
+                     </td>
+                     
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
+                       <div className="text-sm text-gray-700">
+                         {formatDate(patient.lastAppointment)}
+                       </div>
+                     </td>
+                     
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
+                       <div className={`text-sm font-medium ${
+                         patient.noShows >= 3 ? 'text-red-600' : 
+                         patient.noShows >= 2 ? 'text-orange-600' : 
+                         'text-gray-700'
+                       }`}>
+                         {patient.noShows}
+                       </div>
+                     </td>
+                     
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
+                       <div className="text-sm text-gray-700">
+                         {formatDate(patient.lastContacted)}
+                       </div>
+                     </td>
+                     
+                     <td className="px-6 py-4 border-r border-gray-200 w-64">
+                       {renderAutomationStatus(patient.automation)}
+                     </td>
+                     
+                     <td className="px-6 py-4 whitespace-nowrap w-32 text-center">
+                       {getStatusBadge(patient.status)}
+                     </td>
+                   </tr>
+                 ))}
               </tbody>
             </table>
           </div>
           
           {/* Pagination */}
-          <div className="bg-gray-50/50 px-6 py-3 border-t border-routiq-cloud/20">
+          <div className="bg-gray-50/50 px-6 py-3 border-t border-gray-200">
             <div className="flex items-center justify-between">
-              <div className="text-sm text-routiq-blackberry/60">
-                Showing 1 to {mockPatients.length} of {mockPatients.length} results
+              <div className="text-sm text-gray-600">
+                Showing {filteredPatients.length} results
+                {activeFilter !== 'all' && ` (filtered by ${activeFilter.replace('-', ' ')})`}
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" disabled className="border-routiq-cloud/30">
+                <select 
+                  value={itemsPerPage}
+                  onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                  className="border border-gray-300 rounded px-3 py-1 text-sm"
+                >
+                  <option value={25}>25 per page</option>
+                  <option value={50}>50 per page</option>
+                  <option value={100}>100 per page</option>
+                </select>
+                <Button variant="outline" size="sm" disabled className="border-gray-300">
                   Previous
                 </Button>
-                <Button variant="outline" size="sm" disabled className="border-routiq-cloud/30">
+                <Button variant="outline" size="sm" disabled className="border-gray-300">
                   Next
                 </Button>
               </div>

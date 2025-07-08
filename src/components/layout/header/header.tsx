@@ -107,7 +107,7 @@ export function DashboardHeader() {
   }
 
   return (
-    <header className="bg-routiq-energy border-b border-routiq-core/20">
+    <header className="bg-[#ededeb] border-b border-gray-200">
       <div className="px-6 py-3">
         <div className="flex items-center justify-between">
           {/* Left Section - Logo and Page Info */}
@@ -133,36 +133,19 @@ export function DashboardHeader() {
                 />
               </div>
             </div>
-
-            {/* Divider */}
-            <div className="hidden lg:block w-px h-8 bg-routiq-core/20"></div>
-
-            {/* Page Info */}
-            <div className="hidden lg:block">
-              <div className="flex items-center space-x-3">
-                <div>
-                  <h1 className="text-xl font-semibold text-routiq-core tracking-tight">
-                    {getPageTitle()}
-                  </h1>
-                  <p className="text-sm text-routiq-core/70 leading-tight">
-                    {getPageDescription()}
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Right Section - Organization Switcher, Actions and User */}
           <div className="flex items-center space-x-4">
             {/* Organization Switcher */}
             <div className="hidden md:flex items-center space-x-2">
-              <span className="text-sm text-routiq-core/70">Organization:</span>
+              <span className="text-sm text-gray-600">Organization:</span>
               <ClerkOrganizationSwitcher />
             </div>
             
             {/* Mobile Organization Display */}
             <div className="md:hidden">
-              <Badge variant="secondary" className="text-xs bg-routiq-cloud/10 text-routiq-cloud border-routiq-cloud/20">
+              <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-700 border-gray-300">
                 {organizationName}
               </Badge>
             </div>
@@ -170,29 +153,29 @@ export function DashboardHeader() {
             {/* User Menu */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 px-3 rounded-xl hover:bg-routiq-core/10 transition-colors duration-150">
+                <Button variant="ghost" className="relative h-10 px-3 rounded-xl hover:bg-gray-100 transition-colors duration-150">
                   <div className="flex items-center space-x-3">
-                    <Avatar className="h-8 w-8 ring-2 ring-routiq-core/20">
+                    <Avatar className="h-8 w-8 ring-2 ring-gray-200">
                       {user?.imageUrl && (
                         <AvatarImage src={user.imageUrl} alt={user?.fullName || "User"} />
                       )}
-                      <AvatarFallback className="bg-routiq-cloud text-white text-sm font-medium">
+                      <AvatarFallback className="bg-gray-200 text-gray-800 text-sm font-medium">
                         {user?.fullName ? getInitials(user.fullName) : "U"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="hidden md:block text-left">
-                      <p className="text-sm font-medium text-routiq-core leading-tight">
+                      <p className="text-sm font-medium text-gray-900 leading-tight">
                         {user?.fullName || user?.firstName}
                       </p>
-                      <p className="text-xs text-routiq-core/60 leading-tight">
+                      <p className="text-xs text-gray-600 leading-tight">
                         Healthcare Admin
                       </p>
                     </div>
-                    <ChevronDown className="h-4 w-4 text-routiq-core/50" />
+                    <ChevronDown className="h-4 w-4 text-gray-500" />
                   </div>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-64 bg-white border-routiq-energy" align="end" forceMount>
+              <DropdownMenuContent className="w-64 bg-white border-gray-200" align="end" forceMount>
                 <DropdownMenuLabel className="font-normal p-4">
                   <div className="flex flex-col space-y-2">
                     <div className="flex items-center space-x-3">
@@ -200,33 +183,33 @@ export function DashboardHeader() {
                         {user?.imageUrl && (
                           <AvatarImage src={user.imageUrl} alt={user?.fullName || "User"} />
                         )}
-                        <AvatarFallback className="bg-routiq-cloud text-white">
+                        <AvatarFallback className="bg-gray-200 text-gray-800">
                           {user?.fullName ? getInitials(user.fullName) : "U"}
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="text-sm font-medium text-routiq-core leading-tight">
+                        <p className="text-sm font-medium text-gray-900 leading-tight">
                           {user?.fullName}
                         </p>
-                        <p className="text-xs text-routiq-core/60 leading-tight">
+                        <p className="text-xs text-gray-500 leading-tight">
                           {user?.primaryEmailAddress?.emailAddress}
                         </p>
                       </div>
                     </div>
-                    <Badge variant="secondary" className="w-fit text-xs bg-routiq-cloud/10 text-routiq-cloud border-routiq-cloud/20">
+                    <Badge variant="secondary" className="w-fit text-xs bg-gray-100 text-gray-700 border-gray-200">
                       Healthcare Professional
                     </Badge>
                   </div>
                 </DropdownMenuLabel>
-                <DropdownMenuSeparator className="bg-routiq-core/20" />
+                <DropdownMenuSeparator className="bg-gray-200" />
                 <DropdownMenuItem 
                   onClick={handleProfileClick}
-                  className="hover:bg-routiq-core/10 focus:bg-routiq-core/10"
+                  className="hover:bg-gray-50 focus:bg-gray-50"
                 >
-                  <User className="mr-3 h-4 w-4 text-routiq-core" />
-                  <span className="text-routiq-core">Profile Settings</span>
+                  <User className="mr-3 h-4 w-4 text-gray-600" />
+                  <span className="text-gray-800">Profile Settings</span>
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-routiq-core/20" />
+                <DropdownMenuSeparator className="bg-gray-200" />
                 <DropdownMenuItem 
                   onClick={handleSignOut}
                   className="hover:bg-red-50 focus:bg-red-50 text-red-600 hover:text-red-600"

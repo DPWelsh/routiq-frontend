@@ -65,8 +65,7 @@ export function MobileHeader({
   return (
     <header
       className={cn(
-        "sticky top-0 z-40 w-full border-b border-border bg-background/95 backdrop-blur",
-        "supports-[backdrop-filter]:bg-background/60",
+        "sticky top-0 z-40 w-full border-b border-gray-200 bg-[#ededeb]",
         className
       )}
     >
@@ -95,7 +94,7 @@ export function MobileHeader({
           {/* Page title (if provided) */}
           {pageTitle && (
             <div className="hidden sm:block">
-              <h1 className="text-lg font-semibold text-foreground truncate">
+              <h1 className="text-lg font-semibold text-gray-900 truncate">
                 {pageTitle}
               </h1>
             </div>
@@ -110,8 +109,8 @@ export function MobileHeader({
 
       {/* Page title on mobile (below header for space) */}
       {pageTitle && (
-        <div className="block sm:hidden border-t border-border bg-muted/50 px-4 py-2">
-          <h1 className="text-sm font-medium text-foreground truncate">
+        <div className="block sm:hidden border-t border-gray-200 bg-[#ededeb] px-4 py-2">
+          <h1 className="text-sm font-medium text-gray-900 truncate">
             {pageTitle}
           </h1>
         </div>
@@ -135,15 +134,15 @@ interface MobileUserMenuProps {
 
 function MobileUserMenu({ user }: MobileUserMenuProps) {
   if (!user) {
-    return (
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-11 w-11 p-2" // 44px touch target
-      >
-        <User className="h-5 w-5" />
-      </Button>
-    )
+      return (
+    <Button
+      variant="ghost"
+      size="icon"
+      className="h-11 w-11 p-2 text-gray-700 hover:bg-gray-200" // 44px touch target
+    >
+      <User className="h-5 w-5" />
+    </Button>
+  )
   }
 
   return (
@@ -152,11 +151,11 @@ function MobileUserMenu({ user }: MobileUserMenuProps) {
       className={cn(
         "h-11 px-3 py-2", // 44px height, touch-friendly padding
         "flex items-center gap-2",
-        "hover:bg-routiq-cloud/10 focus-visible:ring-2 focus-visible:ring-routiq-core"
+        "hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-gray-400"
       )}
     >
       {/* User avatar or fallback */}
-      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-routiq-core text-routiq-cloud text-xs font-medium">
+      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-300 text-gray-700 text-xs font-medium">
         {user.avatar ? (
           <Image
             src={user.avatar}
@@ -173,12 +172,12 @@ function MobileUserMenu({ user }: MobileUserMenuProps) {
       </div>
 
       {/* User name (truncated) */}
-      <span className="hidden xs:block text-sm font-medium truncate max-w-20">
+      <span className="hidden xs:block text-sm font-medium text-gray-900 truncate max-w-20">
         {user.name || 'User'}
       </span>
 
       {/* Dropdown indicator */}
-      <ChevronDown className="h-3 w-3 opacity-60" />
+      <ChevronDown className="h-3 w-3 opacity-60 text-gray-600" />
     </Button>
   )
 }

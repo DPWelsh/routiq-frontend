@@ -56,9 +56,9 @@ export function ClientDashboardLayout({ children }: ClientDashboardLayoutProps) 
         </div>
         
         {/* Main Content Area with top margin for fixed header */}
-        <div className="flex pt-[73px] min-h-screen">
+        <div className="flex pt-16 min-h-screen">
           {/* Fixed Sidebar - Hidden on mobile */}
-          <div className="fixed left-0 top-[73px] bottom-0 z-40 hidden md:block">
+          <div className="fixed left-0 top-16 bottom-0 z-40 hidden md:block">
             <DashboardNav />
           </div>
           

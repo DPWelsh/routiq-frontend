@@ -1,252 +1,614 @@
 'use client'
 
-import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
-import { 
-  Users, 
-  TrendingUp, 
-  Heart, 
-  AlertTriangle, 
-  DollarSign, 
-  MessageCircle,
-  Calendar,
-  ArrowUpRight
-} from 'lucide-react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Calendar, TrendingUp, TrendingDown, Users, Clock, AlertCircle, UserPlus, DollarSign, ArrowUp, ArrowDown, Activity, UserX, Percent } from 'lucide-react'
+import { useOrganizationContext } from '@/hooks/useOrganizationContext'
+import { useDashboardAnalyticsWithFallback } from '@/hooks/useDashboardAnalytics'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+
+type ViewPeriod = 'month' | 'week'
+type TimeframeOption = '7d' | '30d' | '90d' | '1y'
 
 /**
- * Patient Insights Tab Component - Simplified Version
+ * Patient Overview Tab Component - Stripe-style Design
  * 
- * Displays exactly what was originally specified:
- * - 5 simple metrics
- * - 1 graph (4-week sentiment over time)
- * - 1 quick link (high risk patients list)
+ * Displays key patient metrics with clean, minimal design inspired by Stripe's dashboard:
+ * - 6 patient-focused KPI cards
+ * - Modern card layout with subtle shadows and clean typography
+ * - Brand color #7ba2e0 for accents and positive trends
+ * - Chart showing "Avg. Bookings per patient over time"
  */
 export function PatientInsightsTab() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [viewPeriod, setViewPeriod] = useState<ViewPeriod>('month')
+  const [timeframe, setTimeframe] = useState<TimeframeOption>('30d')
   
-  const lastUpdated = new Date().toLocaleTimeString()
-
-  const handleRetry = () => {
-    setError(null)
-    setLoading(true)
-    // Simulate retry
-    setTimeout(() => setLoading(false), 1000)
+  // Get organization context
+  const { organizationId } = useOrganizationContext()
+  
+  // Get real analytics data with fallback to hardcoded values
+  const {
+    analyticsData,
+    chartsData,
+    isLoading,
+    hasError,
+    analyticsError,
+    refetchAnalytics,
+    bookingMetrics,
+    patientMetrics,
+    financialMetrics,
+    automationMetrics,
+    lastUpdated,
+    isUsingFallback
+  } = useDashboardAnalyticsWithFallback(organizationId, timeframe)
+  
+  // Get current date range based on selected period
+  const getCurrentDateRange = () => {
+    const now = new Date()
+    const formatDate = (date: Date) => date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: timeframe === '1y' ? 'numeric' : undefined 
+    })
+    
+    let startDate: Date
+    switch (timeframe) {
+      case '7d':
+        startDate = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000)
+        break
+      case '30d':
+        startDate = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
+        break
+      case '90d':
+        startDate = new Date(now.getTime() - 89 * 24 * 60 * 60 * 1000)
+        break
+      case '1y':
+        startDate = new Date(now.getTime() - 364 * 24 * 60 * 60 * 1000)
+        break
+      default:
+        startDate = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
+    }
+    
+    return `${formatDate(startDate)} - ${formatDate(now)}`
   }
 
-  // Loading skeleton for metric card
+  const dateRange = getCurrentDateRange()
+  const displayLastUpdated = lastUpdated 
+    ? new Date(lastUpdated).toLocaleTimeString()
+    : new Date().toLocaleTimeString()
+
+  const handleRetry = () => {
+    refetchAnalytics()
+  }
+
+  const handleTimeframeChange = (newTimeframe: TimeframeOption) => {
+    setTimeframe(newTimeframe)
+  }
+
+  // Loading skeleton for metric card - Stripe style
   const MetricSkeleton = () => (
-    <Card className="border-routiq-energy/20">
-      <CardHeader className="pb-3">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 bg-routiq-cloud/20 rounded animate-pulse" />
-          <div className="w-24 h-4 bg-routiq-cloud/20 rounded animate-pulse" />
-        </div>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <div className="w-16 h-8 bg-routiq-cloud/20 rounded animate-pulse mb-2" />
-        <div className="w-20 h-4 bg-routiq-cloud/20 rounded animate-pulse" />
-      </CardContent>
-    </Card>
+    <div className="stripe-metric-card">
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse" />
+        <div className="w-24 h-4 bg-gray-200 rounded animate-pulse" />
+      </div>
+      <div className="w-20 h-8 bg-gray-200 rounded animate-pulse mb-2" />
+      <div className="w-32 h-3 bg-gray-200 rounded animate-pulse" />
+    </div>
   )
 
+  // Format currency values
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(value)
+  }
+
+  // Format percentage values
+  const formatPercentage = (value: number) => {
+    return `${value.toFixed(1)}%`
+  }
+
+  // Get patient bookings data from API or generate fallback
+  const getPatientBookingsData = () => {
+    // Use API data if available - try both possible structures
+    const dailyData = (chartsData as any)?.patient_flow?.daily_data || chartsData?.booking_trends
+    
+    if (dailyData && Array.isArray(dailyData)) {
+      return dailyData.map((item: any) => {
+        const date = new Date(item.date)
+        const bookingsPerPatient = item.patients > 0 ? (item.appointments || item.bookings || 0) / item.patients : 0
+        
+        switch (timeframe) {
+          case '7d':
+          case '30d':
+            return {
+              period: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+              fullDate: date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+              bookingsPerPatient: Number(bookingsPerPatient.toFixed(2)),
+              change: 0 // API doesn't provide change data yet
+            }
+          
+          case '90d':
+            return {
+              period: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+              fullDate: date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }),
+              bookingsPerPatient: Number(bookingsPerPatient.toFixed(2)),
+              change: 0
+            }
+          
+          case '1y':
+          default:
+            return {
+              period: date.toLocaleDateString('en-US', { month: 'short' }),
+              fullDate: date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+              bookingsPerPatient: Number(bookingsPerPatient.toFixed(2)),
+              change: 0
+            }
+        }
+      })
+    }
+    
+    // Fallback to generated data if API data not available
+    const now = new Date()
+    
+    switch (timeframe) {
+      case '7d':
+        return Array.from({ length: 7 }, (_, i) => {
+          const date = new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000)
+          const bookingsPerPatient = 2.2 + Math.random() * 0.8 // 2.2-3.0 bookings per patient
+          return {
+            period: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            fullDate: date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+            bookingsPerPatient: Number(bookingsPerPatient.toFixed(2)),
+            change: (Math.random() - 0.5) * 20
+          }
+        })
+      
+      case '30d':
+        return Array.from({ length: 30 }, (_, i) => {
+          const date = new Date(now.getTime() - (29 - i) * 24 * 60 * 60 * 1000)
+          const bookingsPerPatient = 2.1 + Math.random() * 0.9 // 2.1-3.0 bookings per patient
+          return {
+            period: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            fullDate: date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
+            bookingsPerPatient: Number(bookingsPerPatient.toFixed(2)),
+            change: (Math.random() - 0.5) * 25
+          }
+        })
+      
+      case '90d':
+        return Array.from({ length: 13 }, (_, i) => {
+          const date = new Date(now.getTime() - (12 - i) * 7 * 24 * 60 * 60 * 1000)
+          const bookingsPerPatient = 2.3 + Math.random() * 0.6 // 2.3-2.9 bookings per patient
+          const endDate = new Date(date.getTime() + 6 * 24 * 60 * 60 * 1000)
+          return {
+            period: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            fullDate: `${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`,
+            bookingsPerPatient: Number(bookingsPerPatient.toFixed(2)),
+            change: (Math.random() - 0.5) * 30
+          }
+        })
+      
+      case '1y':
+      default:
+        // Generate data for the last 12 months with actual dates
+        return Array.from({ length: 12 }, (_, i) => {
+          const date = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1)
+          const bookingsPerPatient = 2.0 + Math.random() * 1.0 + (i * 0.05) // Trending upward slightly
+          return {
+            period: date.toLocaleDateString('en-US', { month: 'short' }),
+            fullDate: date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
+            bookingsPerPatient: Number(bookingsPerPatient.toFixed(2)),
+            change: (Math.random() - 0.3) * 20
+          }
+        })
+    }
+  }
+
+  // Calculate patient booking insights based on current data
+  const getPatientBookingInsights = () => {
+    const data = getPatientBookingsData()
+    const currentBookings = data[data.length - 1]?.bookingsPerPatient || 0
+    const previousBookings = data[data.length - 2]?.bookingsPerPatient || 0
+    const totalBookings = data.reduce((sum: number, item: any) => sum + item.bookingsPerPatient, 0)
+    const avgBookings = totalBookings / data.length
+    
+    const growthRate = previousBookings > 0 ? ((currentBookings - previousBookings) / previousBookings) * 100 : 0
+    
+    // Find best performing period
+    const bestPeriod = data.reduce((best: any, current: any) => 
+      current.bookingsPerPatient > best.bookingsPerPatient ? current : best
+    )
+    
+    const timeframeLabels = {
+      '7d': 'week',
+      '30d': 'month', 
+      '90d': 'quarter',
+      '1y': 'year'
+    }
+    
+    return {
+      growthRate: growthRate.toFixed(1),
+      avgBookings: avgBookings.toFixed(2),
+      bestPeriod: bestPeriod.period,
+      bestBookings: bestPeriod.bookingsPerPatient,
+      timeframeLabel: timeframeLabels[timeframe] || 'period'
+    }
+  }
+
   // Error state
-  if (error) {
+  if (hasError && !isUsingFallback) {
     return (
-      <div className="space-y-6">
-        <div className="text-center py-16 bg-red-50 rounded-lg border border-red-200">
-          <AlertTriangle className="h-12 w-12 text-red-500 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-red-800 mb-2">Unable to load patient insights</h3>
-          <p className="text-red-600 mb-4">Please check your connection and try again</p>
-          <Button 
-            onClick={handleRetry}
-            className="bg-red-600 hover:bg-red-700 text-white"
-          >
-            Retry
-          </Button>
-        </div>
+      <div className="stripe-card p-8 text-center">
+        <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Unable to load patient data</h3>
+        <p className="text-base text-gray-600 mb-4">
+          {analyticsError?.message || 'Please check your connection and try again'}
+        </p>
+        <Button 
+          onClick={handleRetry}
+          className="stripe-button stripe-button-primary px-4 py-2"
+        >
+          Retry
+        </Button>
       </div>
     )
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
+    <div className="space-y-8">
+      {/* Header with Timeframe Controls - Stripe style */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-routiq-core">
-            Patient Insights
+          <h2 className="text-3xl font-semibold text-gray-900">
+            Patient Overview
           </h2>
-          <p className="text-routiq-blackberry/70 mt-1">
-            Key patient metrics and sentiment analysis
+          <p className="text-lg text-gray-600 mt-1">
+            Patient Metrics And Engagement Analytics
           </p>
+          {isUsingFallback && (
+            <p className="text-amber-600 text-base mt-2 flex items-center gap-1">
+              <AlertCircle className="h-4 w-4" />
+              Using demo data
+            </p>
+          )}
+        </div>
+        
+        {/* Timeframe Toggle - Stripe style */}
+        <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
+          <Button
+            variant={timeframe === '7d' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleTimeframeChange('7d')}
+            className={`
+              h-8 px-3 text-base font-medium transition-colors
+              ${timeframe === '7d' 
+                ? 'bg-white text-gray-900 shadow-sm' 
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }
+            `}
+          >
+            7 Days
+          </Button>
+          <Button
+            variant={timeframe === '30d' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleTimeframeChange('30d')}
+            className={`
+              h-8 px-3 text-base font-medium transition-colors
+              ${timeframe === '30d' 
+                ? 'bg-white text-gray-900 shadow-sm' 
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }
+            `}
+          >
+            30 Days
+          </Button>
+          <Button
+            variant={timeframe === '90d' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleTimeframeChange('90d')}
+            className={`
+              h-8 px-3 text-base font-medium transition-colors
+              ${timeframe === '90d' 
+                ? 'bg-white text-gray-900 shadow-sm' 
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }
+            `}
+          >
+            90 Days
+          </Button>
+          <Button
+            variant={timeframe === '1y' ? 'default' : 'ghost'}
+            size="sm"
+            onClick={() => handleTimeframeChange('1y')}
+            className={`
+              h-8 px-3 text-base font-medium transition-colors
+              ${timeframe === '1y' 
+                ? 'bg-white text-gray-900 shadow-sm' 
+                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+              }
+            `}
+          >
+            1 Year
+          </Button>
         </div>
       </div>
 
-      {/* Data Freshness Indicator */}
-      <div className="flex items-center gap-2 text-sm text-routiq-blackberry/70">
-        <span>Last updated: {lastUpdated}</span>
-      </div>
-
-      {/* Key Metrics Grid - Exactly 5 Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        {/* Patient Satisfaction */}
-        {loading ? <MetricSkeleton /> : (
-          <Card className="border-routiq-energy/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-routiq-blackberry/70 flex items-center gap-2">
-                <Heart className="h-4 w-4" />
-                Patient Satisfaction
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="text-2xl font-bold text-routiq-energy">
-                4.7/5
-              </div>
-              <div className="flex items-center gap-1 text-sm text-green-600 mt-1">
-                <TrendingUp className="h-3 w-3" />
-                <span>+0.3 this month</span>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Sentiment */}
-        {loading ? <MetricSkeleton /> : (
-          <Card className="border-routiq-energy/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-routiq-blackberry/70 flex items-center gap-2">
-                <MessageCircle className="h-4 w-4" />
-                Sentiment
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="text-2xl font-bold text-routiq-energy">
-                68%
-              </div>
-              <div className="text-sm text-routiq-blackberry/70 mt-1">
-                Positive feedback
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Avg. Bookings per Patient */}
-        {loading ? <MetricSkeleton /> : (
-          <Card className="border-routiq-energy/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-routiq-blackberry/70 flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                Avg. Bookings per Patient
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="text-2xl font-bold text-routiq-energy">
-                2.8
-              </div>
-              <div className="text-sm text-routiq-blackberry/70 mt-1">
-                Per month
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Avg. Revenue per Patient */}
-        {loading ? <MetricSkeleton /> : (
-          <Card className="border-routiq-energy/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-routiq-blackberry/70 flex items-center gap-2">
-                <DollarSign className="h-4 w-4" />
-                Avg. Revenue per Patient
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="text-2xl font-bold text-routiq-energy">
-                $1,240
-              </div>
-              <div className="text-sm text-routiq-blackberry/70 mt-1">
-                Monthly average
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* High-Risk Patients */}
-        {loading ? <MetricSkeleton /> : (
-          <Card className="border-routiq-prompt/20">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-routiq-blackberry/70 flex items-center gap-2">
-                <AlertTriangle className="h-4 w-4" />
-                High-Risk Patients
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="text-2xl font-bold text-routiq-prompt">
-                7
-              </div>
-              <div className="text-sm text-routiq-blackberry/70 mt-1">
-                Churn risk detected
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      {/* Sentiment Graph - 4 Week Trend */}
-      <Card className="border-routiq-energy/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-routiq-core">
-            <TrendingUp className="h-5 w-5" />
-            Sentiment Over Last 4 Weeks
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="h-48 bg-routiq-cloud/5 rounded-lg border border-routiq-cloud/20 flex items-center justify-center">
-              <div className="text-center">
-                <div className="w-12 h-12 bg-routiq-cloud/20 rounded animate-pulse mx-auto mb-2" />
-                <div className="w-32 h-4 bg-routiq-cloud/20 rounded animate-pulse mx-auto mb-1" />
-                <div className="w-24 h-3 bg-routiq-cloud/20 rounded animate-pulse mx-auto" />
-              </div>
-            </div>
-          ) : (
-            <div className="h-48 bg-routiq-energy/5 rounded-lg border border-routiq-energy/20 flex items-center justify-center">
-              <div className="text-center">
-                <TrendingUp className="h-12 w-12 text-routiq-blackberry/40 mx-auto mb-2" />
-                <p className="text-routiq-blackberry/70">
-                  4-week sentiment trend chart
-                </p>
-                <p className="text-sm text-routiq-blackberry/50 mt-1">
-                  Coming in Phase 2
-                </p>
-              </div>
-            </div>
+      {/* Date Range Display */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-base text-gray-600">
+        <div className="font-medium">
+          {dateRange}
+        </div>
+        <div className="flex items-center gap-2">
+          <span>Last updated: {displayLastUpdated}</span>
+          {isLoading && (
+            <Badge variant="outline" className="text-sm text-routiq-cloud border-routiq-cloud">
+              Refreshing...
+            </Badge>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      {/* Quick Link - High Risk Patients List */}
-      <Card className="border-routiq-prompt/20">
-        <CardContent className="pt-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className="font-medium text-routiq-core">High Risk Patients</h4>
-              <p className="text-sm text-routiq-blackberry/70 mt-1">
-                7 patients need immediate attention
-              </p>
+      {/* Key Metrics Grid - Stripe style */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* 1. Bookings / Patient */}
+        {isLoading ? <MetricSkeleton /> : (
+          <div className="stripe-metric-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
+                <Calendar className="h-5 w-5 text-routiq-cloud" />
+              </div>
+              <h3 className="text-base font-medium text-gray-600">Bookings / Patient</h3>
             </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="border-routiq-prompt/40 text-routiq-prompt hover:bg-routiq-prompt/10"
-            >
-              View List
-              <ArrowUpRight className="h-4 w-4 ml-1" />
-            </Button>
+            <div className="text-3xl font-semibold text-gray-900 mb-2">
+              {((bookingMetrics?.total_bookings || 247) / (patientMetrics?.total_patients || 89)).toFixed(1)}
+            </div>
+            <div className="flex items-center gap-1 text-base text-green-600">
+              <TrendingUp className="h-4 w-4" />
+              <span>+4.2% from last period</span>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        )}
+
+        {/* 2. Revenue / Patient */}
+        {isLoading ? <MetricSkeleton /> : (
+          <div className="stripe-metric-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
+                <DollarSign className="h-5 w-5 text-routiq-cloud" />
+              </div>
+              <h3 className="text-base font-medium text-gray-600">Revenue / Patient</h3>
+            </div>
+            <div className="text-3xl font-semibold text-gray-900 mb-2">
+              {formatCurrency(financialMetrics?.avg_revenue_per_patient || 562)}
+            </div>
+            <div className="flex items-center gap-1 text-base text-green-600">
+              <TrendingUp className="h-4 w-4" />
+              <span>+8.7% from last period</span>
+            </div>
+          </div>
+        )}
+
+        {/* 3. Follow-ups Due */}
+        {isLoading ? <MetricSkeleton /> : (
+          <div className="stripe-metric-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-amber-50 rounded-full flex items-center justify-center">
+                <Clock className="h-5 w-5 text-amber-600" />
+              </div>
+              <h3 className="text-base font-medium text-gray-600">Follow-ups Due</h3>
+            </div>
+            <div className="text-3xl font-semibold text-gray-900 mb-2">
+              {Math.round((patientMetrics?.total_patients || 89) * 0.18)}
+            </div>
+            <div className="flex items-center gap-1 text-base text-amber-600">
+              <TrendingUp className="h-4 w-4" />
+              <span>+2 this week</span>
+            </div>
+          </div>
+        )}
+
+        {/* 4. New Patient % */}
+        {isLoading ? <MetricSkeleton /> : (
+          <div className="stripe-metric-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
+                <UserPlus className="h-5 w-5 text-routiq-cloud" />
+              </div>
+              <h3 className="text-base font-medium text-gray-600">New Patient %</h3>
+            </div>
+            <div className="text-3xl font-semibold text-gray-900 mb-2">
+              {Math.round(((patientMetrics?.new_patients || 23) / (patientMetrics?.total_patients || 89)) * 100)}%
+            </div>
+            <div className="flex items-center gap-1 text-base text-green-600">
+              <TrendingUp className="h-4 w-4" />
+              <span>+5.3% from last period</span>
+            </div>
+          </div>
+        )}
+
+        {/* 5. Churn Risk Patients */}
+        {isLoading ? <MetricSkeleton /> : (
+          <div className="stripe-metric-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
+                <AlertCircle className="h-5 w-5 text-red-600" />
+              </div>
+              <h3 className="text-base font-medium text-gray-600">Churn Risk Patients</h3>
+            </div>
+            <div className="text-3xl font-semibold text-gray-900 mb-2">
+              {Math.round((patientMetrics?.total_patients || 89) * 0.08)}
+            </div>
+            <div className="flex items-center gap-1 text-base text-green-600">
+              <TrendingDown className="h-4 w-4" />
+              <span>-1 from last period</span>
+            </div>
+          </div>
+        )}
+
+        {/* 6. Churn Risk % */}
+        {isLoading ? <MetricSkeleton /> : (
+          <div className="stripe-metric-card">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-orange-50 rounded-full flex items-center justify-center">
+                <Percent className="h-5 w-5 text-orange-600" />
+              </div>
+              <h3 className="text-base font-medium text-gray-600">Churn Risk %</h3>
+            </div>
+            <div className="text-3xl font-semibold text-gray-900 mb-2">
+              12.3%
+            </div>
+            <div className="flex items-center gap-1 text-base text-green-600">
+              <TrendingDown className="h-4 w-4" />
+              <span>-2.1% from last period</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Patient Bookings Trends Chart - Stripe style */}
+      <div className="stripe-card">
+        <div className="stripe-card-header">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
+                <Activity className="h-5 w-5 text-routiq-cloud" />
+              </div>
+              <div>
+                <h3 className="text-2xl font-semibold text-gray-900">Avg. Bookings per Patient</h3>
+                <p className="text-base text-gray-600">
+                  {timeframe === '7d' && 'Daily average bookings per patient over 7 days'}
+                  {timeframe === '30d' && 'Daily average bookings per patient over 30 days'}
+                  {timeframe === '90d' && 'Weekly average bookings per patient over 90 days'}
+                  {timeframe === '1y' && 'Monthly average bookings per patient over 1 year'}
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              {/* Current vs Previous Period Comparison */}
+              <div className="text-right">
+                <div className="text-base text-gray-600">
+                  {timeframe === '7d' && 'This Week vs Last Week'}
+                  {timeframe === '30d' && 'This Month vs Last Month'}
+                  {timeframe === '90d' && 'This Quarter vs Last Quarter'}
+                  {timeframe === '1y' && 'This Year vs Last Year'}
+                </div>
+                <div className="flex items-center gap-1 text-base font-semibold">
+                  {getPatientBookingInsights().growthRate.startsWith('-') ? (
+                    <ArrowDown className="h-4 w-4 text-red-600" />
+                  ) : (
+                    <ArrowUp className="h-4 w-4 text-green-600" />
+                  )}
+                  <span className={getPatientBookingInsights().growthRate.startsWith('-') ? 'text-red-600' : 'text-green-600'}>
+                    {getPatientBookingInsights().growthRate.startsWith('-') ? '' : '+'}{getPatientBookingInsights().growthRate}%
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="stripe-card-content">
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={getPatientBookingsData()}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                <XAxis 
+                  dataKey="period" 
+                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                />
+                <YAxis 
+                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  axisLine={{ stroke: '#e5e7eb' }}
+                  tickFormatter={(value) => value.toFixed(1)}
+                />
+                <Tooltip 
+                  formatter={(value: number, name: string) => {
+                    if (name === 'bookingsPerPatient') {
+                      return [`${value.toFixed(2)} bookings`, 'Avg. Bookings per Patient']
+                    }
+                    return [value, name]
+                  }}
+                  labelFormatter={(label, payload) => {
+                    // Use the fullDate field for better tooltip labels
+                    if (payload && payload.length > 0 && payload[0].payload.fullDate) {
+                      return payload[0].payload.fullDate
+                    }
+                    return label
+                  }}
+                  contentStyle={{
+                    backgroundColor: 'white',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    fontSize: '14px'
+                  }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="bookingsPerPatient" 
+                  stroke="#7ba2e0" 
+                  strokeWidth={3}
+                  dot={{ fill: '#7ba2e0', strokeWidth: 2, r: 4 }}
+                  activeDot={{ r: 6, fill: '#7ba2e0' }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          
+          {/* Patient Booking Insights */}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center gap-2 text-base text-gray-600 mb-1">
+                <TrendingUp className="h-4 w-4" />
+                <span>Growth Rate</span>
+              </div>
+              <div className="text-2xl font-semibold text-gray-900">
+                {getPatientBookingInsights().growthRate.startsWith('-') ? '' : '+'}{getPatientBookingInsights().growthRate}%
+              </div>
+              <div className="text-base text-gray-600">
+                vs last {getPatientBookingInsights().timeframeLabel}
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center gap-2 text-base text-gray-600 mb-1">
+                <Calendar className="h-4 w-4" />
+                <span>
+                  {timeframe === '7d' && 'Avg Daily'}
+                  {timeframe === '30d' && 'Avg Weekly'}
+                  {timeframe === '90d' && 'Avg Monthly'}
+                  {timeframe === '1y' && 'Avg Monthly'}
+                </span>
+              </div>
+              <div className="text-2xl font-semibold text-gray-900">{getPatientBookingInsights().avgBookings}</div>
+              <div className="text-base text-gray-600">
+                bookings per patient
+              </div>
+            </div>
+            <div className="bg-gray-50 rounded-lg p-4">
+              <div className="flex items-center gap-2 text-base text-gray-600 mb-1">
+                <Users className="h-4 w-4" />
+                <span>
+                  Best {timeframe === '1y' ? 'Month' : timeframe === '90d' ? 'Week' : 'Day'}
+                </span>
+              </div>
+              <div className="text-2xl font-semibold text-gray-900">{getPatientBookingInsights().bestPeriod}</div>
+              <div className="text-base text-gray-600">{getPatientBookingInsights().bestBookings} avg bookings</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   )
 } 

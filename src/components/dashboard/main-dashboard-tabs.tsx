@@ -2,15 +2,15 @@
 
 import { useState } from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { BarChart3, Users, Zap } from 'lucide-react'
+import { BarChart3, Users, Zap, Bot } from 'lucide-react'
 import { ClinicOverviewTab } from './tabs/clinic-overview-tab'
 import { PatientInsightsTab } from './tabs/patient-insights-tab'
 import { AutomationSummaryTab } from './tabs/automation-summary-tab'
 
 /**
- * Main Dashboard Tabs Component
+ * Main Dashboard Tabs Component - Stripe-style Design
  * 
- * Provides the primary navigation structure for the dashboard with three main sections:
+ * Provides a clean, minimal navigation structure inspired by Stripe's dashboard:
  * - Clinic Overview (default): Month/Week views with booking metrics
  * - Patient Insights: Sentiment analysis and patient value metrics  
  * - Automation Summary: ROI tracking and automation performance
@@ -19,63 +19,74 @@ export function MainDashboardTabs() {
   const [activeTab, setActiveTab] = useState('clinic-overview')
 
   return (
-    <div className="min-h-screen bg-routiq-cloud/5">
-      <div className="max-w-8xl mx-auto space-y-6 p-6">
-        {/* Header */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-routiq-core">
-                Dashboard Overview
-              </h1>
-              <p className="text-routiq-blackberry/70 text-lg">
-                AI-powered insights and analytics for your healthcare practice
-              </p>
+    <div className="min-h-screen bg-gray-50">
+      <div className="w-full">
+        {/* Stripe-style Header */}
+        <div className="bg-white border-b border-gray-200">
+          <div className="px-8 py-8 max-w-none">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-semibold text-gray-900">
+                  Dashboard
+                </h1>
+                <p className="text-lg text-gray-600 mt-2">
+                  Overview of your healthcare practice performance
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-      {/* Main Dashboard Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-routiq-cloud/10 p-1 h-12">
-          <TabsTrigger 
-            value="clinic-overview" 
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
-          >
-            <BarChart3 className="h-4 w-4" />
-            <span className="font-medium">Clinic Overview</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="patient-insights"
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
-          >
-            <Users className="h-4 w-4" />
-            <span className="font-medium">Patient Insights</span>
-          </TabsTrigger>
-          <TabsTrigger 
-            value="automation-summary"
-            className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors"
-          >
-            <Zap className="h-4 w-4" />
-            <span className="font-medium">Automation Summary</span>
-          </TabsTrigger>
-        </TabsList>
+        {/* Centered Navigation Tabs */}
+        <div className="bg-gray-50 py-6">
+          <div className="flex justify-center">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
+              <TabsList className="inline-flex bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
+                <TabsTrigger 
+                  value="clinic-overview" 
+                  className="flex items-center gap-2 py-3 px-5 rounded-md text-base font-medium transition-all data-[state=active]:bg-routiq-blackberry data-[state=active]:text-white data-[state=active]:shadow-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                >
+                  <BarChart3 className="h-5 w-5" />
+                  <span>Clinic Overview</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="patient-insights"
+                  className="flex items-center gap-2 py-3 px-5 rounded-md text-base font-medium transition-all data-[state=active]:bg-routiq-blackberry data-[state=active]:text-white data-[state=active]:shadow-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                >
+                  <Users className="h-5 w-5" />
+                  <span>Patient Overview</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="automation-summary"
+                  className="flex items-center gap-2 py-3 px-5 rounded-md text-base font-medium transition-all data-[state=active]:bg-routiq-blackberry data-[state=active]:text-white data-[state=active]:shadow-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                >
+                  <Bot className="h-5 w-5" />
+                  <span>Automation Overview</span>
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+        </div>
 
-        {/* Clinic Overview Tab Content */}
-        <TabsContent value="clinic-overview" className="mt-6">
-          <ClinicOverviewTab />
-        </TabsContent>
+        {/* Tab Content */}
+        <div className="px-8 py-8">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            {/* Clinic Overview Tab Content */}
+            <TabsContent value="clinic-overview" className="mt-0">
+              <ClinicOverviewTab />
+            </TabsContent>
 
-        {/* Patient Insights Tab Content */}
-        <TabsContent value="patient-insights" className="mt-6">
-          <PatientInsightsTab />
-        </TabsContent>
+            {/* Patient Insights Tab Content */}
+            <TabsContent value="patient-insights" className="mt-0">
+              <PatientInsightsTab />
+            </TabsContent>
 
-        {/* Automation Summary Tab Content */}
-        <TabsContent value="automation-summary" className="mt-6">
-          <AutomationSummaryTab />
-        </TabsContent>
-      </Tabs>
+            {/* Automation Summary Tab Content */}
+            <TabsContent value="automation-summary" className="mt-0">
+              <AutomationSummaryTab />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
     </div>
   )
