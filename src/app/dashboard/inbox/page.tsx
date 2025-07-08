@@ -315,39 +315,6 @@ function ConversationPerformancePanel({
           </div>
         </CardContent>
       </Card>
-
-      {/* Quick Actions */}
-      <Card className="border-routiq-cloud/30">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base font-semibold text-routiq-core">Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0 space-y-3">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full justify-start gap-2 text-sm border-green-300 text-green-700 hover:bg-green-50"
-          >
-            <MessageCircle className="h-4 w-4" />
-            Send Message
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full justify-start gap-2 text-sm border-blue-300 text-blue-700 hover:bg-blue-50"
-          >
-            <Phone className="h-4 w-4" />
-            Call Patient
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="w-full justify-start gap-2 text-sm border-purple-300 text-purple-700 hover:bg-purple-50"
-          >
-            <FileText className="h-4 w-4" />
-            Add Note
-          </Button>
-        </CardContent>
-      </Card>
     </div>
   )
 }

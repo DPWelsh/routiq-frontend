@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { 
   Search,
   Filter,
@@ -41,7 +42,7 @@ interface AllPatientsTabProps {
   searchTerm: string
 }
 
-type FilterType = 'all' | 'at-risk' | 'high-ltv' | 'no-shows' | 'dormant' | 'vips' | 'top-opportunities'
+type FilterType = 'all' | 'active' | 'at-risk' | 'high-ltv' | 'no-shows' | 'dormant' | 'vips' | 'top-opportunities'
 
 /**
  * Patient Overview - Comprehensive Patient Database
@@ -243,6 +244,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
 
     // Apply active filter
     switch (activeFilter) {
+      case 'active':
+        filtered = filtered.filter(p => p.status === 'Active')
+        break
       case 'at-risk':
         filtered = filtered.filter(p => p.status === 'At-Risk')
         break
@@ -437,243 +441,158 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
           </div>
         </div>
 
-        {/* Quick Filters - Improved UX with Color-Coded Icons */}
-        <div className="flex flex-wrap items-center gap-3">
-          <span className="text-sm font-medium text-gray-700 mr-1">Quick Filters:</span>
-          
-          <Button
-            variant={activeFilter === 'all' ? 'default' : 'outline'}
-            size="sm"
+        {/* 2. Summary KPIs (Strip Below Search Bar) - Clickable Visual Filters */}
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+          {/* 1. All Patients */}
+          <Card 
+            className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
+              activeFilter === 'all' 
+                ? 'border-slate-300 bg-gradient-to-br from-slate-100 via-gray-50 to-slate-100 shadow-lg shadow-slate-200' 
+                : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-slate-50 hover:to-gray-50 hover:border-slate-300 hover:shadow-md'
+            }`}
             onClick={() => setActiveFilter('all')}
-            className={activeFilter === 'all' 
-              ? 'bg-gradient-to-r from-routiq-core to-routiq-energy hover:from-routiq-core/90 hover:to-routiq-energy/90 text-white shadow-lg' 
-              : 'border-gray-300 hover:bg-gradient-to-r hover:from-routiq-core/5 hover:to-routiq-energy/5 text-gray-700 hover:border-routiq-core/40 hover:text-routiq-core transition-all duration-200'
-            }
           >
-            <Users className="h-4 w-4 mr-1.5" />
-            All Patients
-          </Button>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
+                  activeFilter === 'all' 
+                    ? 'bg-gradient-to-br from-slate-400 to-slate-500 shadow-lg' 
+                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                }`}>
+                  <Users className={`h-6 w-6 ${activeFilter === 'all' ? 'text-white' : 'text-gray-500'}`} />
+                </div>
+                <div>
+                  <div className={`text-xl font-bold ${activeFilter === 'all' ? 'text-slate-700' : 'text-gray-600'}`}>
+                    {totalPatients}
+                  </div>
+                  <div className={`text-xs font-medium ${activeFilter === 'all' ? 'text-slate-600' : 'text-gray-500'}`}>
+                    All Patients
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           
-          <Button
-            variant={activeFilter === 'at-risk' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveFilter('at-risk')}
-            className={activeFilter === 'at-risk' 
-              ? 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg shadow-red-200' 
-              : 'border-red-200 text-red-700 hover:bg-gradient-to-r hover:from-red-50 hover:to-red-100 hover:border-red-400 hover:text-red-800 transition-all duration-200 hover:shadow-md hover:shadow-red-100'
-            }
+          {/* 2. Active Patients */}
+          <Card 
+            className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
+              activeFilter === 'active' 
+                ? 'border-emerald-200 bg-gradient-to-br from-emerald-50 via-green-50 to-emerald-50 shadow-lg shadow-emerald-100' 
+                : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-emerald-25 hover:to-green-25 hover:border-emerald-200 hover:shadow-md hover:shadow-emerald-50'
+            }`}
+            onClick={() => setActiveFilter('active')}
           >
-            <ShieldAlert className="h-4 w-4 mr-1.5" />
-            At Risk
-          </Button>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
+                  activeFilter === 'active' 
+                    ? 'bg-gradient-to-br from-emerald-400 to-green-500 shadow-lg' 
+                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                }`}>
+                  <TrendingUp className={`h-6 w-6 ${activeFilter === 'active' ? 'text-white' : 'text-gray-500'}`} />
+                </div>
+                <div>
+                  <div className={`text-xl font-bold ${activeFilter === 'active' ? 'text-emerald-700' : 'text-gray-600'}`}>
+                    {activePatients}
+                  </div>
+                  <div className={`text-xs font-medium ${activeFilter === 'active' ? 'text-emerald-600' : 'text-gray-500'}`}>
+                    Active
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           
-          <Button
-            variant={activeFilter === 'high-ltv' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveFilter('high-ltv')}
-            className={activeFilter === 'high-ltv' 
-              ? 'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white shadow-lg shadow-green-200' 
-              : 'border-emerald-200 text-emerald-700 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-green-100 hover:border-emerald-400 hover:text-emerald-800 transition-all duration-200 hover:shadow-md hover:shadow-emerald-100'
-            }
-          >
-            <CircleDollarSign className="h-4 w-4 mr-1.5" />
-            High LTV
-          </Button>
-          
-          <Button
-            variant={activeFilter === 'no-shows' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveFilter('no-shows')}
-            className={activeFilter === 'no-shows' 
-              ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white shadow-lg shadow-orange-200' 
-              : 'border-orange-200 text-orange-700 hover:bg-gradient-to-r hover:from-orange-50 hover:to-amber-100 hover:border-orange-400 hover:text-orange-800 transition-all duration-200 hover:shadow-md hover:shadow-orange-100'
-            }
-          >
-            <CalendarX className="h-4 w-4 mr-1.5" />
-            No Shows
-          </Button>
-          
-          <Button
-            variant={activeFilter === 'dormant' ? 'default' : 'outline'}
-            size="sm"
+          {/* 3. Dormant Patients */}
+          <Card 
+            className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
+              activeFilter === 'dormant' 
+                ? 'border-amber-200 bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-50 shadow-lg shadow-amber-100' 
+                : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-amber-25 hover:to-yellow-25 hover:border-amber-200 hover:shadow-md hover:shadow-amber-50'
+            }`}
             onClick={() => setActiveFilter('dormant')}
-            className={activeFilter === 'dormant' 
-              ? 'bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-white shadow-lg shadow-yellow-200' 
-              : 'border-yellow-200 text-yellow-700 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-amber-100 hover:border-yellow-400 hover:text-yellow-800 transition-all duration-200 hover:shadow-md hover:shadow-yellow-100'
-            }
           >
-            <UserCheck className="h-4 w-4 mr-1.5" />
-            Dormant
-          </Button>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
+                  activeFilter === 'dormant' 
+                    ? 'bg-gradient-to-br from-amber-300 to-yellow-400 shadow-lg' 
+                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                }`}>
+                  <UserCheck className={`h-6 w-6 ${activeFilter === 'dormant' ? 'text-white' : 'text-gray-500'}`} />
+                </div>
+                <div>
+                  <div className={`text-xl font-bold ${activeFilter === 'dormant' ? 'text-amber-700' : 'text-gray-600'}`}>
+                    {dormantPatients}
+                  </div>
+                  <div className={`text-xs font-medium ${activeFilter === 'dormant' ? 'text-amber-600' : 'text-gray-500'}`}>
+                    Dormant
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           
-          <Button
-            variant={activeFilter === 'vips' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setActiveFilter('vips')}
-            className={activeFilter === 'vips' 
-              ? 'bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white shadow-lg shadow-purple-200' 
-              : 'border-purple-200 text-purple-700 hover:bg-gradient-to-r hover:from-purple-50 hover:to-violet-100 hover:border-purple-400 hover:text-purple-800 transition-all duration-200 hover:shadow-md hover:shadow-purple-100'
-            }
+          {/* 4. At Risk Patients */}
+          <Card 
+            className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
+              activeFilter === 'at-risk' 
+                ? 'border-red-200 bg-gradient-to-br from-red-50 via-rose-50 to-red-50 shadow-lg shadow-red-100' 
+                : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-red-25 hover:to-rose-25 hover:border-red-200 hover:shadow-md hover:shadow-red-50'
+            }`}
+            onClick={() => setActiveFilter('at-risk')}
           >
-            <Crown className="h-4 w-4 mr-1.5" />
-            VIPs
-          </Button>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
+                  activeFilter === 'at-risk' 
+                    ? 'bg-gradient-to-br from-red-400 to-rose-500 shadow-lg' 
+                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                }`}>
+                  <AlertTriangle className={`h-6 w-6 ${activeFilter === 'at-risk' ? 'text-white' : 'text-gray-500'}`} />
+                </div>
+                <div>
+                  <div className={`text-xl font-bold ${activeFilter === 'at-risk' ? 'text-red-700' : 'text-gray-600'}`}>
+                    {atRiskPatients}
+                  </div>
+                  <div className={`text-xs font-medium ${activeFilter === 'at-risk' ? 'text-red-600' : 'text-gray-500'}`}>
+                    At Risk
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
           
-          <Button
-            variant={activeFilter === 'top-opportunities' ? 'default' : 'outline'}
-            size="sm"
+          {/* 5. Top Opportunities */}
+          <Card 
+            className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
+              activeFilter === 'top-opportunities' 
+                ? 'border-orange-200 bg-gradient-to-br from-orange-50 via-amber-50 to-orange-50 shadow-lg shadow-orange-100' 
+                : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-orange-25 hover:to-amber-25 hover:border-orange-200 hover:shadow-md hover:shadow-orange-50'
+            }`}
             onClick={() => setActiveFilter('top-opportunities')}
-            className={activeFilter === 'top-opportunities' 
-              ? 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white shadow-lg shadow-amber-200' 
-              : 'border-amber-200 text-amber-700 hover:bg-gradient-to-r hover:from-amber-50 hover:to-yellow-100 hover:border-amber-400 hover:text-amber-800 transition-all duration-200 hover:shadow-md hover:shadow-amber-100'
-            }
           >
-            <Star className="h-4 w-4 mr-1.5" />
-            Top Opportunities
-          </Button>
+            <CardContent className="p-4">
+              <div className="flex items-center gap-3">
+                <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
+                  activeFilter === 'top-opportunities' 
+                    ? 'bg-gradient-to-br from-orange-400 to-amber-500 shadow-lg' 
+                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                }`}>
+                  <Star className={`h-6 w-6 ${activeFilter === 'top-opportunities' ? 'text-white' : 'text-gray-500'}`} />
+                </div>
+                <div>
+                  <div className={`text-xl font-bold ${activeFilter === 'top-opportunities' ? 'text-orange-700' : 'text-gray-600'}`}>
+                    {topOpportunityPatients}
+                  </div>
+                  <div className={`text-xs font-medium ${activeFilter === 'top-opportunities' ? 'text-orange-600' : 'text-gray-500'}`}>
+                    Top Opportunities
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
-      </div>
-
-      {/* 2. Summary KPIs (Strip Below Search Bar) - Clickable Visual Filters */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        {/* 1. All Patients */}
-        <Card 
-          className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
-            activeFilter === 'all' 
-              ? 'border-routiq-core bg-gradient-to-br from-routiq-core/10 via-routiq-energy/5 to-routiq-core/15 shadow-lg shadow-routiq-core/20' 
-              : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-routiq-core/5 hover:to-routiq-energy/5 hover:border-routiq-core/30 hover:shadow-md'
-          }`}
-          onClick={() => setActiveFilter('all')}
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
-                activeFilter === 'all' 
-                  ? 'bg-gradient-to-br from-routiq-core to-routiq-energy shadow-lg' 
-                  : 'bg-gradient-to-br from-gray-100 to-gray-200'
-              }`}>
-                <Users className={`h-6 w-6 ${activeFilter === 'all' ? 'text-white' : 'text-gray-500'}`} />
-              </div>
-              <div>
-                <div className={`text-xl font-bold ${activeFilter === 'all' ? 'text-routiq-core' : 'text-gray-600'}`}>
-                  {totalPatients}
-                </div>
-                <div className={`text-xs font-medium ${activeFilter === 'all' ? 'text-routiq-core/70' : 'text-gray-500'}`}>
-                  All Patients
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* 2. Active Patients */}
-        <Card className="border-gray-200 bg-gradient-to-br from-gray-50 to-white">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
-                <TrendingUp className="h-6 w-6 text-gray-500" />
-              </div>
-              <div>
-                <div className="text-xl font-bold text-gray-600">
-                  {activePatients}
-                </div>
-                <div className="text-xs font-medium text-gray-500">
-                  Active
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* 3. Dormant Patients */}
-        <Card 
-          className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
-            activeFilter === 'dormant' 
-              ? 'border-yellow-300 bg-gradient-to-br from-yellow-50 via-amber-50 to-yellow-100 shadow-lg shadow-yellow-200' 
-              : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-yellow-50 hover:to-amber-50 hover:border-yellow-300 hover:shadow-md hover:shadow-yellow-100'
-          }`}
-          onClick={() => setActiveFilter('dormant')}
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
-                activeFilter === 'dormant' 
-                  ? 'bg-gradient-to-br from-yellow-400 to-amber-500 shadow-lg' 
-                  : 'bg-gradient-to-br from-gray-100 to-gray-200'
-              }`}>
-                <UserCheck className={`h-6 w-6 ${activeFilter === 'dormant' ? 'text-white' : 'text-gray-500'}`} />
-              </div>
-              <div>
-                <div className={`text-xl font-bold ${activeFilter === 'dormant' ? 'text-yellow-700' : 'text-gray-600'}`}>
-                  {dormantPatients}
-                </div>
-                <div className={`text-xs font-medium ${activeFilter === 'dormant' ? 'text-yellow-600/80' : 'text-gray-500'}`}>
-                  Dormant
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* 4. At Risk Patients */}
-        <Card 
-          className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
-            activeFilter === 'at-risk' 
-              ? 'border-red-300 bg-gradient-to-br from-red-50 via-rose-50 to-red-100 shadow-lg shadow-red-200' 
-              : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-red-50 hover:to-rose-50 hover:border-red-300 hover:shadow-md hover:shadow-red-100'
-          }`}
-          onClick={() => setActiveFilter('at-risk')}
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
-                activeFilter === 'at-risk' 
-                  ? 'bg-gradient-to-br from-red-500 to-rose-600 shadow-lg' 
-                  : 'bg-gradient-to-br from-gray-100 to-gray-200'
-              }`}>
-                <AlertTriangle className={`h-6 w-6 ${activeFilter === 'at-risk' ? 'text-white' : 'text-gray-500'}`} />
-              </div>
-              <div>
-                <div className={`text-xl font-bold ${activeFilter === 'at-risk' ? 'text-red-700' : 'text-gray-600'}`}>
-                  {atRiskPatients}
-                </div>
-                <div className={`text-xs font-medium ${activeFilter === 'at-risk' ? 'text-red-600/80' : 'text-gray-500'}`}>
-                  At Risk
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        {/* 5. Top Opportunities */}
-        <Card 
-          className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
-            activeFilter === 'top-opportunities' 
-              ? 'border-amber-300 bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-100 shadow-lg shadow-amber-200' 
-              : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-amber-50 hover:to-yellow-50 hover:border-amber-300 hover:shadow-md hover:shadow-amber-100'
-          }`}
-          onClick={() => setActiveFilter('top-opportunities')}
-        >
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
-                activeFilter === 'top-opportunities' 
-                  ? 'bg-gradient-to-br from-amber-500 to-yellow-500 shadow-lg' 
-                  : 'bg-gradient-to-br from-gray-100 to-gray-200'
-              }`}>
-                <Star className={`h-6 w-6 ${activeFilter === 'top-opportunities' ? 'text-white' : 'text-gray-500'}`} />
-              </div>
-              <div>
-                <div className={`text-xl font-bold ${activeFilter === 'top-opportunities' ? 'text-amber-700' : 'text-gray-600'}`}>
-                  {topOpportunityPatients}
-                </div>
-                <div className={`text-xs font-medium ${activeFilter === 'top-opportunities' ? 'text-amber-600/80' : 'text-gray-500'}`}>
-                  Top Opportunities
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* 3. Patient Database Table (Core Section) */}
@@ -684,13 +603,84 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
               <Users className="h-5 w-5" />
               Patient Database
             </CardTitle>
-            <div className="text-sm text-gray-600">
-              Showing {filteredPatients.length} of {totalPatients} patients
-              {activeFilter !== 'all' && (
-                <Badge variant="secondary" className="ml-2">
-                  {activeFilter.replace('-', ' ')}
-                </Badge>
-              )}
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-gray-600">
+                Showing {filteredPatients.length} of {totalPatients} patients
+                {activeFilter !== 'all' && (
+                  <Badge variant="secondary" className="ml-2">
+                    {activeFilter.replace('-', ' ')}
+                  </Badge>
+                )}
+              </div>
+              
+              {/* Filter Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Filter className="h-4 w-4" />
+                    Filter
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem 
+                    onClick={() => setActiveFilter('all')}
+                    className={`cursor-pointer ${activeFilter === 'all' ? 'bg-slate-100 text-slate-900' : ''}`}
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    All Patients
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setActiveFilter('active')}
+                    className={`cursor-pointer ${activeFilter === 'active' ? 'bg-emerald-50 text-emerald-900' : ''}`}
+                  >
+                    <TrendingUp className="h-4 w-4 mr-2 text-emerald-600" />
+                    Active
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setActiveFilter('at-risk')}
+                    className={`cursor-pointer ${activeFilter === 'at-risk' ? 'bg-red-50 text-red-900' : ''}`}
+                  >
+                    <ShieldAlert className="h-4 w-4 mr-2 text-red-600" />
+                    At Risk
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setActiveFilter('high-ltv')}
+                    className={`cursor-pointer ${activeFilter === 'high-ltv' ? 'bg-emerald-50 text-emerald-900' : ''}`}
+                  >
+                    <CircleDollarSign className="h-4 w-4 mr-2 text-emerald-600" />
+                    High LTV
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setActiveFilter('no-shows')}
+                    className={`cursor-pointer ${activeFilter === 'no-shows' ? 'bg-orange-50 text-orange-900' : ''}`}
+                  >
+                    <CalendarX className="h-4 w-4 mr-2 text-orange-600" />
+                    No Shows
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setActiveFilter('dormant')}
+                    className={`cursor-pointer ${activeFilter === 'dormant' ? 'bg-amber-50 text-amber-900' : ''}`}
+                  >
+                    <UserCheck className="h-4 w-4 mr-2 text-amber-600" />
+                    Dormant
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setActiveFilter('vips')}
+                    className={`cursor-pointer ${activeFilter === 'vips' ? 'bg-purple-50 text-purple-900' : ''}`}
+                  >
+                    <Crown className="h-4 w-4 mr-2 text-purple-600" />
+                    VIPs
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setActiveFilter('top-opportunities')}
+                    className={`cursor-pointer ${activeFilter === 'top-opportunities' ? 'bg-orange-50 text-orange-900' : ''}`}
+                  >
+                    <Star className="h-4 w-4 mr-2 text-orange-600" />
+                    Top Opportunities
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </CardHeader>

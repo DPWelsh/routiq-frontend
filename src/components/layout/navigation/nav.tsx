@@ -53,14 +53,6 @@ const navigation = [
     badge: null
   },
   { 
-    name: "Engagement Centre", 
-    href: "/dashboard/conversations", 
-    icon: MessageSquare, 
-    roles: ["ADMIN", "USER"],
-    description: "Smart patient communication analytics",
-    badge: null
-  },
-  { 
     name: "Patient Overview", 
     href: "/dashboard/patient-insights", 
     icon: TrendingUp, 
