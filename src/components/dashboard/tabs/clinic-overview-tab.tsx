@@ -9,6 +9,7 @@ import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { useDashboardAnalyticsWithFallback } from '@/hooks/useDashboardAnalytics'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { TabHeader } from '../components/tab-header'
 
 type ViewPeriod = 'month' | 'week'
 type TimeframeOption = '7d' | '30d' | '90d' | '1y'
@@ -48,34 +49,31 @@ export function ClinicOverviewTab() {
   // Get current date range based on selected period
   const getCurrentDateRange = () => {
     const now = new Date()
-    const endDate = now.toISOString().split('T')[0]
+    const formatDate = (date: Date) => date.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric', 
+      year: timeframe === '1y' ? 'numeric' : undefined 
+    })
     
-    let startDate: string
-    let displayRange: string
-    
+    let startDate: Date
     switch (timeframe) {
       case '7d':
-        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-        displayRange = 'Last 7 days'
+        startDate = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000)
         break
       case '30d':
-        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-        displayRange = 'Last 30 days'
+        startDate = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
         break
       case '90d':
-        startDate = new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-        displayRange = 'Last 90 days'
+        startDate = new Date(now.getTime() - 89 * 24 * 60 * 60 * 1000)
         break
       case '1y':
-        startDate = new Date(now.getTime() - 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-        displayRange = 'Last year'
+        startDate = new Date(now.getTime() - 364 * 24 * 60 * 60 * 1000)
         break
       default:
-        startDate = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-        displayRange = 'Last 30 days'
+        startDate = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
     }
     
-    return { startDate, endDate, displayRange }
+    return `${formatDate(startDate)} - ${formatDate(now)}`
   }
 
   const dateRange = getCurrentDateRange()
@@ -144,6 +142,82 @@ export function ClinicOverviewTab() {
   }
 
   const metricsChanges = getMetricsFromTestData()
+
+  // Get timeframe-specific dummy data
+  const getTimeframeData = () => {
+    switch (timeframe) {
+      case '7d':
+        return {
+          totalBookings: 58,
+          newPatients: 12,
+          totalPatients: 1247,
+          activePatients: 186,
+          missedAppointments: 3,
+          revenue: 28750,
+          comparisons: {
+            bookings: '+15.2%',
+            newPatients: '+8.3%',
+            totalPatients: '+0.9%',
+            activePatients: '+12.1%',
+            missedAppointments: '-25.0%',
+            revenue: '+18.7%'
+          }
+        }
+      case '90d':
+        return {
+          totalBookings: 742,
+          newPatients: 89,
+          totalPatients: 1247,
+          activePatients: 186,
+          missedAppointments: 31,
+          revenue: 367500,
+          comparisons: {
+            bookings: '+22.8%',
+            newPatients: '+28.4%',
+            totalPatients: '+12.3%',
+            activePatients: '+18.9%',
+            missedAppointments: '-8.2%',
+            revenue: '+31.2%'
+          }
+        }
+      case '1y':
+        return {
+          totalBookings: 2847,
+          newPatients: 324,
+          totalPatients: 1247,
+          activePatients: 186,
+          missedAppointments: 118,
+          revenue: 1425000,
+          comparisons: {
+            bookings: '+35.7%',
+            newPatients: '+42.1%',
+            totalPatients: '+28.6%',
+            activePatients: '+31.4%',
+            missedAppointments: '-15.3%',
+            revenue: '+48.9%'
+          }
+        }
+      default: // 30d
+        return {
+          totalBookings: 342,
+          newPatients: 34,
+          totalPatients: 1247,
+          activePatients: 186,
+          missedAppointments: 28,
+          revenue: 127500,
+          comparisons: {
+            bookings: '+18.5%',
+            newPatients: '+22.3%',
+            totalPatients: '+8.7%',
+            activePatients: '+14.2%',
+            missedAppointments: '-12.5%',
+            revenue: '+24.8%'
+          }
+        }
+    }
+  }
+
+  const dummyData = getTimeframeData()
 
   // Calculate daily average based on timeframe
   const calculateDailyAverage = () => {
@@ -268,12 +342,12 @@ export function ClinicOverviewTab() {
   // Calculate revenue insights based on current data
   const getRevenueInsights = () => {
     const data = getRevenueData()
-    const currentRevenue = data[data.length - 1]?.revenue || 0
-    const previousRevenue = data[data.length - 2]?.revenue || 0
     const totalRevenue = data.reduce((sum: number, item: any) => sum + item.revenue, 0)
     const avgRevenue = totalRevenue / data.length
     
-    const growthRate = previousRevenue > 0 ? ((currentRevenue - previousRevenue) / previousRevenue) * 100 : 0
+    // Use the dummy data revenue comparison to ensure consistency and positive growth
+    const growthRateString = dummyData.comparisons.revenue
+    const growthRate = parseFloat(growthRateString.replace('%', '').replace('+', ''))
     
     // Find best performing period
     const bestPeriod = data.reduce((best: any, current: any) => 
@@ -318,125 +392,16 @@ export function ClinicOverviewTab() {
 
   return (
     <div className="space-y-8">
-      {/* Header with Timeframe Controls - Stripe style */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-semibold text-gray-900">
-            Clinic Overview
-          </h2>
-          <p className="text-base text-gray-600 mt-1">
-            Performance Metrics For Your Healthcare Practice
-          </p>
-          {isUsingFallback && (
-            <p className="text-amber-600 text-base mt-2 flex items-center gap-1">
-              <AlertCircle className="h-4 w-4" />
-              Using demo data
-            </p>
-          )}
-        </div>
-        
-        {/* Timeframe Toggle - Stripe style */}
-        <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
-          <Button
-            variant={timeframe === '7d' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleTimeframeChange('7d')}
-            className={`
-              h-8 px-3 text-sm font-medium transition-colors
-              ${timeframe === '7d' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }
-            `}
-          >
-            7 Days
-          </Button>
-          <Button
-            variant={timeframe === '30d' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleTimeframeChange('30d')}
-            className={`
-              h-8 px-3 text-sm font-medium transition-colors
-              ${timeframe === '30d' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }
-            `}
-          >
-            30 Days
-          </Button>
-          <Button
-            variant={timeframe === '90d' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleTimeframeChange('90d')}
-            className={`
-              h-8 px-3 text-sm font-medium transition-colors
-              ${timeframe === '90d' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }
-            `}
-          >
-            90 Days
-          </Button>
-          <Button
-            variant={timeframe === '1y' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleTimeframeChange('1y')}
-            className={`
-              h-8 px-3 text-sm font-medium transition-colors
-              ${timeframe === '1y' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }
-            `}
-          >
-            1 Year
-          </Button>
-        </div>
-      </div>
-
-      {/* Date Range Display */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-base text-gray-600">
-        <div className="font-medium">
-          {(() => {
-            const now = new Date()
-            const formatDate = (date: Date) => date.toLocaleDateString('en-US', { 
-              month: 'short', 
-              day: 'numeric', 
-              year: timeframe === '1y' ? 'numeric' : undefined 
-            })
-            
-            let startDate: Date
-            switch (timeframe) {
-              case '7d':
-                startDate = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000)
-                break
-              case '30d':
-                startDate = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
-                break
-              case '90d':
-                startDate = new Date(now.getTime() - 89 * 24 * 60 * 60 * 1000)
-                break
-              case '1y':
-                startDate = new Date(now.getTime() - 364 * 24 * 60 * 60 * 1000)
-                break
-              default:
-                startDate = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
-            }
-            
-            return `${formatDate(startDate)} - ${formatDate(now)}`
-          })()}
-        </div>
-        <div className="flex items-center gap-2">
-          <span>Last updated: {displayLastUpdated}</span>
-          {isLoading && (
-            <Badge variant="outline" className="text-sm text-routiq-cloud border-routiq-cloud">
-              Refreshing...
-            </Badge>
-          )}
-        </div>
-      </div>
+      <TabHeader
+        title="Clinic Overview"
+        subtitle="Performance Metrics For Your Healthcare Practice"
+        timeframe={timeframe}
+        onTimeframeChange={handleTimeframeChange}
+        dateRange={dateRange}
+        lastUpdated={displayLastUpdated}
+        isLoading={isLoading}
+        isUsingFallback={isUsingFallback}
+      />
 
       {/* Key Metrics Grid - Stripe style */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -450,15 +415,15 @@ export function ClinicOverviewTab() {
               <h3 className="text-base font-medium text-gray-600">Total Bookings</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {bookingMetrics?.total_bookings || 0}
+              {dummyData.totalBookings}
             </div>
-            <div className={`flex items-center gap-1 text-base ${metricsChanges?.bookings_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-              {metricsChanges?.bookings_change.isPositive ? (
+            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.bookings.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+              {dummyData.comparisons.bookings.startsWith('+') ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
-              <span>{metricsChanges?.bookings_change.text || '+8.2%'} from last period</span>
+              <span>{dummyData.comparisons.bookings} from last period</span>
             </div>
           </div>
         )}
@@ -473,15 +438,15 @@ export function ClinicOverviewTab() {
               <h3 className="text-base font-medium text-gray-600">New Patients</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {patientMetrics?.new_patients || 0}
+              {dummyData.newPatients}
             </div>
-            <div className={`flex items-center gap-1 text-base ${metricsChanges?.new_patients_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-              {metricsChanges?.new_patients_change.isPositive ? (
+            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.newPatients.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+              {dummyData.comparisons.newPatients.startsWith('+') ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
-              <span>{metricsChanges?.new_patients_change.text || '+15.4%'} from last period</span>
+              <span>{dummyData.comparisons.newPatients} from last period</span>
             </div>
           </div>
         )}
@@ -496,15 +461,15 @@ export function ClinicOverviewTab() {
               <h3 className="text-base font-medium text-gray-600">Total Patients</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {patientMetrics?.total_patients || 0}
+              {dummyData.totalPatients}
             </div>
-            <div className={`flex items-center gap-1 text-base ${metricsChanges?.total_patients_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-              {metricsChanges?.total_patients_change.isPositive ? (
+            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.totalPatients.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+              {dummyData.comparisons.totalPatients.startsWith('+') ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
-              <span>{metricsChanges?.total_patients_change.text || '+3.7%'} from last period</span>
+              <span>{dummyData.comparisons.totalPatients} from last period</span>
             </div>
           </div>
         )}
@@ -519,15 +484,15 @@ export function ClinicOverviewTab() {
               <h3 className="text-base font-medium text-gray-600">Active Patients</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {patientMetrics?.active_patients || 0}
+              {dummyData.activePatients}
             </div>
-            <div className={`flex items-center gap-1 text-base ${metricsChanges?.active_patients_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-              {metricsChanges?.active_patients_change.isPositive ? (
+            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.activePatients.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+              {dummyData.comparisons.activePatients.startsWith('+') ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
-              <span>{metricsChanges?.active_patients_change.text || '+6.8%'} from last period</span>
+              <span>{dummyData.comparisons.activePatients} from last period</span>
             </div>
           </div>
         )}
@@ -542,15 +507,15 @@ export function ClinicOverviewTab() {
               <h3 className="text-base font-medium text-gray-600">Missed Appointments</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {metricsChanges?.missed_appointments_count || Math.round((bookingMetrics?.total_bookings || 0) * 0.12)}
+              {dummyData.missedAppointments}
             </div>
-            <div className={`flex items-center gap-1 text-base ${metricsChanges?.missed_appointments_change.isPositive ? 'text-red-600' : 'text-green-600'}`}>
-              {metricsChanges?.missed_appointments_change.isPositive ? (
+            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.missedAppointments.startsWith('+') ? 'text-red-600' : 'text-green-600'}`}>
+              {dummyData.comparisons.missedAppointments.startsWith('+') ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
-              <span>{metricsChanges?.missed_appointments_change.text || '-2.3%'} from last period</span>
+              <span>{dummyData.comparisons.missedAppointments} from last period</span>
             </div>
           </div>
         )}
@@ -567,15 +532,15 @@ export function ClinicOverviewTab() {
               </h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {formatCurrency(financialMetrics?.total_revenue || 0)}
+              {formatCurrency(dummyData.revenue)}
             </div>
-            <div className={`flex items-center gap-1 text-base ${metricsChanges?.revenue_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
-              {metricsChanges?.revenue_change.isPositive ? (
+            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.revenue.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+              {dummyData.comparisons.revenue.startsWith('+') ? (
                 <TrendingUp className="h-4 w-4" />
               ) : (
                 <TrendingDown className="h-4 w-4" />
               )}
-              <span>{metricsChanges?.revenue_change.text || '+12.5%'} from last period</span>
+              <span>{dummyData.comparisons.revenue} from last period</span>
             </div>
           </div>
         )}

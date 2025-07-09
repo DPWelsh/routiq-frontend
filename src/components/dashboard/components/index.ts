@@ -14,4 +14,5 @@ export {
   ChartLoadingPlaceholder,
   TableLoadingPlaceholder,
   FullPageLoadingPlaceholder
-} from './loading-placeholder' 
+} from './loading-placeholder'
+export { TabHeader } from './tab-header' 

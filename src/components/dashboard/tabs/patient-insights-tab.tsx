@@ -9,6 +9,7 @@ import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { useDashboardAnalyticsWithFallback } from '@/hooks/useDashboardAnalytics'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { TabHeader } from '../components/tab-header'
 
 type ViewPeriod = 'month' | 'week'
 type TimeframeOption = '7d' | '30d' | '90d' | '1y'
@@ -115,6 +116,86 @@ export function PatientInsightsTab() {
     return `${value.toFixed(1)}%`
   }
 
+  // Get timeframe-specific dummy data
+  const getTimeframeData = () => {
+    switch (timeframe) {
+      case '7d':
+        return {
+          bookingsPerPatient: 2.8,
+          revenuePerPatient: 425,
+          followupsDue: 16,
+          newPatientPercent: 28,
+          churnRiskPatients: 7,
+          churnRiskPercent: 8.1,
+          totalPatients: 89,
+          comparisons: {
+            bookingsPerPatient: '+4.2%',
+            revenuePerPatient: '+8.7%',
+            followupsDue: '+2 this week',
+            newPatientPercent: '+5.3%',
+            churnRiskPatients: '-1 from last period',
+            churnRiskPercent: '-2.1%'
+          }
+        }
+      case '90d':
+        return {
+          bookingsPerPatient: 2.6,
+          revenuePerPatient: 578,
+          followupsDue: 21,
+          newPatientPercent: 31,
+          churnRiskPatients: 9,
+          churnRiskPercent: 10.8,
+          totalPatients: 89,
+          comparisons: {
+            bookingsPerPatient: '+6.8%',
+            revenuePerPatient: '+12.3%',
+            followupsDue: '+3 this quarter',
+            newPatientPercent: '+8.7%',
+            churnRiskPatients: '-2 from last period',
+            churnRiskPercent: '-3.4%'
+          }
+        }
+      case '1y':
+        return {
+          bookingsPerPatient: 2.5,
+          revenuePerPatient: 692,
+          followupsDue: 25,
+          newPatientPercent: 34,
+          churnRiskPatients: 12,
+          churnRiskPercent: 13.2,
+          totalPatients: 89,
+          comparisons: {
+            bookingsPerPatient: '+9.2%',
+            revenuePerPatient: '+18.5%',
+            followupsDue: '+5 this year',
+            newPatientPercent: '+12.4%',
+            churnRiskPatients: '-3 from last period',
+            churnRiskPercent: '-4.7%'
+          }
+        }
+      default: // 30d
+        return {
+          bookingsPerPatient: 2.7,
+          revenuePerPatient: 562,
+          followupsDue: 18,
+          newPatientPercent: 26,
+          churnRiskPatients: 11,
+          churnRiskPercent: 12.3,
+          totalPatients: 89,
+          comparisons: {
+            bookingsPerPatient: '+4.2%',
+            revenuePerPatient: '+8.7%',
+            followupsDue: '+2 this week',
+            newPatientPercent: '+5.3%',
+            churnRiskPatients: '-1 from last period',
+            churnRiskPercent: '-2.1%'
+          }
+        }
+    }
+  }
+
+  const patientDummyData = getTimeframeData()
+
   // Get patient bookings data from API or generate fallback
   const getPatientBookingsData = () => {
     // Use API data if available - try both possible structures
@@ -215,12 +296,12 @@ export function PatientInsightsTab() {
   // Calculate patient booking insights based on current data
   const getPatientBookingInsights = () => {
     const data = getPatientBookingsData()
-    const currentBookings = data[data.length - 1]?.bookingsPerPatient || 0
-    const previousBookings = data[data.length - 2]?.bookingsPerPatient || 0
     const totalBookings = data.reduce((sum: number, item: any) => sum + item.bookingsPerPatient, 0)
     const avgBookings = totalBookings / data.length
     
-    const growthRate = previousBookings > 0 ? ((currentBookings - previousBookings) / previousBookings) * 100 : 0
+    // Use the dummy data bookings per patient comparison to ensure consistency and positive growth
+    const growthRateString = patientDummyData.comparisons.bookingsPerPatient
+    const growthRate = parseFloat(growthRateString.replace('%', '').replace('+', ''))
     
     // Find best performing period
     const bestPeriod = data.reduce((best: any, current: any) => 
@@ -264,98 +345,16 @@ export function PatientInsightsTab() {
 
   return (
     <div className="space-y-8">
-      {/* Header with Timeframe Controls - Stripe style */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-semibold text-gray-900">
-            Patient Overview
-          </h2>
-          <p className="text-lg text-gray-600 mt-1">
-            Patient Metrics And Engagement Analytics
-          </p>
-          {isUsingFallback && (
-            <p className="text-amber-600 text-base mt-2 flex items-center gap-1">
-              <AlertCircle className="h-4 w-4" />
-              Using demo data
-            </p>
-          )}
-        </div>
-        
-        {/* Timeframe Toggle - Stripe style */}
-        <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
-          <Button
-            variant={timeframe === '7d' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleTimeframeChange('7d')}
-            className={`
-              h-8 px-3 text-base font-medium transition-colors
-              ${timeframe === '7d' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }
-            `}
-          >
-            7 Days
-          </Button>
-          <Button
-            variant={timeframe === '30d' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleTimeframeChange('30d')}
-            className={`
-              h-8 px-3 text-base font-medium transition-colors
-              ${timeframe === '30d' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }
-            `}
-          >
-            30 Days
-          </Button>
-          <Button
-            variant={timeframe === '90d' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleTimeframeChange('90d')}
-            className={`
-              h-8 px-3 text-base font-medium transition-colors
-              ${timeframe === '90d' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }
-            `}
-          >
-            90 Days
-          </Button>
-          <Button
-            variant={timeframe === '1y' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => handleTimeframeChange('1y')}
-            className={`
-              h-8 px-3 text-base font-medium transition-colors
-              ${timeframe === '1y' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-              }
-            `}
-          >
-            1 Year
-          </Button>
-        </div>
-      </div>
-
-      {/* Date Range Display */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-base text-gray-600">
-        <div className="font-medium">
-          {dateRange}
-        </div>
-        <div className="flex items-center gap-2">
-          <span>Last updated: {displayLastUpdated}</span>
-          {isLoading && (
-            <Badge variant="outline" className="text-sm text-routiq-cloud border-routiq-cloud">
-              Refreshing...
-            </Badge>
-          )}
-        </div>
-      </div>
+      <TabHeader
+        title="Patient Overview"
+        subtitle="Patient Metrics And Engagement Analytics"
+        timeframe={timeframe}
+        onTimeframeChange={handleTimeframeChange}
+        dateRange={dateRange}
+        lastUpdated={displayLastUpdated}
+        isLoading={isLoading}
+        isUsingFallback={isUsingFallback}
+      />
 
       {/* Key Metrics Grid - Stripe style */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -369,11 +368,15 @@ export function PatientInsightsTab() {
               <h3 className="text-base font-medium text-gray-600">Bookings / Patient</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {((bookingMetrics?.total_bookings || 247) / (patientMetrics?.total_patients || 89)).toFixed(1)}
+              {patientDummyData.bookingsPerPatient}
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingUp className="h-4 w-4" />
-              <span>+4.2% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${patientDummyData.comparisons.bookingsPerPatient.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+              {patientDummyData.comparisons.bookingsPerPatient.startsWith('+') ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{patientDummyData.comparisons.bookingsPerPatient} from last period</span>
             </div>
           </div>
         )}
@@ -388,11 +391,15 @@ export function PatientInsightsTab() {
               <h3 className="text-base font-medium text-gray-600">Revenue / Patient</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {formatCurrency(financialMetrics?.avg_revenue_per_patient || 562)}
+              {formatCurrency(patientDummyData.revenuePerPatient)}
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingUp className="h-4 w-4" />
-              <span>+8.7% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${patientDummyData.comparisons.revenuePerPatient.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+              {patientDummyData.comparisons.revenuePerPatient.startsWith('+') ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{patientDummyData.comparisons.revenuePerPatient} from last period</span>
             </div>
           </div>
         )}
@@ -407,11 +414,11 @@ export function PatientInsightsTab() {
               <h3 className="text-base font-medium text-gray-600">Follow-ups Due</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {Math.round((patientMetrics?.total_patients || 89) * 0.18)}
+              {patientDummyData.followupsDue}
             </div>
             <div className="flex items-center gap-1 text-base text-amber-600">
               <TrendingUp className="h-4 w-4" />
-              <span>+2 this week</span>
+              <span>{patientDummyData.comparisons.followupsDue}</span>
             </div>
           </div>
         )}
@@ -426,11 +433,15 @@ export function PatientInsightsTab() {
               <h3 className="text-base font-medium text-gray-600">New Patient %</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {Math.round(((patientMetrics?.new_patients || 23) / (patientMetrics?.total_patients || 89)) * 100)}%
+              {patientDummyData.newPatientPercent}%
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingUp className="h-4 w-4" />
-              <span>+5.3% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${patientDummyData.comparisons.newPatientPercent.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+              {patientDummyData.comparisons.newPatientPercent.startsWith('+') ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{patientDummyData.comparisons.newPatientPercent} from last period</span>
             </div>
           </div>
         )}
@@ -445,11 +456,15 @@ export function PatientInsightsTab() {
               <h3 className="text-base font-medium text-gray-600">Churn Risk Patients</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {Math.round((patientMetrics?.total_patients || 89) * 0.08)}
+              {patientDummyData.churnRiskPatients}
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingDown className="h-4 w-4" />
-              <span>-1 from last period</span>
+            <div className={`flex items-center gap-1 text-base ${patientDummyData.comparisons.churnRiskPatients.startsWith('+') ? 'text-red-600' : 'text-green-600'}`}>
+              {patientDummyData.comparisons.churnRiskPatients.startsWith('+') ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{patientDummyData.comparisons.churnRiskPatients}</span>
             </div>
           </div>
         )}
@@ -464,11 +479,15 @@ export function PatientInsightsTab() {
               <h3 className="text-base font-medium text-gray-600">Churn Risk %</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              12.3%
+              {patientDummyData.churnRiskPercent}%
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingDown className="h-4 w-4" />
-              <span>-2.1% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${patientDummyData.comparisons.churnRiskPercent.startsWith('+') ? 'text-red-600' : 'text-green-600'}`}>
+              {patientDummyData.comparisons.churnRiskPercent.startsWith('+') ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{patientDummyData.comparisons.churnRiskPercent} from last period</span>
             </div>
           </div>
         )}

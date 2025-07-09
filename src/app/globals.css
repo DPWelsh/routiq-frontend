@@ -135,6 +135,22 @@ select:focus {
   background: rgb(var(--routiq-blackberry) / 0.5);
 }
 
+/* Enhanced Tab Styling */
+@layer components {
+  /* Active tab styling with brand color */
+  .dashboard-tab[data-state="active"] {
+    background-color: #7ba2e0 !important;
+    color: white !important;
+    box-shadow: 0 10px 15px -3px rgba(123, 162, 224, 0.25), 0 4px 6px -2px rgba(123, 162, 224, 0.1) !important;
+  }
+  
+  /* Hover state for inactive tabs */
+  .dashboard-tab:not([data-state="active"]):hover {
+    background-color: rgb(249, 250, 251) !important;
+    color: rgb(17, 24, 39) !important;
+  }
+}
+
 /* Routiq Brand Utilities */
 @layer utilities {
   .text-routiq-core { color: rgb(var(--routiq-core)); }
@@ -154,6 +170,48 @@ select:focus {
   .border-routiq-energy { border-color: rgb(var(--routiq-energy)); }
   .border-routiq-prompt { border-color: rgb(var(--routiq-prompt)); }
   .border-routiq-cloud { border-color: rgb(var(--routiq-cloud)); }
+  
+  /* Responsive Container Utilities */
+  .routiq-container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  @media (min-width: 1024px) {
+    .routiq-container {
+      max-width: 1200px;
+    }
+  }
+  
+  @media (min-width: 1280px) {
+    .routiq-container {
+      max-width: 1400px;
+    }
+  }
+  
+  @media (min-width: 1440px) {
+    .routiq-container {
+      max-width: 1600px;
+    }
+  }
+  
+  @media (min-width: 1920px) {
+    .routiq-container {
+      max-width: 1800px;
+    }
+  }
+  
+  /* Compact Table Styling */
+  .routiq-table-compact {
+    @apply px-4 py-3.5 text-sm;
+  }
+  
+  .routiq-card-compact {
+    @apply p-4 space-y-4;
+  }
   
   /* Stripe-style utilities */
   .stripe-card {

@@ -15,6 +15,7 @@ import {
   Users,
   Activity
 } from 'lucide-react'
+import { TabHeader } from '../components/tab-header'
 
 type TimeframeType = '7d' | '30d' | '90d' | '1y'
 
@@ -93,29 +94,29 @@ export function AutomationSummaryTab() {
     const now = new Date()
     const formatDate = (date: Date) => date.toLocaleDateString('en-US', { 
       month: 'short', 
-      day: 'numeric' 
+      day: 'numeric', 
+      year: timeframe === '1y' ? 'numeric' : undefined 
     })
     
+    let startDate: Date
     switch (timeframe) {
       case '7d':
-        const weekStart = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000)
-        return `${formatDate(weekStart)} - ${formatDate(now)}`
-      
+        startDate = new Date(now.getTime() - 6 * 24 * 60 * 60 * 1000)
+        break
       case '30d':
-        const monthStart = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
-        return `${formatDate(monthStart)} - ${formatDate(now)}`
-      
+        startDate = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
+        break
       case '90d':
-        const quarterStart = new Date(now.getTime() - 89 * 24 * 60 * 60 * 1000)
-        return `${formatDate(quarterStart)} - ${formatDate(now)}`
-      
+        startDate = new Date(now.getTime() - 89 * 24 * 60 * 60 * 1000)
+        break
       case '1y':
-        const yearStart = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate())
-        return `${formatDate(yearStart)} - ${formatDate(now)}`
-      
+        startDate = new Date(now.getTime() - 364 * 24 * 60 * 60 * 1000)
+        break
       default:
-        return ''
+        startDate = new Date(now.getTime() - 29 * 24 * 60 * 60 * 1000)
     }
+    
+    return `${formatDate(startDate)} - ${formatDate(now)}`
   }
 
   const handleRetry = () => {
@@ -156,79 +157,16 @@ export function AutomationSummaryTab() {
 
   return (
     <div className="space-y-8">
-      {/* Header with Timeframe Controls - Stripe style */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-3xl font-semibold text-gray-900">
-            Automation Overview
-          </h2>
-          <p className="text-lg text-gray-600 mt-1">
-            Automation Performance Analytics
-          </p>
-        </div>
-        
-        {/* Timeframe Toggle - Stripe style */}
-        <div className="flex items-center gap-1 bg-gray-100 p-1 rounded-lg">
-          <Button
-            variant={timeframe === '7d' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setTimeframe('7d')}
-            className={`px-4 py-2 text-base font-medium ${
-              timeframe === '7d' 
-                ? 'bg-routiq-cloud text-white hover:bg-routiq-cloud/90' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-            }`}
-          >
-            7 Days
-          </Button>
-          <Button
-            variant={timeframe === '30d' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setTimeframe('30d')}
-            className={`px-4 py-2 text-base font-medium ${
-              timeframe === '30d' 
-                ? 'bg-routiq-cloud text-white hover:bg-routiq-cloud/90' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-            }`}
-          >
-            30 Days
-          </Button>
-          <Button
-            variant={timeframe === '90d' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setTimeframe('90d')}
-            className={`px-4 py-2 text-base font-medium ${
-              timeframe === '90d' 
-                ? 'bg-routiq-cloud text-white hover:bg-routiq-cloud/90' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-            }`}
-          >
-            90 Days
-          </Button>
-          <Button
-            variant={timeframe === '1y' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setTimeframe('1y')}
-            className={`px-4 py-2 text-base font-medium ${
-              timeframe === '1y' 
-                ? 'bg-routiq-cloud text-white hover:bg-routiq-cloud/90' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-            }`}
-          >
-            1 Year
-          </Button>
-        </div>
-      </div>
-
-      {/* Date Range Display */}
-      <div className="text-center text-base text-gray-600">
-        {getCurrentDateRange()}
-      </div>
-
-      {/* Data Freshness Indicator */}
-      <div className="flex items-center gap-2 text-base text-gray-600">
-        <span>Last updated: {lastUpdated}</span>
-      </div>
+      <TabHeader
+        title="Automation Overview"
+        subtitle="Automation Performance Analytics"
+        timeframe={timeframe}
+        onTimeframeChange={setTimeframe}
+        dateRange={getCurrentDateRange()}
+        lastUpdated={lastUpdated}
+        isLoading={loading}
+        isUsingFallback={true}
+      />
 
       {/* Key Metrics Grid - Stripe style */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
