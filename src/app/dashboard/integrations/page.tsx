@@ -69,7 +69,7 @@ export default function IntegrationsPage() {
             <CardContent className="p-0">
               <div className="space-y-0 divide-y divide-gray-200">
                 {/* Chatwoot */}
-                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
                       <MessageSquare className="h-6 w-6 text-blue-600" />
@@ -87,7 +87,7 @@ export default function IntegrationsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       Configure
@@ -100,7 +100,7 @@ export default function IntegrationsPage() {
                 </div>
 
                 {/* n8n Workflows */}
-                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
                       <Webhook className="h-6 w-6 text-purple-600" />
@@ -118,7 +118,7 @@ export default function IntegrationsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       Configure
@@ -131,7 +131,7 @@ export default function IntegrationsPage() {
                 </div>
 
                 {/* Twilio */}
-                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
                       <MessageSquare className="h-6 w-6 text-red-600" />
@@ -149,7 +149,7 @@ export default function IntegrationsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       Configure
@@ -162,7 +162,7 @@ export default function IntegrationsPage() {
                 </div>
 
                 {/* Cliniko */}
-                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-teal-100 flex items-center justify-center">
                       <Database className="h-6 w-6 text-teal-600" />
@@ -180,7 +180,7 @@ export default function IntegrationsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       Configure
@@ -193,7 +193,7 @@ export default function IntegrationsPage() {
                 </div>
 
                 {/* Nookal */}
-                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center">
                       <Database className="h-6 w-6 text-orange-600" />
@@ -211,7 +211,7 @@ export default function IntegrationsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       Configure
@@ -224,7 +224,7 @@ export default function IntegrationsPage() {
                 </div>
 
                 {/* HICAPS */}
-                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
                       <ExternalLink className="h-6 w-6 text-indigo-600" />
@@ -242,7 +242,7 @@ export default function IntegrationsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       Configure
@@ -255,7 +255,7 @@ export default function IntegrationsPage() {
                 </div>
 
                 {/* Coviu */}
-                <div className="flex items-center justify-between p-6 hover:bg-gray-50 transition-colors">
+                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
                   <div className="flex items-center gap-4">
                     <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
                       <ExternalLink className="h-6 w-6 text-blue-600" />
@@ -273,7 +273,7 @@ export default function IntegrationsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 pt-1">
                     <Button variant="outline" size="sm">
                       <Settings className="h-4 w-4 mr-2" />
                       Configure

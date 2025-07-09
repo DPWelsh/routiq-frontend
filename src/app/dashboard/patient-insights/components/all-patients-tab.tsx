@@ -105,8 +105,8 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       nextAppointment: null, // Removed upcoming appointment
       lastContacted: 1, // 1 day ago
       noShows: 0,
-      status: 'Active',
-      riskLevel: 'low',
+      status: 'At-Risk',
+      riskLevel: 'medium',
       isVip: true,
       automation: {
         title: 'Reengagement Campaign',
@@ -151,8 +151,8 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       nextAppointment: null, // Removed upcoming appointment
       lastContacted: 2, // 2 days ago
       noShows: 0,
-      status: 'Active',
-      riskLevel: 'low',
+      status: 'At-Risk',
+      riskLevel: 'medium',
       isVip: true,
       automation: {
         title: 'Reengagement Campaign',
@@ -197,8 +197,8 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       nextAppointment: null, // Removed upcoming appointment
       lastContacted: 1, // 1 day ago
       noShows: 0,
-      status: 'Active',
-      riskLevel: 'low',
+      status: 'At-Risk',
+      riskLevel: 'medium',
       isVip: true,
       automation: {
         title: 'Reengagement Campaign',
@@ -231,12 +231,81 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
         nextAction: 'Emergency Contact',
         nextDate: '23/07/2025'
       }
+    },
+    {
+      id: '8',
+      name: 'Rebecca Collins',
+      phone: '+61 429 876 543',
+      email: 'rebecca.collins@email.com',
+      ltv: 1890,
+      totalSessions: 12,
+      lastAppointment: '2025-07-22',
+      nextAppointment: '2025-08-03',
+      lastContacted: 4, // 4 days ago
+      noShows: 0,
+      status: 'Active',
+      riskLevel: 'low',
+      isVip: false,
+      automation: {
+        title: 'Routine Care',
+        description: 'Check-in Email Sent',
+        progress: 80,
+        automationStatus: 'Active',
+        nextAction: 'Appointment Reminder',
+        nextDate: '01/08/2025'
+      }
+    },
+    {
+      id: '9',
+      name: 'Tyler Murphy',
+      phone: '+61 412 345 678',
+      email: 'tyler.murphy@email.com',
+      ltv: 2340,
+      totalSessions: 18,
+      lastAppointment: '2025-07-19',
+      nextAppointment: '2025-07-31',
+      lastContacted: 2, // 2 days ago
+      noShows: 1,
+      status: 'Active',
+      riskLevel: 'low',
+      isVip: false,
+      automation: {
+        title: 'Routine Care',
+        description: 'Progress Update Scheduled',
+        progress: 65,
+        automationStatus: 'Active',
+        nextAction: 'Progress Assessment',
+        nextDate: '29/07/2025'
+      }
+    },
+    {
+      id: '10',
+      name: 'Sophie Anderson',
+      phone: '+61 467 234 891',
+      email: 'sophie.anderson@email.com',
+      ltv: 3140,
+      totalSessions: 21,
+      lastAppointment: '2025-07-21',
+      nextAppointment: '2025-08-07',
+      lastContacted: 3, // 3 days ago
+      noShows: 0,
+      status: 'Active',
+      riskLevel: 'low',
+      isVip: false,
+      automation: {
+        title: 'Routine Care',
+        description: 'Wellness Plan Review',
+        progress: 90,
+        automationStatus: 'Active',
+        nextAction: 'Treatment Plan Update',
+        nextDate: '04/08/2025'
+      }
     }
   ]
 
   // Calculate summary statistics
   const totalPatients = mockPatients.length
-  const activePatients = mockPatients.filter(p => p.status === 'Active').length
+  const activePatients = mockPatients.filter(p => p.status === 'Active' && p.nextAppointment !== null).length
   const dormantPatients = mockPatients.filter(p => p.status === 'Dormant').length
   const atRiskPatients = mockPatients.filter(p => p.status === 'At-Risk').length
   const topOpportunityPatients = mockPatients.filter(p => {
@@ -261,7 +330,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
     // Apply active filter
     switch (activeFilter) {
       case 'active':
-        filtered = filtered.filter(p => p.status === 'Active')
+        filtered = filtered.filter(p => p.status === 'Active' && p.nextAppointment !== null)
         break
       case 'at-risk':
         filtered = filtered.filter(p => p.status === 'At-Risk')
@@ -282,7 +351,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
         filtered = filtered.filter(p => {
           const daysSinceContact = Math.floor((Date.now() - new Date(p.lastContacted).getTime()) / (1000 * 60 * 60 * 24))
           return (p.ltv >= 3000 && (p.status === 'At-Risk' || p.status === 'Dormant')) || 
-                 (p.isVip && daysSinceContact > 10)
+                 p.isVip
         })
         break
       default:
@@ -316,6 +385,13 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
           <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-red-100 to-rose-100 text-red-800 shadow-sm border border-red-200">
             <div className="w-2 h-2 bg-red-500 rounded-full mr-1.5 animate-pulse"></div>
             At-Risk
+          </span>
+        )
+      case 'Priority':
+        return (
+          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-orange-100 to-amber-100 text-orange-800 shadow-sm border border-orange-200">
+            <div className="w-2 h-2 bg-orange-500 rounded-full mr-1.5 animate-pulse"></div>
+            Priority
           </span>
         )
       default:
@@ -769,11 +845,11 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                          <div className="ml-3">
                            <div className="text-sm font-medium text-gray-900 mb-1">
                              {patient.name}
-                             {patient.isVip && (
-                               <Badge variant="secondary" className="ml-2 text-xs bg-purple-100 text-purple-800">
-                                 VIP
-                               </Badge>
-                             )}
+                                                        {patient.isVip && (
+                             <Badge variant="secondary" className="ml-2 text-xs bg-purple-100 text-purple-800">
+                               VIP
+                             </Badge>
+                           )}
                            </div>
                            <div className="space-y-1">
                              <div className="flex items-center text-xs text-gray-600">
@@ -842,7 +918,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                      </td>
                      
                      <td className="px-6 py-4 whitespace-nowrap w-40 text-center">
-                       {getStatusBadge(patient.status)}
+                       {getStatusBadge(patient.isVip ? 'Priority' : patient.status)}
                      </td>
                    </tr>
                  ))}
