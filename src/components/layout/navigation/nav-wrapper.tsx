@@ -177,7 +177,7 @@ function ResponsiveDashboardNav() {
       {/* Main Navigation Section */}
       <div className="mb-6">
         
-        <div className="space-y-1">
+        <div className="space-y-2">
           {navigation
             .filter(item => item.roles.includes(userRole))
             .filter(item => !["Engagement Centre", "Inbox"].includes(item.name)) // Hide messaging features from mobile
@@ -201,9 +201,9 @@ function ResponsiveDashboardNav() {
                           <Badge 
                             variant={badgeValue === "New" ? "default" : "secondary"}
                             className={cn(
-                              "text-xs h-5 px-2 ml-2",
+                              "text-xs h-5 px-2.5 ml-2 rounded-full font-medium",
                               badgeValue === "New" 
-                                ? "bg-routiq-cloud text-white" 
+                                ? "bg-routiq-cloud text-white shadow-sm" 
                                 : loading 
                                   ? "animate-pulse bg-routiq-energy" 
                                   : "bg-routiq-energy text-routiq-core"
@@ -213,7 +213,7 @@ function ResponsiveDashboardNav() {
                           </Badge>
                         )}
                       </div>
-                      <p className="text-xs text-routiq-core/60 mt-0.5 truncate">
+                      <p className="text-xs text-routiq-core/60 mt-1 truncate font-normal">
                         {item.description}
                       </p>
                     </div>
@@ -232,7 +232,7 @@ function ResponsiveDashboardNav() {
         >
           <div className="flex-1">
             <span className="font-medium">Help & Support</span>
-            <p className="text-xs text-routiq-core/60 mt-0.5">
+            <p className="text-xs text-routiq-core/60 mt-1 font-normal">
               Get help and documentation
             </p>
           </div>

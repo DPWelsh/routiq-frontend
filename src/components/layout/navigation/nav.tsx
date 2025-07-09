@@ -159,7 +159,7 @@ export function DashboardNav() {
         <div className="px-3 py-3">
         </div>
 
-        <div className="px-3 space-y-1 overflow-y-auto max-h-[calc(100vh-200px)]">
+        <div className="px-4 space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]">
           {navigation
             .filter(item => item.roles.includes(userRole))
             .map((item) => {
@@ -172,28 +172,28 @@ export function DashboardNav() {
                 <Link key={item.name} href={item.href}>
                   <div
                     className={cn(
-                      "group flex items-center gap-3 px-3 py-2.5 text-sm font-medium rounded-lg transition-colors duration-150",
+                      "group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out relative",
                       isActive
-                        ? "bg-routiq-cloud/10 text-routiq-cloud border-l-2 border-routiq-cloud"
-                        : "text-routiq-core hover:bg-routiq-core/10 hover:text-routiq-core"
+                        ? "bg-routiq-cloud/15 text-routiq-cloud shadow-sm border border-routiq-cloud/20 font-semibold"
+                        : "text-routiq-core hover:bg-routiq-core/8 hover:text-routiq-core hover:shadow-sm hover:border hover:border-routiq-core/10"
                     )}
                   >
                     <item.icon className={cn(
-                      "flex-shrink-0 h-4 w-4",
-                      isActive ? "text-routiq-cloud" : "text-routiq-core/70"
+                      "flex-shrink-0 h-5 w-5 transition-colors duration-200",
+                      isActive ? "text-routiq-cloud" : "text-routiq-core/70 group-hover:text-routiq-core"
                     )} />
                     
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <span className="truncate">{item.name}</span>
+                        <span className="truncate font-medium">{item.name}</span>
                         <div className="flex items-center gap-2">
                           {badgeValue && (
                             <Badge 
                               variant={badgeValue === "New" ? "default" : "secondary"}
                               className={cn(
-                                "text-xs h-5 px-2",
+                                "text-xs h-5 px-2.5 rounded-full font-medium",
                                 badgeValue === "New" 
-                                  ? "bg-routiq-cloud text-white" 
+                                  ? "bg-routiq-cloud text-white shadow-sm" 
                                   : loading 
                                     ? "animate-pulse bg-routiq-energy" 
                                     : "bg-routiq-energy text-routiq-core"
@@ -203,11 +203,11 @@ export function DashboardNav() {
                             </Badge>
                           )}
                           {isActive && (
-                            <ChevronRight className="h-4 w-4 text-routiq-cloud" />
+                            <div className="w-2 h-2 bg-routiq-cloud rounded-full shadow-sm"></div>
                           )}
                         </div>
                       </div>
-                      <p className="text-xs text-routiq-core/60 mt-0.5 truncate">
+                      <p className="text-xs text-routiq-core/60 mt-1 truncate font-normal">
                         {item.description}
                       </p>
                     </div>
@@ -219,16 +219,16 @@ export function DashboardNav() {
       </div>
 
       {/* Help & Support */}
-      <div className="border-t border-routiq-prompt/20 p-3">
+      <div className="border-t border-routiq-prompt/20 p-4">
         <Button
           variant="ghost"
           onClick={handleHelpClick}
-          className="w-full justify-start gap-3 text-routiq-core hover:bg-routiq-core/10 hover:text-routiq-core py-2.5 px-3 rounded-lg transition-colors duration-150"
+          className="w-full justify-start gap-3 text-routiq-core hover:bg-routiq-core/8 hover:text-routiq-core py-3 px-4 rounded-xl transition-all duration-200 ease-in-out hover:shadow-sm hover:border hover:border-routiq-core/10"
         >
-          <HelpCircle className="h-4 w-4 flex-shrink-0" />
+          <HelpCircle className="h-5 w-5 flex-shrink-0 transition-colors duration-200" />
           <div className="flex-1 text-left">
             <span className="text-sm font-medium">Help & Support</span>
-            <p className="text-xs text-routiq-core/60 mt-0.5">
+            <p className="text-xs text-routiq-core/60 mt-1 font-normal">
               Get help and documentation
             </p>
           </div>

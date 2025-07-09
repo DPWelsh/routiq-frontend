@@ -44,6 +44,15 @@ interface AllPatientsTabProps {
 
 type FilterType = 'all' | 'active' | 'at-risk' | 'high-ltv' | 'no-shows' | 'dormant' | 'vips' | 'top-opportunities'
 
+interface AutomationStatus {
+  title: string
+  description: string
+  progress: number
+  automationStatus: string
+  nextAction: string
+  nextDate: string
+}
+
 /**
  * Patient Overview - Comprehensive Patient Database
  * 
@@ -368,7 +377,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
     }
   }
 
-  const renderAutomationStatus = (automation: any) => {
+  const renderAutomationStatus = (automation: AutomationStatus) => {
     return (
       <div className="space-y-2">
         {/* Title and Status */}
@@ -498,6 +507,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                   <div className={`text-xs font-medium ${activeFilter === 'active' ? 'text-emerald-600' : 'text-gray-500'}`}>
                     Active
                   </div>
+                  <div className={`text-xs ${activeFilter === 'active' ? 'text-emerald-500' : 'text-gray-400'} mt-0.5`}>
+                    Has upcoming appointment
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -527,6 +539,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                   </div>
                   <div className={`text-xs font-medium ${activeFilter === 'dormant' ? 'text-amber-600' : 'text-gray-500'}`}>
                     Dormant
+                  </div>
+                  <div className={`text-xs ${activeFilter === 'dormant' ? 'text-amber-500' : 'text-gray-400'} mt-0.5`}>
+                    No appointment in 30+ days
                   </div>
                 </div>
               </div>
@@ -558,6 +573,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                   <div className={`text-xs font-medium ${activeFilter === 'at-risk' ? 'text-red-600' : 'text-gray-500'}`}>
                     At Risk
                   </div>
+                  <div className={`text-xs ${activeFilter === 'at-risk' ? 'text-red-500' : 'text-gray-400'} mt-0.5`}>
+                    No scheduled appointment
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -587,6 +605,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                   </div>
                   <div className={`text-xs font-medium ${activeFilter === 'top-opportunities' ? 'text-orange-600' : 'text-gray-500'}`}>
                     Top Opportunities
+                  </div>
+                  <div className={`text-xs ${activeFilter === 'top-opportunities' ? 'text-orange-500' : 'text-gray-400'} mt-0.5`}>
+                    High LTV, no upcoming appointment
                   </div>
                 </div>
               </div>
