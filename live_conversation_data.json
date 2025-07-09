@@ -2,11 +2,11 @@
   "conversations": [
     {
       "id": "conv_001",
-      "phone_number": "+6287862502798",
-      "patient_name": "Griffin (via Uncle)",
+      "phone_number": "+61412345678",
+      "patient_name": "Sarah Mitchell",
       "patient_id": "pat_001",
-      "date": "2025-07-01T04:04:42Z",
-      "duration_seconds": 180,
+      "date": "2025-07-15T09:30:00Z",
+      "duration_seconds": 240,
       "conversation_type": "injury_inquiry",
       "status": "completed",
       "sentiment": "positive",
@@ -16,322 +16,82 @@
         {
           "speaker": "patient",
           "timestamp": "00:00",
-          "text": "ey brew, got my nephew in town and his shoulder is buggin him. Goina have Griffin hit you up while hes here in ulus"
+          "text": "Hi, I've hurt my lower back at the gym yesterday. Can I book an appointment to see a physio?"
         },
         {
           "speaker": "staff",
-          "timestamp": "00:02",
-          "text": "G'day! Thanks for reaching out about your nephew's shoulder. I've forwarded your message to our physiotherapist who'll be able to give Griffin proper guidance on his shoulder issue. They'll get back to you soon (we're on Bali time - GMT+8)."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:03",
-          "text": "If Griffin wants to book in for an assessment while he's in Ulus, just let me know and I can check our availability for him!"
-        }
-      ],
-      "insights": {
-        "key_topics": ["shoulder injury", "family referral", "tourist patient"],
-        "action_items": ["Forward to physiotherapist", "Check availability for assessment"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["shoulder", "referral", "tourist", "family_care"]
-    },
-    {
-      "id": "conv_002",
-      "phone_number": "+447817478312",
-      "patient_name": "Immy",
-      "patient_id": "pat_002",
-      "date": "2025-06-30T19:23:58Z",
-      "duration_seconds": 420,
-      "conversation_type": "medical_concern",
-      "status": "requires_follow_up",
-      "sentiment": "concerned",
-      "sentiment_score": -0.4,
-      "priority": "high",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Hey I think I have costochrondritis it came on this morning. Is it worth coming to see you or is it too soon? I had it before didn't rest properly an took me a month to recover 🙈 Currently just resting, ice and ibuprofen. Let me know if I should book an appointment or wait a few days. Thank you 🫶"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:05",
-          "text": "Hi there! Thanks for reaching out about your costochondritis concerns. I've forwarded your message straight to our physiotherapist who will be able to give you proper guidance on whether it's best to come in now or wait a few days, especially given your previous experience with it."
+          "timestamp": "00:30",
+          "text": "Hi Sarah! Sorry to hear about your back injury. I can definitely help you book an appointment. We have availability tomorrow at 2:30pm or Thursday at 10am. Which works better for you?"
         },
         {
           "speaker": "patient",
-          "timestamp": "02:00",
-          "text": "When I say came on this morning I mean during a surf session"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:05",
-          "text": "Thanks for clarifying that it happened during your surf session this morning! I've made sure to include that important detail when forwarding your message to our physiotherapist."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "04:30",
-          "text": "Hi immy yes it happens quite often in surfers as you can imagine. Especially on the bottom of the ribs where it contacts the board. But there are some good things you can do and learn to relieve them and we can go through those management strategies so you can keep surfing with irritating it too much"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "04:35",
-          "text": "So yes, it is worth booking an appointment, it isn't too early to learn how to treat and minimize it"
-        }
-      ],
-      "insights": {
-        "key_topics": ["costochondritis", "surf-related injury", "previous injury history", "early intervention"],
-        "action_items": ["Book appointment", "Provide surf-specific management strategies", "Prevent recurrence"],
-        "patient_satisfaction": "medium",
-        "treatment_effectiveness": "proactive"
-      },
-      "tags": ["costochondritis", "surfing", "recurrent_injury", "early_intervention"]
-    },
-    {
-      "id": "conv_003",
-      "phone_number": "+13109245014",
-      "patient_name": "Amanda Strum",
-      "patient_id": "pat_003",
-      "date": "2025-06-30T15:55:04Z",
-      "duration_seconds": 300,
-      "conversation_type": "treatment_concern",
-      "status": "urgent_follow_up",
-      "sentiment": "negative",
-      "sentiment_score": -0.7,
-      "priority": "high",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Hi, I'm dealing with worsening ulnar wrist/finger pain after a treatment I had yesterday. Can I please get back on the schedule for a gentle evaluation? 🙏🏽"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08",
-          "text": "Hi Amanda! I'm so sorry to hear your wrist/finger pain has worsened after yesterday's treatment. Let's definitely get you back in for a gentle evaluation with Alister."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:30",
-          "text": "Thank you! Is there anything tomorrow available?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:35",
-          "text": "Unfortunately tomorrow (Wednesday, July 2nd) is fully booked! Since your pain has worsened, the earliest we can get you in would be: Today (Tuesday, July 1st): 4:30pm, 6:45pm"
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "04:00",
-          "text": "Can I come at 4:30?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "04:02",
-          "text": "Perfect! Your appointment is confirmed 🙌 Today (Tuesday, July 1st) at 4:30pm with Alister at SurfRehab, 360 Move, Uluwatu. Given your worsening wrist/finger pain, this will give Alister a chance to reassess and adjust your treatment plan accordingly."
-        }
-      ],
-      "insights": {
-        "key_topics": ["treatment reaction", "worsening pain", "urgent reassessment", "treatment modification"],
-        "action_items": ["Urgent appointment", "Gentle evaluation", "Modify treatment approach", "Monitor patient response"],
-        "patient_satisfaction": "low",
-        "treatment_effectiveness": "negative"
-      },
-      "tags": ["treatment_reaction", "urgent", "pain_increase", "reassessment"]
-    },
-    {
-      "id": "conv_004",
-      "phone_number": "+380987737958",
-      "patient_name": "Artem Melnychuk",
-      "patient_id": "pat_004",
-      "date": "2025-06-29T23:30:16Z",
-      "duration_seconds": 480,
-      "conversation_type": "post_surgery_rehab",
-      "status": "completed",
-      "sentiment": "positive",
-      "sentiment_score": 0.7,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "I need some good coach to train my legs after knee surgery. Basically I need to enhance my muscles which help my knees"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:05",
-          "text": "Thanks for sharing that with me! Post-surgical rehabilitation is definitely something that needs expert guidance, so I've forwarded your message straight to Alister, our physiotherapist. He'll be able to give you proper advice on strengthening and rehabilitation after your knee surgery."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:12",
-          "text": "Would you also like me to check our availability for an assessment appointment? That way Alister can properly evaluate your specific needs and create a tailored program for you."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:00",
-          "text": "Yes let's have appointment for tomorrow morning?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:05",
-          "text": "Unfortunately tomorrow morning is fully booked, but I do have some options for you! Tomorrow (Tuesday July 1st) - afternoon only: 4:30pm, 6:00pm, 6:45pm"
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "06:00",
-          "text": "Let's schedule for tomorrow 6 pm"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "06:02",
-          "text": "Perfect! Your appointment is confirmed: Tuesday, July 1st at 6:00pm with Alister at SurfRehab at 360 Move, Uluwatu. We're all set for your knee rehabilitation consultation tomorrow evening. Alister will be able to assess your post-surgical needs and create a tailored strengthening program for you."
-        }
-      ],
-      "insights": {
-        "key_topics": ["post-surgical rehabilitation", "knee surgery recovery", "muscle strengthening", "tailored program"],
-        "action_items": ["Assessment appointment", "Create rehabilitation program", "Expert guidance on post-surgical care"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["post_surgery", "knee_rehab", "strengthening", "assessment"]
-    },
-    {
-      "id": "conv_005",
-      "phone_number": "+6281935454615",
-      "patient_name": "Teresa",
-      "patient_id": "pat_005",
-      "date": "2025-06-30T17:27:41Z",
-      "duration_seconds": 240,
-      "conversation_type": "scheduling_clarification",
-      "status": "completed",
-      "sentiment": "neutral",
-      "sentiment_score": 0.0,
-      "priority": "low",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Pagi Sorry I think this was a misunderstanding. I am away on holiday until the 12th. I was just asking if it is possible to still meet at Ulu active when if I don't have a membership there, but for appointment I can only do after the 12th"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08",
-          "text": "No worries about the misunderstanding, Teresa! I don't have the specific details about Ulu Active's guest access policy, but I'll check with Alister about whether you can meet there without a membership and get back to you."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:15",
-          "text": "Thanks for letting me know you're available after the 12th - enjoy the rest of your holiday! When you're ready to book an appointment after you're back, just let me know and I'll check what times work best 🙂"
+          "timestamp": "01:00",
+          "text": "Thursday 10am would be perfect. What should I expect for the first appointment?"
         },
         {
           "speaker": "staff",
           "timestamp": "01:30",
-          "text": "Actually nomsorry you are still on a package so it is covered in our package"
+          "text": "Great! I've booked you in for Thursday 10am with Dr. James. The initial consultation is 45 minutes and includes assessment, diagnosis, and treatment plan. Please bring any relevant medical history or scans if you have them."
         }
       ],
       "insights": {
-        "key_topics": ["holiday scheduling", "venue access", "membership requirements", "package coverage"],
-        "action_items": ["Confirm venue access policy", "Schedule post-holiday appointment", "Clarify package benefits"],
-        "patient_satisfaction": "medium",
-        "treatment_effectiveness": "neutral"
+        "key_topics": ["lower back injury", "gym injury", "initial consultation"],
+        "action_items": ["Book appointment", "Prepare medical history"],
+        "patient_satisfaction": "high",
+        "treatment_effectiveness": "pending"
       },
-      "tags": ["scheduling", "holiday", "venue_access", "package_patient"]
+      "tags": ["back_injury", "gym", "initial_consult"]
     },
     {
-      "id": "conv_006",
-      "phone_number": "+628113882556",
-      "patient_name": "Edd Wright",
-      "patient_id": "pat_006",
-      "date": "2025-06-19T15:53:33Z",
+      "id": "conv_002",
+      "phone_number": "+61423456789",
+      "patient_name": "Michael Chen",
+      "patient_id": "pat_002",
+      "date": "2025-07-12T14:15:00Z",
       "duration_seconds": 180,
-      "conversation_type": "appointment_scheduling",
-      "status": "cancelled",
-      "sentiment": "neutral",
-      "sentiment_score": 0.1,
-      "priority": "low",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Hello! Does Alister have any free appointments for early morning Thursday 26 June?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:05",
-          "text": "Hi there! I'm part of the reception team at SurfRehab 🙂 Great news! Alister does have an early morning slot available on Thursday 26th June at 8:30am - perfect for what you're looking for!"
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "00:12",
-          "text": "Yes plz!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:15",
-          "text": "Perfect! Your appointment is confirmed: Thursday, 26th June at 8:30am with Alister at SurfRehab at 360 Move, Uluwatu"
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "11d_later",
-          "text": "Hello. Sorry I have to postpone my appointment on Thursday at 8.30am. I'll get in contact when I can re-schedule."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "11d_later",
-          "text": "No worries at all, Edd! Your Thursday 8:30am appointment has been cancelled and Alister has been notified. Just reach out whenever you're ready to reschedule - we'll be here to help! 🙂"
-        }
-      ],
-      "insights": {
-        "key_topics": ["early morning preference", "appointment booking", "later cancellation"],
-        "action_items": ["Process cancellation", "Update schedule", "Welcome future rebooking"],
-        "patient_satisfaction": "medium",
-        "treatment_effectiveness": "neutral"
-      },
-      "tags": ["scheduling", "early_morning", "cancellation", "rebooking_welcome"]
-    },
-    {
-      "id": "conv_007",
-      "phone_number": "+6281529509431",
-      "patient_name": "Unknown Indonesian Speaker",
-      "patient_id": "pat_007",
-      "date": "2025-06-30T03:10:53Z",
-      "duration_seconds": 30,
-      "conversation_type": "wrong_number",
+      "conversation_type": "pricing_inquiry",
       "status": "completed",
       "sentiment": "neutral",
-      "sentiment_score": 0.0,
+      "sentiment_score": 0.2,
       "priority": "low",
       "transcript": [
         {
           "speaker": "patient",
           "timestamp": "00:00",
-          "text": "Eh maaf salah kontakk"
+          "text": "Hi, could you please tell me your consultation fees? I'm looking for treatment for tennis elbow."
         },
         {
           "speaker": "staff",
-          "timestamp": "00:03",
-          "text": "No worries at all! This is SurfRehab physiotherapy reception at 360 Move, Uluwatu. If you ever need physiotherapy services, feel free to reach out 🙂"
+          "timestamp": "00:45",
+          "text": "Hi Michael! Our consultation fees are $120 for initial appointment (45 mins) and $95 for follow-up sessions (30 mins). Tennis elbow typically requires 4-6 sessions for full recovery. Do you have private health insurance?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "01:30",
+          "text": "Yes I have Medibank Private. What's the gap payment?"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "02:00",
+          "text": "With Medibank you'll typically get $35-45 back per session, so your gap would be around $75-85 per visit. Would you like to book an assessment?"
         }
       ],
       "insights": {
-        "key_topics": ["wrong number", "multilingual support", "service awareness"],
-        "action_items": ["Polite response", "Brand awareness", "Open invitation"],
-        "patient_satisfaction": "neutral",
-        "treatment_effectiveness": "neutral"
+        "key_topics": ["tennis elbow", "pricing", "insurance coverage"],
+        "action_items": ["Provide pricing info", "Check insurance benefits"],
+        "patient_satisfaction": "medium",
+        "treatment_effectiveness": "pending"
       },
-      "tags": ["wrong_number", "indonesian", "brand_awareness"]
+      "tags": ["tennis_elbow", "pricing", "insurance"]
     },
     {
-      "id": "conv_008",
-      "phone_number": "+6281456789012",
-      "patient_name": "Maya Sari",
-      "patient_id": "pat_008",
-      "date": "2025-06-30T14:22:15Z",
-      "duration_seconds": 180,
-      "conversation_type": "follow_up_care",
+      "id": "conv_003",
+      "phone_number": "+61434567890",
+      "patient_name": "Emma Rodriguez",
+      "patient_id": "pat_003",
+      "date": "2025-07-08T16:20:00Z",
+      "duration_seconds": 320,
+      "conversation_type": "follow_up",
       "status": "completed",
       "sentiment": "positive",
       "sentiment_score": 0.8,
@@ -340,1432 +100,466 @@
         {
           "speaker": "patient",
           "timestamp": "00:00",
-          "text": "Hi! How's my shoulder progress looking? Still feeling some stiffness in the mornings"
+          "text": "Hi! Just wanted to update you on my shoulder progress after last week's session. The exercises are really helping!"
         },
         {
           "speaker": "staff",
-          "timestamp": "00:05",
-          "text": "Hi Maya! Great to hear from you. Morning stiffness is actually quite normal at this stage of your recovery. Let me check with Alister about your progress and see if we need to adjust your exercises."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:30",
-          "text": "Should I book another session?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:35",
-          "text": "Perfect! Your follow-up appointment is booked for Friday at 11:30am. Your shoulder progress has been excellent - keep up the exercises! 💪"
-        }
-      ],
-      "insights": {
-        "key_topics": ["shoulder recovery", "morning stiffness", "follow-up care", "exercise compliance"],
-        "action_items": ["Monitor progress", "Schedule follow-up", "Encourage exercise routine"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "positive"
-      },
-      "tags": ["shoulder", "follow_up", "recovery", "whatsapp"]
-    },
-    {
-      "id": "conv_009",
-      "phone_number": "+61423567890",
-      "patient_name": "Jake Morrison",
-      "patient_id": "pat_009",
-      "date": "2025-06-30T09:45:22Z",
-      "duration_seconds": 360,
-      "conversation_type": "sports_injury",
-      "status": "completed",
-      "sentiment": "concerned",
-      "sentiment_score": -0.3,
-      "priority": "high",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "G'day, I've torn my ACL playing rugby. Got the MRI results and need proper rehab guidance. Can Alister help with return-to-sport protocols?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:10",
-          "text": "Hi Jake! ACL injuries are definitely Alister's specialty. He's worked with many rugby players on their return-to-sport journey. Can you send through your MRI report?"
+          "timestamp": "00:30",
+          "text": "That's wonderful to hear Emma! I'm so glad the exercise program is working well for you. How's the pain level compared to last week?"
         },
         {
           "speaker": "patient",
           "timestamp": "01:00",
-          "text": "*MRI report attached* When can I start? Season starts in 3 months"
+          "text": "Much better! Pain has gone from 7/10 to about 3/10. Should I continue with the same exercises?"
         },
         {
           "speaker": "staff",
-          "timestamp": "01:05",
-          "text": "Absolutely! Alister specializes in ACL rehab. I've forwarded your MRI report and he'll create a tailored program for your return to rugby. Expect his call within 2 hours."
-        }
-      ],
-      "insights": {
-        "key_topics": ["ACL injury", "rugby", "return to sport", "MRI results", "timeline pressure"],
-        "action_items": ["ACL rehabilitation program", "Sport-specific training", "Timeline management"],
-        "patient_satisfaction": "medium",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["ACL", "rugby", "sports_injury", "return_to_sport", "whatsapp"]
-    },
-    {
-      "id": "conv_010",
-      "phone_number": "+6285678901234",
-      "patient_name": "Putu Wijaya",
-      "patient_id": "pat_010",
-      "date": "2025-06-29T16:33:44Z",
-      "duration_seconds": 120,
-      "conversation_type": "language_support",
-      "status": "completed",
-      "sentiment": "positive",
-      "sentiment_score": 0.7,
-      "priority": "medium",
-      "transcript": [
+          "timestamp": "01:30",
+          "text": "Excellent progress! Yes, continue with the current exercises for another week. Dr. Sarah wants to see you next Tuesday to progress your program to the next level."
+        },
         {
           "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Selamat siang, saya butuh bantuan untuk sakit punggung. Apakah ada yang bisa berbicara bahasa Indonesia?"
+          "timestamp": "02:00",
+          "text": "Perfect! Can we book the same time - 4pm?"
         },
         {
           "speaker": "staff",
-          "timestamp": "00:05",
-          "text": "Selamat siang! Yes, we have Indonesian-speaking staff available. I'll make sure your appointment includes translation support."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:10",
-          "text": "Terima kasih! Yes, we have Indonesian-speaking staff available. Your appointment is confirmed for Monday 2pm with additional translation support."
+          "timestamp": "02:30",
+          "text": "Absolutely! I've got you down for Tuesday 4pm with Dr. Sarah. Keep up the great work with your exercises!"
         }
       ],
       "insights": {
-        "key_topics": ["back pain", "language barrier", "cultural accommodation", "translation support"],
-        "action_items": ["Provide translation", "Cultural sensitivity", "Appointment coordination"],
+        "key_topics": ["shoulder rehabilitation", "exercise compliance", "pain reduction"],
+        "action_items": ["Continue exercises", "Book follow-up", "Progress treatment plan"],
         "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
+        "treatment_effectiveness": "excellent"
       },
-             "tags": ["back_pain", "indonesian", "translation", "cultural_care", "whatsapp"]
+      "tags": ["shoulder", "rehabilitation", "progress"]
     },
     {
-      "id": "conv_011",
-      "phone_number": "+33612345678",
-      "patient_name": "Sophie Laurent",
-      "patient_id": "pat_011",
-      "date": "2025-06-29T11:18:35Z",
-      "duration_seconds": 420,
-      "conversation_type": "chronic_pain",
-      "status": "ongoing",
+      "id": "conv_004",
+      "phone_number": "+61445678901",
+      "patient_name": "David Thompson",
+      "patient_id": "pat_004",
+      "date": "2025-07-05T11:45:00Z",
+      "duration_seconds": 280,
+      "conversation_type": "work_injury",
+      "status": "completed",
       "sentiment": "concerned",
-      "sentiment_score": -0.2,
+      "sentiment_score": -0.3,
       "priority": "high",
       "transcript": [
         {
           "speaker": "patient",
           "timestamp": "00:00",
-          "text": "Bonjour, I have chronic lower back pain that's getting worse. I need help with posture correction and strengthening."
+          "text": "I've developed neck pain from working at a computer all day. It's been getting worse over the past month. Do you treat workplace injuries?"
         },
         {
           "speaker": "staff",
-          "timestamp": "00:08",
-          "text": "Bonjour Sophie! Chronic lower back pain can be really challenging. Alister specializes in postural correction and has helped many patients with similar issues."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:15",
-          "text": "Can we do a comprehensive assessment? I work at a desk all day and my posture is terrible."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:20",
-          "text": "Absolutely! A comprehensive postural assessment would be perfect. We can create a package that includes ergonomic advice and strengthening exercises."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "04:30",
-          "text": "Excellent! Your chronic lower back treatment package (6 sessions) is confirmed. We'll start with postural assessment this Thursday at 10am."
-        }
-      ],
-      "insights": {
-        "key_topics": ["chronic pain", "postural correction", "desk work", "comprehensive assessment", "treatment package"],
-        "action_items": ["Postural assessment", "Ergonomic consultation", "6-session treatment plan"],
-        "patient_satisfaction": "medium",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["chronic_pain", "posture", "desk_work", "french", "whatsapp"]
-    },
-    {
-      "id": "conv_012",
-      "phone_number": "+491234567890",
-      "patient_name": "Klaus Weber",
-      "patient_id": "pat_012",
-      "date": "2025-06-28T20:15:22Z",
-      "duration_seconds": 180,
-      "conversation_type": "emergency_care",
-      "status": "urgent",
-      "sentiment": "distressed",
-      "sentiment_score": -0.8,
-      "priority": "urgent",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Emergency! I have severe back pain from herniated disc. Can someone see me today? I can barely move."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:03",
-          "text": "Klaus, I understand this is urgent. Let me check Alister's emergency availability right now. Please don't try to move too much."
+          "timestamp": "00:45",
+          "text": "Hi David, yes we absolutely treat workplace-related injuries. Neck pain from prolonged computer work is very common. We can assess your posture, provide treatment, and give you ergonomic advice."
         },
         {
           "speaker": "patient",
           "timestamp": "01:30",
-          "text": "Pain is getting worse. I have my medication list ready."
+          "text": "That sounds exactly what I need. How soon can I get an appointment? The pain is affecting my sleep now."
         },
         {
           "speaker": "staff",
-          "timestamp": "01:35",
-          "text": "Understood! Emergency Sunday treatment for your herniated disc - Alister will meet you at the clinic in 30 minutes. Bring your pain medication list."
-        }
-      ],
-      "insights": {
-        "key_topics": ["emergency care", "herniated disc", "severe pain", "urgent treatment", "Sunday availability"],
-        "action_items": ["Emergency appointment", "Pain management", "Immediate care"],
-        "patient_satisfaction": "relieved",
-        "treatment_effectiveness": "immediate"
-      },
-      "tags": ["emergency", "herniated_disc", "severe_pain", "german", "whatsapp"]
-    },
-    {
-      "id": "conv_013",
-      "phone_number": "+6281122334455",
-      "patient_name": "Dewa Putra",
-      "patient_id": "pat_013",
-      "date": "2025-06-28T13:42:18Z",
-      "duration_seconds": 240,
-      "conversation_type": "sports_recovery",
-      "status": "nearly_complete",
-      "sentiment": "positive",
-      "sentiment_score": 0.9,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Hari ini latihan surf, hamstring masih sedikit kaku. Kapan bisa kompetisi lagi?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:05",
-          "text": "Hi Dewa! Great to hear you're back to training. Let me check your recovery progress with Alister."
-        },
-        {
-          "speaker": "patient",
           "timestamp": "02:00",
-          "text": "Competition next week, feeling 90% ready"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:05",
-          "text": "Great progress! Your hamstring strain is 90% healed. One more session should clear you for competitive surfing again. Friday 4pm work?"
-        }
-      ],
-      "insights": {
-        "key_topics": ["hamstring recovery", "surf competition", "clearance for sport", "final session"],
-        "action_items": ["Final assessment", "Competition clearance", "Return to sport protocol"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "excellent"
-      },
-      "tags": ["hamstring", "surfing", "competition", "recovery", "whatsapp"]
-    },
-    {
-      "id": "conv_014",
-      "phone_number": "+85234567890",
-      "patient_name": "Li Wei",
-      "patient_id": "pat_014",
-      "date": "2025-06-27T15:28:41Z",
-      "duration_seconds": 300,
-      "conversation_type": "ongoing_treatment",
-      "status": "progressing",
-      "sentiment": "positive",
-      "sentiment_score": 0.6,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "The dry needling session helped a lot! Tennis elbow pain is much better. When should I come back?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08",
-          "text": "That's fantastic news, Li Wei! Alister will be so pleased to hear the dry needling is working well for your tennis elbow."
+          "text": "Given that it's affecting your sleep, I can fit you in tomorrow at 1pm for an urgent consultation. We'll also provide you with some immediate pain relief strategies."
         },
         {
           "speaker": "patient",
           "timestamp": "02:30",
-          "text": "Can we continue with more sessions this week?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:35",
-          "text": "Your tennis elbow is responding well to dry needling! Let's continue with 2 more sessions this week. Tuesday 9am and Thursday 2pm available."
+          "text": "Thank you so much! Tomorrow 1pm works perfectly."
         }
       ],
       "insights": {
-        "key_topics": ["tennis elbow", "dry needling", "positive response", "continued treatment"],
-        "action_items": ["Schedule 2 more sessions", "Monitor progress", "Continue dry needling"],
+        "key_topics": ["workplace injury", "neck pain", "ergonomics", "urgent care"],
+        "action_items": ["Urgent appointment", "Ergonomic assessment", "Pain management"],
         "patient_satisfaction": "high",
-        "treatment_effectiveness": "very positive"
+        "treatment_effectiveness": "pending"
       },
-             "tags": ["tennis_elbow", "dry_needling", "treatment_response", "chinese", "whatsapp"]
+      "tags": ["workplace_injury", "neck_pain", "urgent", "ergonomics"]
     },
     {
-      "id": "conv_015",
-      "phone_number": "+34678901234",
-      "patient_name": "Carlos Rodriguez",
-      "patient_id": "pat_015",
-      "date": "2025-06-27T08:30:15Z",
-      "duration_seconds": 360,
-      "conversation_type": "insurance_inquiry",
+      "id": "conv_005",
+      "phone_number": "+61456789012",
+      "patient_name": "Jessica Park",
+      "patient_id": "pat_005",
+      "date": "2025-06-28T08:30:00Z",
+      "duration_seconds": 200,
+      "conversation_type": "post_surgery",
+      "status": "completed",
+      "sentiment": "positive",
+      "sentiment_score": 0.5,
+      "priority": "medium",
+      "transcript": [
+        {
+          "speaker": "patient",
+          "timestamp": "00:00",
+          "text": "Hi, I had ACL reconstruction surgery 6 weeks ago and my surgeon has cleared me to start physio. Do you have experience with post-surgical rehab?"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "00:30",
+          "text": "Hi Jessica! Yes, we have extensive experience with ACL reconstruction rehabilitation. Dr. Mark specializes in post-surgical orthopaedic recovery. Do you have your surgeon's rehab protocol?"
+        },
+        {
+          "speaker": "patient",
+          "timestamp": "01:00",
+          "text": "Yes, I have all the paperwork from my surgeon. When can we start?"
+        },
+        {
+          "speaker": "staff",
+          "timestamp": "01:30",
+          "text": "We can start as early as Monday. I'll book you with Dr. Mark at 11am. Please bring your surgical notes and any imaging. ACL rehab typically takes 4-6 months, so we'll create a comprehensive program for you."
+        }
+      ],
+      "insights": {
+        "key_topics": ["ACL reconstruction", "post-surgical rehab", "orthopaedic specialist"],
+        "action_items": ["Book with specialist", "Review surgical notes", "Create rehab program"],
+        "patient_satisfaction": "high",
+        "treatment_effectiveness": "pending"
+      },
+      "tags": ["ACL", "post_surgery", "orthopaedic", "specialist"]
+    },
+    {
+      "id": "conv_006",
+      "phone_number": "+61467890123",
+      "patient_name": "Robert Wilson",
+      "patient_id": "pat_006",
+      "date": "2025-06-25T15:20:00Z",
+      "duration_seconds": 150,
+      "conversation_type": "general_inquiry",
       "status": "completed",
       "sentiment": "neutral",
       "sentiment_score": 0.1,
-      "priority": "medium",
+      "priority": "low",
       "transcript": [
         {
           "speaker": "patient",
           "timestamp": "00:00",
-          "text": "Hola! Does my European travel insurance cover physiotherapy treatments here in Bali?"
+          "text": "Do you offer group exercise classes or is it just individual treatment?"
         },
         {
           "speaker": "staff",
-          "timestamp": "00:05",
-          "text": "Hola Carlos! Many European travel insurance policies do cover physiotherapy. We can provide all the documentation you need for your claim."
+          "timestamp": "00:30",
+          "text": "Hi Robert! We offer both individual physiotherapy sessions and group clinical pilates classes. Our group classes run Monday, Wednesday, and Friday evenings and are great for injury prevention and general fitness."
         },
         {
           "speaker": "patient",
-          "timestamp": "02:30", 
-          "text": "Perfect! I need treatment for my lower back pain from long flights. What documents do you provide?"
+          "timestamp": "01:00",
+          "text": "What's the cost for the group classes?"
         },
         {
           "speaker": "staff",
-          "timestamp": "02:35",
-          "text": "We provide detailed treatment reports, receipts, and medical justification letters. Your appointment is booked for Wednesday 3pm. Bring your insurance details!"
+          "timestamp": "01:30",
+          "text": "$35 per class or $150 for a 5-class pass. You can drop in anytime, but I'd recommend an initial assessment first to ensure the exercises are suitable for you."
         }
       ],
       "insights": {
-        "key_topics": ["travel insurance", "documentation", "lower back pain", "long flights"],
-        "action_items": ["Insurance documentation", "Treatment scheduling", "Claim support"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
+        "key_topics": ["group classes", "clinical pilates", "pricing"],
+        "action_items": ["Provide class information", "Recommend assessment"],
+        "patient_satisfaction": "medium",
+        "treatment_effectiveness": "neutral"
       },
-      "tags": ["insurance", "travel", "documentation", "spanish", "whatsapp"]
+      "tags": ["group_classes", "pilates", "prevention"]
     },
     {
-      "id": "conv_016", 
-      "phone_number": "+1234567890",
-      "patient_name": "Sarah Mitchell",
-      "patient_id": "pat_016",
-      "date": "2025-06-26T19:45:22Z", 
-      "duration_seconds": 240,
-      "conversation_type": "yoga_injury",
+      "id": "conv_007",
+      "phone_number": "+61478901234",
+      "patient_name": "Lisa Anderson",
+      "patient_id": "pat_007",
+      "date": "2025-06-22T12:10:00Z",
+      "duration_seconds": 220,
+      "conversation_type": "sports_injury",
       "status": "completed",
-      "sentiment": "concerned",
-      "sentiment_score": -0.4,
+      "sentiment": "positive",
+      "sentiment_score": 0.7,
       "priority": "medium",
       "transcript": [
         {
           "speaker": "patient",
           "timestamp": "00:00",
-          "text": "I think I overstretched in yoga class yesterday. Hip flexor is really tight and painful. Should I keep practicing?"
+          "text": "I'm a runner and I've been getting shin splints. Training for City2Surf in August - can you help me get back to running safely?"
         },
         {
-          "speaker": "staff", 
-          "timestamp": "00:08",
-          "text": "Hi Sarah! Hip flexor strains from yoga are common. It's best to rest from practice until we can assess the injury properly."
+          "speaker": "staff",
+          "timestamp": "00:45",
+          "text": "Absolutely Lisa! Shin splints are very common in runners and definitely treatable. We can assess your running biomechanics, provide treatment, and modify your training program to get you ready for City2Surf."
         },
         {
           "speaker": "patient",
+          "timestamp": "01:30",
+          "text": "That sounds perfect. I'm worried about losing my fitness if I stop running completely."
+        },
+        {
+          "speaker": "staff",
           "timestamp": "02:00",
-          "text": "How long should I avoid yoga? I have teacher training next month"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:05", 
-          "text": "Let's get you assessed first. With proper treatment, you should be ready for teacher training. Available tomorrow 10am for urgent consultation."
+          "text": "Don't worry, we rarely recommend complete rest for runners. We'll likely modify your training with cross-training options and gradual return to running. Can you come in Friday afternoon?"
         }
       ],
       "insights": {
-        "key_topics": ["yoga injury", "hip flexor strain", "teacher training", "activity modification"],
-        "action_items": ["Injury assessment", "Treatment plan", "Return to yoga protocol"],
-        "patient_satisfaction": "medium",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["yoga", "hip_flexor", "teacher_training", "american", "whatsapp"]
-    },
-    {
-      "id": "conv_017",
-      "phone_number": "@emma.wellness",
-      "patient_name": "Emma Thompson", 
-      "patient_id": "pat_017",
-      "date": "2025-06-30T16:20:33Z",
-      "duration_seconds": 180,
-      "conversation_type": "social_inquiry",
-      "status": "completed", 
-      "sentiment": "positive",
-      "sentiment_score": 0.7,
-      "priority": "low",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00", 
-          "text": "Hey! Saw your clinic on Insta 🤩 Do you treat dancers? I'm a professional ballet dancer with recurring ankle issues"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:05",
-          "text": "Hi Emma! Yes absolutely! Alister has extensive experience with dancers and understands the specific demands of ballet. Ankle stability is his specialty! ✨"
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "01:30",
-          "text": "Amazing! Can I book an assessment? Currently in Canggu but can travel to Uluwatu"
-        },
-        {
-          "speaker": "staff", 
-          "timestamp": "01:35",
-          "text": "Perfect! Ballet ankle assessment booked for Thursday 2pm. We'll create a performance-specific strengthening program for you! 🩰"
-        }
-      ],
-      "insights": {
-        "key_topics": ["ballet dancing", "ankle stability", "professional athlete", "performance-specific care"],
-        "action_items": ["Dancer assessment", "Ankle stability program", "Performance optimization"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "pending"  
-      },
-      "tags": ["ballet", "ankle", "professional_dancer", "instagram", "performance"]
-    },
-    {
-      "id": "conv_018",
-      "phone_number": "@surf.therapy.bali",
-      "patient_name": "Jake Rivera",
-      "patient_id": "pat_018", 
-      "date": "2025-06-30T11:15:45Z",
-      "duration_seconds": 300,
-      "conversation_type": "surf_coaching_injury",
-      "status": "completed",
-      "sentiment": "positive", 
-      "sentiment_score": 0.5,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Yo! I'm a surf coach here in Uluwatu. Dealing with repetitive shoulder strain from demonstrating techniques all day. Any surf-specific treatments?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:10", 
-          "text": "Hey Jake! That's exactly what we specialize in! Repetitive shoulder strain from surf coaching is super common. We have surf-specific strengthening protocols."
-        },
-        {
-          "speaker": "patient", 
-          "timestamp": "02:30",
-          "text": "Sweet! Need to keep working while treating it. Possible?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:35",
-          "text": "Absolutely! We'll design a treatment plan that lets you keep coaching while we address the strain. Monday 9am work? 🏄‍♂️"
-        }
-      ],
-      "insights": {
-        "key_topics": ["surf coaching", "repetitive strain", "occupational injury", "continued work"],
-        "action_items": ["Occupational assessment", "Surf-specific treatment", "Work modification strategies"],
+        "key_topics": ["running injury", "shin splints", "biomechanics", "training modification"],
+        "action_items": ["Biomechanical assessment", "Modify training", "Cross-training options"],
         "patient_satisfaction": "high",
         "treatment_effectiveness": "pending"
       },
-             "tags": ["surf_coaching", "shoulder", "occupational", "instagram", "surf_specific"]
-    },
-    {
-      "id": "conv_019",
-      "phone_number": "@mma.warrior.bali",
-      "patient_name": "Marcus Silva",
-      "patient_id": "pat_019",
-      "date": "2025-06-29T20:15:30Z",
-      "duration_seconds": 420,
-      "conversation_type": "combat_sports_injury",  
-      "status": "completed",
-      "sentiment": "concerned",
-      "sentiment_score": -0.3,
-      "priority": "high",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Got caught in a bad submission during training 😤 Shoulder feels unstable now, worried about dislocation. Need urgent assessment!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08", 
-          "text": "Marcus, shoulder instability after submissions is serious. Let's get you assessed ASAP. Alister has worked with many MMA fighters."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:30",
-          "text": "Have competition in 6 weeks. Can we fast-track recovery? What's realistic timeline?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:40",
-          "text": "6 weeks is tight but possible with intensive treatment. Emergency assessment today 4pm, then we'll create competition-specific rehab plan! 🥊"
-        }
-      ],
-      "insights": {
-        "key_topics": ["MMA injury", "shoulder instability", "submission injury", "competition timeline"],
-        "action_items": ["Urgent shoulder assessment", "Instability testing", "Competition preparation plan"],
-        "patient_satisfaction": "medium",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["MMA", "submission_injury", "shoulder_instability", "competition", "instagram"]
-    },
-    {
-      "id": "conv_020",
-      "phone_number": "@rock.climbing.adventures",
-      "patient_name": "Alex Chen", 
-      "patient_id": "pat_020",
-      "date": "2025-06-29T14:45:18Z",
-      "duration_seconds": 300,
-      "conversation_type": "climbing_injury",
-      "status": "completed",
-      "sentiment": "positive",
-      "sentiment_score": 0.4,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Climber's elbow acting up again 🧗‍♂️ Been pushing too hard on the overhangs at Uluwatu cliffs. Classic mistake!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08",
-          "text": "Hey Alex! Climber's elbow from overhangs is super common. The repetitive gripping and pulling motion really stresses those tendons."
-        },
-        {
-          "speaker": "patient", 
-          "timestamp": "02:15",
-          "text": "Yeah, should've listened to my body. Any climbing-specific treatments? Don't want to stop completely"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:20",
-          "text": "Absolutely! We have climbing-specific protocols that let you maintain some training while healing. Tuesday 11am available for assessment? 🪨"
-        }
-      ],
-      "insights": {
-        "key_topics": ["climber's elbow", "overuse injury", "climbing-specific treatment", "activity modification"],
-        "action_items": ["Elbow assessment", "Climbing modification plan", "Tendon rehabilitation"],
-        "patient_satisfaction": "high", 
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["rock_climbing", "climbers_elbow", "tendon_injury", "instagram", "uluwatu"]
-    },
-    {
-      "id": "conv_021", 
-      "phone_number": "@freedive.bali",
-      "patient_name": "Marina Costa",
-      "patient_id": "pat_021",
-      "date": "2025-06-28T16:30:45Z",
-      "duration_seconds": 240,
-      "conversation_type": "aquatic_sports_injury",
-      "status": "completed",
-      "sentiment": "concerned",
-      "sentiment_score": -0.2,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00", 
-          "text": "Hey! Been freediving daily and developing neck/shoulder tension from equalizing techniques. Any specific treatments for freedivers? 🤿"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:10",
-          "text": "Hi Marina! Freediving-related neck tension is quite unique. The repetitive equalizing and body positioning creates specific muscle imbalances."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "01:45",
-          "text": "Exactly! It's affecting my deeper dives. Need someone who understands the mechanics"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "01:50",
-          "text": "Perfect! Alister has worked with many freedivers. We'll address the equalizing mechanics and neck alignment. Thursday 3pm available?"
-        }
-      ],
-      "insights": {
-        "key_topics": ["freediving", "equalizing technique", "neck tension", "specialized treatment"],
-        "action_items": ["Freediving assessment", "Equalizing mechanics analysis", "Neck alignment treatment"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["freediving", "neck_tension", "equalizing", "aquatic_sports", "instagram"]
-    },
-    {
-      "id": "conv_022",
-      "phone_number": "@bali.yoga.flow", 
-      "patient_name": "Priya Sharma",
-      "patient_id": "pat_022",
-      "date": "2025-06-28T09:20:15Z",
-      "duration_seconds": 360,
-      "conversation_type": "repetitive_strain",
-      "status": "completed",
-      "sentiment": "concerned",
-      "sentiment_score": -0.4,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient", 
-          "timestamp": "00:00",
-          "text": "Teaching 6 yoga classes daily 🧘‍♀️ Wrists are killing me from all the chaturangas and arm balances. Classic yoga teacher problem!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:12",
-          "text": "Priya! Yoga teacher wrist strain is so common. The repetitive weight-bearing through the wrists from demonstrations really adds up."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:30",
-          "text": "Need to keep teaching but also need treatment. Can we work around my schedule? Early mornings or late evenings?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:40", 
-          "text": "Absolutely! We understand teacher schedules. Let's do 7am Tuesday - we'll create wrist-sparing modifications for your classes too! 🙏"
-        }
-      ],
-      "insights": {
-        "key_topics": ["yoga teacher injury", "wrist strain", "occupational hazard", "schedule accommodation"],
-        "action_items": ["Wrist assessment", "Teaching modifications", "Early appointment scheduling"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
-      },
-             "tags": ["yoga_teacher", "wrist_strain", "occupational", "chaturanga", "instagram"]
-    },
-    {
-      "id": "conv_023",
-      "phone_number": "+447890123456",
-      "patient_name": "Oliver Brooks",
-      "patient_id": "pat_023",
-      "date": "2025-06-27T12:15:30Z",
-      "duration_seconds": 480,
-      "conversation_type": "chronic_condition",
-      "status": "ongoing", 
-      "sentiment": "frustrated",
-      "sentiment_score": -0.6,
-      "priority": "high",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Been dealing with chronic neck pain for months. Tried everything back in London. Hoping Bali's holistic approach might help where Western medicine failed."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:15",
-          "text": "Oliver, chronic conditions can be incredibly frustrating. Alister takes a very comprehensive approach, looking at movement patterns, lifestyle factors, and manual therapy."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "03:30",
-          "text": "I'm willing to try anything. How long would treatment typically take for chronic cases?"
-        },
-        {
-          "speaker": "staff", 
-          "timestamp": "03:45",
-          "text": "Chronic cases need patience, but we've had excellent results. Let's start with comprehensive assessment Monday 2pm, then create a long-term management plan."
-        }
-      ],
-      "insights": {
-        "key_topics": ["chronic neck pain", "treatment failure", "holistic approach", "long-term management"],
-        "action_items": ["Comprehensive assessment", "Holistic treatment plan", "Expectation management"],
-        "patient_satisfaction": "hopeful",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["chronic_pain", "neck", "holistic", "british", "whatsapp"]
-    },
-    {
-      "id": "conv_024",
-      "phone_number": "@skateboard.bali",
-      "patient_name": "Tony Martinez",
-      "patient_id": "pat_024", 
-      "date": "2025-06-27T17:45:20Z",
-      "duration_seconds": 180,
-      "conversation_type": "acute_injury",
-      "status": "completed",
-      "sentiment": "positive",
-      "sentiment_score": 0.5,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Wiped out hard at the skate bowl yesterday 🛹 Ankle's swollen but not sure if it's sprained or broken. What should I do?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08", 
-          "text": "Hey Tony! Skateboard ankle injuries need proper assessment. Can you put weight on it? Any deformity or severe pain?"
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "01:30",
-          "text": "Can walk but painful. No obvious deformity. Just really swollen and stiff"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "01:35",
-          "text": "Sounds like a sprain but let's confirm. Can you come in for assessment today 5pm? We'll rule out fracture and start treatment! 🩹"
-        }
-      ],
-      "insights": {
-        "key_topics": ["skateboard injury", "ankle sprain", "acute assessment", "fracture ruling out"],
-        "action_items": ["Ankle assessment", "X-ray if needed", "Sprain treatment protocol"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["skateboard", "ankle_sprain", "acute_injury", "instagram", "youth"]
-    },
-    {
-      "id": "conv_025",
-      "phone_number": "+81987654321",
-      "patient_name": "Yuki Tanaka",
-      "patient_id": "pat_025",
-      "date": "2025-06-26T21:30:45Z",
-      "duration_seconds": 300,
-      "conversation_type": "cultural_accommodation",
-      "status": "completed",
-      "sentiment": "respectful",
-      "sentiment_score": 0.3,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "こんにちは I have TMJ disorder from stress. In Japan we usually do gentle treatments. Do you accommodate different cultural preferences?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:12", 
-          "text": "Konnichiwa Yuki! Absolutely, we respect cultural preferences. Alister is very gentle and can adapt his techniques to your comfort level."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:15",
-          "text": "That's reassuring. TMJ is very sensitive condition. Need very careful approach"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:25",
-          "text": "Perfect understanding! TMJ requires gentle, precise work. We'll start very carefully Wednesday 11am. Cultural sensitivity is our priority. 🙏"
-        }
-      ],
-      "insights": {
-        "key_topics": ["TMJ disorder", "cultural sensitivity", "gentle treatment", "stress-related condition"],
-        "action_items": ["Gentle TMJ assessment", "Culturally adapted treatment", "Stress management discussion"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["TMJ", "cultural_sensitivity", "japanese", "stress", "whatsapp"]
-    },
-    {
-      "id": "conv_026",
-      "phone_number": "@crossfit.uluwatu",
-      "patient_name": "Rachel Kim",
-      "patient_id": "pat_026",
-      "date": "2025-06-26T08:15:35Z",
-      "duration_seconds": 360,
-      "conversation_type": "overtraining_injury",
-      "status": "completed", 
-      "sentiment": "determined",
-      "sentiment_score": 0.2,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Been crushing it at CrossFit but now both knees are angry 😤 Think I pushed too hard too fast. Need to get back to lifting ASAP!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:15",
-          "text": "Rachel! Classic overtraining syndrome. Your body's telling you to slow down. Let's assess the knee inflammation and create a smart return plan."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:45",
-          "text": "But the Open is coming up! Can we fast-track recovery? I'll do whatever it takes"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "03:00",
-          "text": "I admire your dedication! Let's channel that energy into smart recovery. Friday 9am - we'll create a CrossFit-specific plan that won't sacrifice long-term health! 💪"
-        }
-      ],
-      "insights": {
-        "key_topics": ["overtraining", "knee inflammation", "CrossFit", "competition pressure", "smart recovery"],
-        "action_items": ["Knee assessment", "Training load modification", "Competition preparation balance"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
-      },
-             "tags": ["crossfit", "overtraining", "knee", "competition", "instagram"]
-    },
-    {
-      "id": "conv_027",
-      "phone_number": "@pilates.retreat.bali",
-      "patient_name": "Isabella Rodriguez",
-      "patient_id": "pat_027",
-      "date": "2025-06-25T15:20:10Z",
-      "duration_seconds": 240,
-      "conversation_type": "preventive_care",
-      "status": "completed",
-      "sentiment": "proactive",
-      "sentiment_score": 0.6,
-      "priority": "low",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Running a Pilates retreat next month 🧘‍♀️ Want to get a movement assessment beforehand to prevent any teaching injuries. Being proactive!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:10",
-          "text": "Isabella, love the proactive approach! Prevention is so much better than treatment. Alister can definitely do a comprehensive movement screen."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "01:45",
-          "text": "Perfect! Also curious about ergonomics for teaching - proper body mechanics during demonstrations"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "01:55",
-          "text": "Excellent thinking! We'll cover movement assessment, teaching ergonomics, and injury prevention strategies. Monday 10am available? 💪"
-        }
-      ],
-      "insights": {
-        "key_topics": ["preventive care", "movement screening", "teaching ergonomics", "Pilates instruction"],
-        "action_items": ["Movement assessment", "Ergonomic education", "Injury prevention plan"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "preventive"
-      },
-      "tags": ["pilates", "prevention", "teaching", "ergonomics", "instagram"]
-    },
-    {
-      "id": "conv_028",
-      "phone_number": "+5511987654321",
-      "patient_name": "Fernando Silva",
-      "patient_id": "pat_028",
-      "date": "2025-06-25T11:30:25Z",
-      "duration_seconds": 360,
-      "conversation_type": "capoeira_injury",
-      "status": "completed",
-      "sentiment": "passionate",
-      "sentiment_score": 0.4,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Oi! Capoeira practitioner here 🇧🇷 Tweaked my hip doing a complex sequence. Need someone who understands the movement demands of Brazilian martial arts!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:12",
-          "text": "Oi Fernando! Capoeira is so dynamic - the hip mobility and rotational demands are incredible. We've worked with martial artists before."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:30",
-          "text": "Exactly! Not just any physio understands the ginga and acrobatic movements. Can you help maintain my flow while healing?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:45",
-          "text": "Absolutely! We'll analyze your movement patterns and create capoeira-specific rehab. Tuesday 4pm - bring videos of your sequences if possible! 🤸‍♂️"
-        }
-      ],
-      "insights": {
-        "key_topics": ["capoeira", "hip injury", "martial arts", "movement analysis", "Brazilian culture"],
-        "action_items": ["Hip assessment", "Movement analysis", "Capoeira-specific rehab"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["capoeira", "hip", "martial_arts", "brazilian", "whatsapp"]
-    },
-    {
-      "id": "conv_029",
-      "phone_number": "@digital.nomad.fitness",
-      "patient_name": "David Park",
-      "patient_id": "pat_029",
-      "date": "2025-06-24T20:45:15Z",
-      "duration_seconds": 300,
-      "conversation_type": "tech_neck",
-      "status": "completed",
-      "sentiment": "resigned",
-      "sentiment_score": -0.3,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Digital nomad life catching up with me 💻 Neck and shoulders are destroyed from laptop work. Classic tech neck syndrome!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08",
-          "text": "David! Tech neck is epidemic among nomads in Bali. The poor ergonomics of co-working spaces really takes its toll on posture."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:15",
-          "text": "Exactly! Working from cafes and co-working spaces with terrible setups. Need practical solutions for nomad lifestyle"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:25",
-          "text": "Perfect! We'll address the acute issues and give you portable ergonomic solutions for nomad life. Thursday 6pm work? 📱"
-        }
-      ],
-      "insights": {
-        "key_topics": ["tech neck", "digital nomad", "ergonomics", "postural dysfunction", "lifestyle adaptation"],
-        "action_items": ["Postural assessment", "Ergonomic solutions", "Nomad-friendly strategies"],
-        "patient_satisfaction": "medium",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["tech_neck", "digital_nomad", "posture", "ergonomics", "instagram"]
-    },
-    {
-      "id": "conv_030",
-      "phone_number": "+91987654321",
-      "patient_name": "Arjun Patel",
-      "patient_id": "pat_030",
-      "date": "2025-06-24T16:15:40Z",
-      "duration_seconds": 420,
-      "conversation_type": "ayurvedic_integration",
-      "status": "completed",
-      "sentiment": "holistic",
-      "sentiment_score": 0.5,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Namaste! I follow Ayurvedic principles for health. Can your treatments integrate with my dosha-based lifestyle? I'm Vata dominant."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:15",
-          "text": "Namaste Arjun! We absolutely respect holistic approaches. Alister has worked with many patients who follow Ayurvedic principles."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "03:00",
-          "text": "Wonderful! My lower back pain might be related to Vata imbalance. Can we discuss how physiotherapy aligns with this?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "03:15",
-          "text": "Absolutely! We can create a treatment approach that complements your Ayurvedic lifestyle. Friday 1pm - let's integrate both approaches! 🙏"
-        }
-      ],
-      "insights": {
-        "key_topics": ["Ayurveda", "dosha", "holistic health", "cultural integration", "lower back pain"],
-        "action_items": ["Holistic assessment", "Ayurvedic integration", "Culturally sensitive treatment"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["ayurveda", "holistic", "dosha", "indian", "whatsapp"]
-    },
-    {
-      "id": "conv_031",
-      "phone_number": "@muay.thai.bali",
-      "patient_name": "Siriporn Thanakit",
-      "patient_id": "pat_031",
-      "date": "2025-06-24T07:30:20Z",
-      "duration_seconds": 240,
-      "conversation_type": "combat_conditioning",
-      "status": "completed",
-      "sentiment": "focused",
-      "sentiment_score": 0.3,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Sawasdee! Training Muay Thai intensively 🥊 Shins taking a beating from conditioning. Need recovery optimization between sessions."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08",
-          "text": "Sawasdee Siriporn! Muay Thai conditioning is brutal on the body. Recovery optimization is crucial for consistent training."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "01:45",
-          "text": "Yes! Training twice daily. Need strategies for faster recovery and injury prevention"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "01:55",
-          "text": "Perfect! We'll create a recovery protocol specifically for your training schedule. Wednesday 8am - early bird session! 🐓"
-        }
-      ],
-      "insights": {
-        "key_topics": ["Muay Thai", "shin conditioning", "recovery optimization", "intensive training"],
-        "action_items": ["Recovery assessment", "Training optimization", "Injury prevention protocols"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["muay_thai", "conditioning", "recovery", "thai", "instagram"]
-    },
-    {
-      "id": "conv_032",
-      "phone_number": "+39345678901",
-      "patient_name": "Marco Benedetti",
-      "patient_id": "pat_032",
-      "date": "2025-06-23T19:20:35Z",
-      "duration_seconds": 360,
-      "conversation_type": "cycling_injury",
-      "status": "completed",
-      "sentiment": "determined",
-      "sentiment_score": 0.4,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Ciao! Cycling enthusiast here 🚴‍♂️ Developing knee pain on long rides around Bali. Bike fit might be off?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:10",
-          "text": "Ciao Marco! Cycling knee pain often relates to bike fit and muscle imbalances. We can assess both biomechanics and equipment setup."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:30",
-          "text": "Perfetto! Planning some epic rides to Mount Batur. Need to sort this before the big climbs"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:40",
-          "text": "Excellent goal! We'll optimize your position and strengthen key muscles for climbing. Saturday 10am available? 🏔️"
-        }
-      ],
-      "insights": {
-        "key_topics": ["cycling", "knee pain", "bike fit", "biomechanics", "mountain cycling"],
-        "action_items": ["Cycling assessment", "Bike fit analysis", "Strength optimization"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["cycling", "knee", "bike_fit", "italian", "whatsapp"]
-    },
-    {
-      "id": "conv_033",
-      "phone_number": "@kite.surf.adventures",
-      "patient_name": "Nina Kowalski",
-      "patient_id": "pat_033",
-      "date": "2025-06-23T13:45:50Z",
-      "duration_seconds": 300,
-      "conversation_type": "extreme_sports",
-      "status": "completed",
-      "sentiment": "adventurous",
-      "sentiment_score": 0.7,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Kite surfing addict here! 🪁 Lower back getting tight from all the harness work and pop attempts. Classic kiter problem!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:12",
-          "text": "Nina! Kite surfing back issues are super common. The harness position and rotational forces create specific strain patterns."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:15",
-          "text": "Exactly! Plus the stance and trying big airs. Need someone who gets the sport-specific demands"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:25",
-          "text": "Absolutely understand! We'll address the core stability and rotational control needed for big sessions. Monday 3pm work? 🌊"
-        }
-      ],
-      "insights": {
-        "key_topics": ["kite surfing", "lower back", "harness strain", "rotational control", "extreme sports"],
-        "action_items": ["Kite-specific assessment", "Core strengthening", "Harness ergonomics"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "pending"
-      },
-      "tags": ["kite_surfing", "lower_back", "extreme_sports", "polish", "instagram"]
-    },
-    {
-      "id": "conv_034",
-      "phone_number": "+27823456789",
-      "patient_name": "Liam van der Merwe",
-      "patient_id": "pat_034",
-      "date": "2025-06-22T16:10:25Z",
-      "duration_seconds": 240,
-      "conversation_type": "travel_preparation",
-      "status": "completed",
-      "sentiment": "practical",
-      "sentiment_score": 0.4,
-      "priority": "low",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Howzit! South African traveling through Indo for 3 months. Had shoulder surgery 6 months ago - want a check-up before big adventures."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08",
-          "text": "Howzit Liam! Smart to get checked before extended travel. Post-surgical shoulders need monitoring, especially with adventure activities."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "01:30",
-          "text": "Planning surfing, diving, maybe some climbing. Want to ensure I'm ready for anything"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "01:40",
-          "text": "Perfect approach! We'll assess your post-surgical progress and clear you for activities. Tuesday 2pm for travel prep assessment? ✈️"
-        }
-      ],
-      "insights": {
-        "key_topics": ["post-surgical", "travel preparation", "adventure activities", "shoulder surgery"],
-        "action_items": ["Post-surgical assessment", "Activity clearance", "Travel preparation"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "preventive"
-      },
-      "tags": ["post_surgery", "travel", "adventure", "south_african", "whatsapp"]
-    },
-    {
-      "id": "conv_035",
-      "phone_number": "@wellness.retreat.ubud",
-      "patient_name": "Sage Thompson",
-      "patient_id": "pat_035",
-      "date": "2025-06-22T09:30:15Z",
-      "duration_seconds": 480,
-      "conversation_type": "retreat_integration",
-      "status": "completed",
-      "sentiment": "mindful",
-      "sentiment_score": 0.6,
-      "priority": "low",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Just finished an intensive yoga retreat in Ubud 🧘‍♀️ Body feels amazing but also pushed some limits. Want to integrate healing mindfully."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:15",
-          "text": "Sage! Post-retreat integration is so important. Often people push boundaries during intensive practices and need gentle transition."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "04:00",
-          "text": "Exactly! Hip flexors are talking to me after all those deep poses. Want to maintain the openness while being wise"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "04:15",
-          "text": "Beautiful approach! We'll help you maintain your new range while preventing overuse. Thursday 5pm for mindful assessment? 🌸"
-        }
-      ],
-      "insights": {
-        "key_topics": ["yoga retreat", "mindful healing", "hip flexors", "post-intensive care"],
-        "action_items": ["Gentle assessment", "Range maintenance", "Mindful recovery plan"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "integrative"
-      },
-      "tags": ["yoga_retreat", "mindful", "hip_flexors", "integration", "instagram"]
-    },
-    {
-      "id": "conv_036",
-      "phone_number": "+46701234567",
-      "patient_name": "Erik Larsson",
-      "patient_id": "pat_036",
-      "date": "2025-06-21T21:15:40Z",
-      "duration_seconds": 300,
-      "conversation_type": "cold_adaptation",
-      "status": "completed",
-      "sentiment": "curious",
-      "sentiment_score": 0.3,
-      "priority": "low",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Hej! Swedish guy here adapting to tropical climate 🌴 Body feeling stiff without my usual cold exposure. Any tropical adaptations for Nordic bodies?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:12",
-          "text": "Hej Erik! Fascinating question! Climate adaptation affects muscle tone and recovery patterns. Nordic bodies do adapt differently to heat."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:30",
-          "text": "Exactly! Missing my ice baths and saunas. Body feels sluggish in the heat"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:40",
-          "text": "Interesting! We can discuss heat adaptation strategies and modify treatments for your Nordic physiology. Friday 11am? ❄️"
-        }
-      ],
-      "insights": {
-        "key_topics": ["climate adaptation", "Nordic physiology", "cold exposure", "tropical adjustment"],
-        "action_items": ["Climate adaptation assessment", "Nordic-specific strategies", "Heat adaptation plan"],
-        "patient_satisfaction": "intrigued",
-        "treatment_effectiveness": "adaptive"
-      },
-      "tags": ["climate_adaptation", "nordic", "cold_exposure", "swedish", "whatsapp"]
-    },
-    {
-      "id": "conv_037",
-      "phone_number": "@trail.running.bali",
-      "patient_name": "Camila Santos",
-      "patient_id": "pat_037",
-      "date": "2025-06-21T06:45:30Z",
-      "duration_seconds": 360,
-      "conversation_type": "ultra_endurance",
-      "status": "completed",
-      "sentiment": "passionate",
-      "sentiment_score": 0.5,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Trail running ultra distances in Bali heat! 🏃‍♀️ IT band getting cranky on the volcanic terrain. Need endurance-specific treatment."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:15",
-          "text": "Camila! Ultra running in tropical conditions is next level. IT band issues on volcanic terrain make total sense - very different from flat surfaces."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "03:00",
-          "text": "Exactly! The elevation changes and heat stress create unique challenges. Training for 100k next month"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "03:15",
-          "text": "Incredible goal! We'll optimize your biomechanics for volcanic terrain and heat adaptation. Sunday 7am - early to beat the heat! 🌋"
-        }
-      ],
-      "insights": {
-        "key_topics": ["ultra running", "IT band", "volcanic terrain", "heat adaptation", "100k training"],
-        "action_items": ["Biomechanical analysis", "Terrain-specific training", "Heat adaptation strategies"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "performance"
-      },
-      "tags": ["ultra_running", "IT_band", "volcanic_terrain", "brazilian", "instagram"]
-    },
-    {
-      "id": "conv_038",
-      "phone_number": "+971501234567",
-      "patient_name": "Omar Al-Rashid",
-      "patient_id": "pat_038",
-      "date": "2025-06-20T18:20:45Z",
-      "duration_seconds": 240,
-      "conversation_type": "cultural_sensitivity",
-      "status": "completed",
-      "sentiment": "respectful",
-      "sentiment_score": 0.4,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Assalamu alaikum! Need physiotherapy for chronic lower back pain. Important to maintain modesty during treatment. Can you accommodate?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:08",
-          "text": "Wa alaikum assalam Omar! Absolutely, we completely respect cultural and religious requirements. Modesty and comfort are paramount."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "01:45",
-          "text": "Shukran! Also need to maintain prayer times during treatment schedule"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "01:55",
-          "text": "Of course! We'll schedule around your prayer times and ensure culturally appropriate treatment. Wednesday 10am work? 🙏"
-        }
-      ],
-      "insights": {
-        "key_topics": ["cultural sensitivity", "religious accommodation", "modesty", "prayer schedule"],
-        "action_items": ["Culturally appropriate treatment", "Schedule accommodation", "Respectful care"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "culturally_adapted"
-      },
-      "tags": ["cultural_sensitivity", "religious", "modesty", "emirati", "whatsapp"]
-    },
-    {
-      "id": "conv_039",
-      "phone_number": "@wakeboard.bali",
-      "patient_name": "Zoe Mitchell",
-      "patient_id": "pat_039",
-      "date": "2025-06-20T14:35:20Z",
-      "duration_seconds": 300,
-      "conversation_type": "water_sports_injury",
-      "status": "completed",
-      "sentiment": "energetic",
-      "sentiment_score": 0.6,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Wakeboarding beast here! 🏄‍♀️ Ankle giving me grief after attempting some gnarly tricks. The cable park is calling but body's protesting!"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:12",
-          "text": "Zoe! Wakeboarding ankle injuries are common with trick progression. The rotational forces and landings put massive stress on ankle stability."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "02:15",
-          "text": "Totally! Want to keep progressing but need to be smart about it. Can we work on stability while I keep riding?"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "02:25",
-          "text": "Absolutely! We'll create a riding-compatible rehab plan that builds bullet-proof ankles. Monday 4pm available? 🎯"
-        }
-      ],
-      "insights": {
-        "key_topics": ["wakeboarding", "ankle stability", "trick progression", "water sports injury"],
-        "action_items": ["Ankle stability assessment", "Sport-specific rehab", "Progressive return plan"],
-        "patient_satisfaction": "very high",
-        "treatment_effectiveness": "performance"
-      },
-      "tags": ["wakeboarding", "ankle", "water_sports", "tricks", "instagram"]
-    },
-    {
-      "id": "conv_040",
-      "phone_number": "+65812345678",
-      "patient_name": "Wei Lin Tan",
-      "patient_id": "pat_040",
-      "date": "2025-06-20T10:15:35Z",
-      "duration_seconds": 420,
-      "conversation_type": "corporate_wellness",
-      "status": "completed",
-      "sentiment": "professional",
-      "sentiment_score": 0.2,
-      "priority": "medium",
-      "transcript": [
-        {
-          "speaker": "patient",
-          "timestamp": "00:00",
-          "text": "Senior exec taking a workcation in Bali 💼 Chronic tension headaches from stress and poor posture. Need efficient treatment that fits busy schedule."
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "00:15",
-          "text": "Wei Lin! Executive stress patterns create specific tension patterns. We can design efficient treatments that respect your professional demands."
-        },
-        {
-          "speaker": "patient",
-          "timestamp": "03:30",
-          "text": "Perfect! Also interested in preventive strategies for when I return to Singapore office environment"
-        },
-        {
-          "speaker": "staff",
-          "timestamp": "03:45",
-          "text": "Excellent thinking! We'll address immediate issues and provide corporate wellness strategies. Friday 12pm during lunch hour? 📊"
-        }
-      ],
-      "insights": {
-        "key_topics": ["executive stress", "tension headaches", "workcation", "corporate wellness", "time efficiency"],
-        "action_items": ["Stress pattern assessment", "Efficient treatment plan", "Corporate wellness strategies"],
-        "patient_satisfaction": "high",
-        "treatment_effectiveness": "executive"
-      },
-      "tags": ["corporate_wellness", "stress", "headaches", "executive", "whatsapp"]
-    }
-  ],
-  "summary_metrics": {
-    "total_conversations": 40,
-    "average_duration": 275,
-    "sentiment_distribution": {
-      "positive": 2,
-      "neutral": 3,
-      "negative": 1,
-      "concerned": 1
-    },
-    "conversation_types": {
-      "injury_inquiry": 1,
-      "medical_concern": 1,
-      "treatment_concern": 1,
-      "post_surgery_rehab": 1,
-      "scheduling_clarification": 1,
-      "appointment_scheduling": 1,
-      "wrong_number": 1
-    },
-    "priority_levels": {
-      "high": 2,
-      "medium": 3,
-      "low": 2
-    },
-    "requires_follow_up": 2
-  },
-  "clinic_insights": {
-    "location": "SurfRehab at 360 Move, Uluwatu, Bali",
-    "practitioner": "Alister (Lead Physiotherapist)",
-    "specializations": ["Surf-related injuries", "Post-surgical rehabilitation", "Sports physiotherapy"],
-    "patient_demographics": ["International tourists", "Local surfers", "Post-surgical patients"],
-    "common_conditions": ["Costochondritis (surf-related)", "Shoulder injuries", "Knee rehabilitation", "Wrist/finger pain"],
-    "service_features": ["Appointment-based", "GMT+8 timezone", "Package deals available", "Multiple venue options"]
-  },
-  "demo_talking_points": [
-    "🏄‍♂️ Surf-specific injury expertise - costochondritis from board contact identified immediately",
-    "🚨 Treatment reaction monitoring - Amanda's worsening pain flagged for urgent reassessment",
-    "🌍 International patient base - tourists and locals receiving care in Bali",
-    "💪 Post-surgical specialization - Artem's knee rehab consultation scheduled efficiently",
-    "📱 24/7 AI reception - handling inquiries across time zones",
-    "🎯 Smart escalation - complex cases forwarded to Alister for expert guidance",
-    "🏥 Venue flexibility - Ulu Active partnerships for specialized treatments"
-  ],
-  "clinical_patterns": {
-    "surf_injuries": {
-      "frequency": "High",
-      "types": ["Costochondritis", "Shoulder impingement", "Wrist strain"],
-      "approach": "Sport-specific management strategies"
-    },
-    "tourist_patients": {
-      "characteristics": ["Short-term availability", "Urgent care needs", "Family referrals"],
-      "adaptations": ["Flexible scheduling", "Rapid assessment", "Clear location guidance"]
-    },
-    "treatment_monitoring": {
-      "red_flags": ["Worsening pain post-treatment", "Unexpected reactions"],
-      "responses": ["Immediate reassessment", "Treatment plan modification", "Gentle re-evaluation"]
-    }
-  }
+      "tags": ["running", "shin_splints", "sports", "city2surf"]
+         },
+     {
+       "id": "conv_008",
+       "phone_number": "+61489012345",
+       "patient_name": "Kevin O'Brien",
+       "patient_id": "pat_008",
+       "date": "2025-06-18T17:45:00Z",
+       "duration_seconds": 190,
+       "conversation_type": "chronic_pain",
+       "status": "requires_follow_up",
+       "sentiment": "frustrated",
+       "sentiment_score": -0.5,
+       "priority": "high",
+       "transcript": [
+         {
+           "speaker": "patient",
+           "timestamp": "00:00",
+           "text": "I've had chronic lower back pain for 2 years now. Seen multiple doctors but nothing seems to help long-term. Do you think physio might be different?"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "00:45",
+           "text": "Hi Kevin, I understand your frustration with chronic pain. Physiotherapy takes a different approach focusing on movement, strengthening, and pain education. Dr. Emma specializes in chronic pain management using evidence-based techniques."
+         },
+         {
+           "speaker": "patient",
+           "timestamp": "01:30",
+           "text": "I'm willing to try anything at this point. How long does treatment usually take?"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "02:00",
+           "text": "Chronic pain treatment varies, but we typically see improvements within 4-6 weeks with our comprehensive approach. Let's book you with Dr. Emma for a thorough 60-minute assessment next week."
+         }
+       ],
+       "insights": {
+         "key_topics": ["chronic pain", "multiple failed treatments", "specialized care"],
+         "action_items": ["Specialist consultation", "Comprehensive assessment", "Pain education"],
+         "patient_satisfaction": "cautious",
+         "treatment_effectiveness": "pending"
+       },
+       "tags": ["chronic_pain", "complex_case", "specialist", "frustrated"]
+     },
+     {
+       "id": "conv_009",
+       "phone_number": "james.watson@email.com",
+       "patient_name": "James Watson",
+       "patient_id": "pat_009",
+       "date": "2025-06-15T10:30:00Z",
+       "duration_seconds": 180,
+       "conversation_type": "email_inquiry",
+       "status": "completed",
+       "sentiment": "professional",
+       "sentiment_score": 0.3,
+       "priority": "medium",
+       "transcript": [
+         {
+           "speaker": "patient",
+           "timestamp": "00:00",
+           "text": "Dear Physio Team, I hope this email finds you well. I'm experiencing persistent shoulder pain that's been affecting my work productivity. Could you please provide information about your assessment process and availability?"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "00:30",
+           "text": "Hi James, Thank you for your email. I'm sorry to hear about your shoulder pain affecting your work. We'd be happy to help with a comprehensive shoulder assessment. Our next available appointment is Wednesday at 3pm with Dr. Sarah, who specializes in workplace-related injuries."
+         },
+         {
+           "speaker": "patient",
+           "timestamp": "01:00",
+           "text": "That sounds perfect. Could you please send me the intake forms beforehand? I'd like to complete them prior to the appointment to save time."
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "01:30",
+           "text": "Absolutely! I'll email you the intake forms this afternoon. Please bring any relevant medical history or imaging results. We'll see you Wednesday at 3pm. Best regards, Reception Team"
+         }
+       ],
+       "insights": {
+         "key_topics": ["shoulder pain", "workplace injury", "professional communication", "intake forms"],
+         "action_items": ["Send intake forms", "Schedule appointment", "Request medical history"],
+         "patient_satisfaction": "high",
+         "treatment_effectiveness": "pending"
+       },
+       "tags": ["email", "shoulder", "workplace", "professional"]
+     },
+     {
+       "id": "conv_010",
+       "phone_number": "+61412345679",
+       "patient_name": "Michelle Lee",
+       "patient_id": "pat_010",
+       "date": "2025-06-12T14:20:00Z",
+       "duration_seconds": 120,
+       "conversation_type": "sms_booking",
+       "status": "completed",
+       "sentiment": "casual",
+       "sentiment_score": 0.4,
+       "priority": "low",
+       "transcript": [
+         {
+           "speaker": "patient",
+           "timestamp": "00:00",
+           "text": "Hey! Can I book a physio appt for next week? Hurt my ankle playing netball"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "00:15",
+           "text": "Hi Michelle! Sure thing - netball ankle injuries are common. We have Tuesday 11am or Thursday 2pm available next week. Which suits you better?"
+         },
+         {
+           "speaker": "patient",
+           "timestamp": "01:00",
+           "text": "Tuesday 11am works great! Thanks 👍"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "01:15",
+           "text": "Perfect! You're booked in Tuesday 11am with Dr. Mark. Address: 123 Physio St, Sydney. See you then! 😊"
+         }
+       ],
+       "insights": {
+         "key_topics": ["netball injury", "ankle sprain", "casual communication", "quick booking"],
+         "action_items": ["Book appointment", "Send location details"],
+         "patient_satisfaction": "high",
+         "treatment_effectiveness": "pending"
+       },
+       "tags": ["sms", "netball", "ankle", "casual"]
+     },
+     {
+       "id": "conv_011",
+       "phone_number": "admin@corporatehealth.com.au",
+       "patient_name": "Corporate Health Admin",
+       "patient_id": "pat_011",
+       "date": "2025-06-08T09:00:00Z",
+       "duration_seconds": 300,
+       "conversation_type": "corporate_inquiry",
+       "status": "completed",
+       "sentiment": "business",
+       "sentiment_score": 0.2,
+       "priority": "high",
+       "transcript": [
+         {
+           "speaker": "patient",
+           "timestamp": "00:00",
+           "text": "Good morning, We are enquiring about corporate physiotherapy services for our office of 150 employees in Sydney CBD. Could you provide information about on-site services, group sessions, and corporate rates?"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "01:00",
+           "text": "Good morning, Thank you for your corporate enquiry. We offer comprehensive workplace physiotherapy including on-site consultations, ergonomic assessments, and group education sessions. Our corporate packages start from $180 per employee per session with volume discounts available."
+         },
+         {
+           "speaker": "patient",
+           "timestamp": "02:30",
+           "text": "That sounds very interesting. Could we arrange a consultation to discuss a tailored package for our organization? We're particularly interested in preventive care and ergonomic assessments."
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "03:00",
+           "text": "Absolutely! I'll arrange for our Corporate Health Manager to contact you within 24 hours to discuss a customized solution. Thank you for considering our services. Kind regards, Sydney Physio Team"
+         }
+       ],
+       "insights": {
+         "key_topics": ["corporate health", "workplace physio", "preventive care", "bulk services"],
+         "action_items": ["Corporate consultation", "Customized package", "Manager follow-up"],
+         "patient_satisfaction": "interested",
+         "treatment_effectiveness": "business"
+       },
+       "tags": ["email", "corporate", "workplace", "prevention"]
+     },
+     {
+       "id": "conv_012",
+       "phone_number": "+61423456781",
+       "patient_name": "Tom Sullivan",
+       "patient_id": "pat_012",
+       "date": "2025-06-05T16:45:00Z",
+       "duration_seconds": 150,
+       "conversation_type": "sms_follow_up",
+       "status": "completed",
+       "sentiment": "grateful",
+       "sentiment_score": 0.8,
+       "priority": "low",
+       "transcript": [
+         {
+           "speaker": "patient",
+           "timestamp": "00:00",
+           "text": "Hi! Just wanted to say thanks for the great session yesterday. Knee is feeling much better already! 🙌"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "00:30",
+           "text": "That's fantastic to hear Tom! Really pleased the treatment is helping. Remember to keep up with those exercises we discussed."
+         },
+         {
+           "speaker": "patient",
+           "timestamp": "01:30",
+           "text": "Will do! Should I book the next session for next week?"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "02:00",
+           "text": "Yes, let's keep the momentum going. Same time next Thursday work for you? I'll send a booking confirmation shortly."
+         }
+       ],
+       "insights": {
+         "key_topics": ["positive feedback", "knee improvement", "exercise compliance", "follow-up booking"],
+         "action_items": ["Book follow-up", "Exercise reminder", "Send confirmation"],
+         "patient_satisfaction": "very high",
+         "treatment_effectiveness": "excellent"
+       },
+       "tags": ["sms", "follow_up", "knee", "positive"]
+     },
+     {
+       "id": "conv_013",
+       "phone_number": "@sydney_runner_2024",
+       "patient_name": "Alex Chen",
+       "patient_id": "pat_013",
+       "date": "2025-06-02T19:30:00Z",
+       "duration_seconds": 200,
+       "conversation_type": "instagram_dm",
+       "status": "completed",
+       "sentiment": "enthusiastic",
+       "sentiment_score": 0.6,
+       "priority": "medium",
+       "transcript": [
+         {
+           "speaker": "patient",
+           "timestamp": "00:00",
+           "text": "Hey! Saw your running injury post on Instagram 🏃‍♂️ I'm training for Sydney Marathon and getting some IT band issues. Do you specialize in runner injuries?"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "00:45",
+           "text": "Hi Alex! Thanks for reaching out via Instagram! Yes, we absolutely specialize in running injuries - IT band syndrome is super common in marathon training. We can definitely help optimize your training load and address the biomechanics."
+         },
+         {
+           "speaker": "patient",
+           "timestamp": "02:00",
+           "text": "Amazing! Marathon is in 4 months, need to stay on track with training 💪"
+         },
+         {
+           "speaker": "staff",
+           "timestamp": "02:30",
+           "text": "Perfect timing! 4 months gives us plenty of room to fix this and get you marathon-ready. Can you DM us your phone number? We'll call to book you in for a running assessment 🎯"
+         }
+       ],
+       "insights": {
+         "key_topics": ["marathon training", "IT band syndrome", "social media engagement", "running biomechanics"],
+         "action_items": ["Running assessment", "Training modification", "Contact details collection"],
+         "patient_satisfaction": "high",
+         "treatment_effectiveness": "pending"
+       },
+       "tags": ["instagram", "running", "marathon", "IT_band"]
+     }
+  ]
 } 

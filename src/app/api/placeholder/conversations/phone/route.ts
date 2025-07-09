@@ -28,7 +28,16 @@ interface JsonConversationsData {
 
 // Helper function to determine conversation source based on phone format
 const getConversationSource = (phoneNumber: string): string => {
-  return phoneNumber.startsWith('@') ? 'instagram' : 'whatsapp'
+  if (phoneNumber.includes('@') && !phoneNumber.startsWith('@')) {
+    return 'email'
+  }
+  if (phoneNumber.startsWith('@')) {
+    return 'instagram'
+  }
+  // For phone numbers, alternate between SMS and WhatsApp for variety
+  // Use simple logic: if phone number ends in odd digit, it's SMS
+  const lastDigit = parseInt(phoneNumber.charAt(phoneNumber.length - 1))
+  return isNaN(lastDigit) || lastDigit % 2 === 0 ? 'whatsapp' : 'sms'
 }
 
 // Message interface

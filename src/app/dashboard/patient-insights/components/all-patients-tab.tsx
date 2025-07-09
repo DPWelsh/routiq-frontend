@@ -78,8 +78,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       email: 'sarah.johnson@email.com',
       ltv: 2450,
       totalSessions: 14,
-      lastAppointment: '2024-01-15',
-      lastContacted: '2024-01-20',
+      lastAppointment: '2025-07-15',
+      nextAppointment: '2025-08-05',
+      lastContacted: 3, // 3 days ago
       noShows: 1,
       status: 'Active',
       riskLevel: 'low',
@@ -90,7 +91,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
         progress: 75,
         automationStatus: 'Active',
         nextAction: 'Appointment Reminder',
-        nextDate: '28/01/2024'
+        nextDate: '28/07/2025'
       }
     },
     {
@@ -100,19 +101,20 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       email: 'michael.chen@email.com',
       ltv: 4850,
       totalSessions: 23,
-      lastAppointment: '2024-01-12',
-      lastContacted: '2024-01-18',
+      lastAppointment: '2025-07-12',
+      nextAppointment: null, // Removed upcoming appointment
+      lastContacted: 1, // 1 day ago
       noShows: 0,
       status: 'Active',
       riskLevel: 'low',
       isVip: true,
       automation: {
-        title: 'VIP Care Journey',
-        description: 'Satisfaction Survey Sent',
-        progress: 90,
+        title: 'Reengagement Campaign',
+        description: 'Follow-up Email Sent',
+        progress: 65,
         automationStatus: 'Active',
-        nextAction: 'Loyalty Program Invite',
-        nextDate: '30/01/2024'
+        nextAction: 'Personal Outreach Call',
+        nextDate: '30/07/2025'
       }
     },
     {
@@ -122,8 +124,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       email: 'emma.wilson@email.com',
       ltv: 890,
       totalSessions: 6,
-      lastAppointment: '2023-11-22',
-      lastContacted: '2023-12-15',
+      lastAppointment: '2025-06-22',
+      nextAppointment: null, // At-risk patient, no appointment scheduled
+      lastContacted: 45, // 45 days ago
       noShows: 3,
       status: 'At-Risk',
       riskLevel: 'high',
@@ -134,7 +137,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
         progress: 60,
         automationStatus: 'Priority',
         nextAction: 'Personal Outreach Call',
-        nextDate: '24/01/2024'
+        nextDate: '24/07/2025'
       }
     },
     {
@@ -144,19 +147,20 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       email: 'james.rodriguez@email.com',
       ltv: 3200,
       totalSessions: 16,
-      lastAppointment: '2024-01-18',
-      lastContacted: '2024-01-22',
+      lastAppointment: '2025-07-18',
+      nextAppointment: null, // Removed upcoming appointment
+      lastContacted: 2, // 2 days ago
       noShows: 0,
       status: 'Active',
       riskLevel: 'low',
       isVip: true,
       automation: {
-        title: 'VIP Care Journey',
-        description: 'Premium Service Review',
-        progress: 85,
+        title: 'Reengagement Campaign',
+        description: 'SMS Follow-up Sent',
+        progress: 55,
         automationStatus: 'Active',
-        nextAction: 'Concierge Check-in',
-        nextDate: '26/01/2024'
+        nextAction: 'Schedule Consultation',
+        nextDate: '26/07/2025'
       }
     },
     {
@@ -166,8 +170,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       email: 'lisa.thompson@email.com',
       ltv: 1340,
       totalSessions: 9,
-      lastAppointment: '2023-10-30',
-      lastContacted: '2023-11-28',
+      lastAppointment: '2025-06-10',
+      nextAppointment: null, // Dormant patient, no appointment scheduled
+      lastContacted: 38, // 38 days ago
       noShows: 2,
       status: 'Dormant',
       riskLevel: 'medium',
@@ -178,7 +183,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
         progress: 40,
         automationStatus: 'Active',
         nextAction: 'SMS Follow-up',
-        nextDate: '25/01/2024'
+        nextDate: '25/07/2025'
       }
     },
     {
@@ -188,19 +193,20 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       email: 'david.kim@email.com',
       ltv: 5600,
       totalSessions: 28,
-      lastAppointment: '2024-01-20',
-      lastContacted: '2024-01-21',
+      lastAppointment: '2025-07-20',
+      nextAppointment: null, // Removed upcoming appointment
+      lastContacted: 1, // 1 day ago
       noShows: 0,
       status: 'Active',
       riskLevel: 'low',
       isVip: true,
       automation: {
-        title: 'VIP Care Journey',
-        description: 'Wellness Program Enrollment',
-        progress: 95,
+        title: 'Reengagement Campaign',
+        description: 'WhatsApp Message Sent',
+        progress: 40,
         automationStatus: 'Active',
-        nextAction: 'Health Assessment',
-        nextDate: '29/01/2024'
+        nextAction: 'Appointment Booking',
+        nextDate: '29/07/2025'
       }
     },
     {
@@ -210,8 +216,9 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       email: 'anna.martinez@email.com',
       ltv: 720,
       totalSessions: 4,
-      lastAppointment: '2023-09-15',
-      lastContacted: '2023-10-01',
+      lastAppointment: '2025-06-15',
+      nextAppointment: null, // At-risk patient, no appointment scheduled
+      lastContacted: 52, // 52 days ago
       noShows: 4,
       status: 'At-Risk',
       riskLevel: 'high',
@@ -222,7 +229,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
         progress: 25,
         automationStatus: 'Priority',
         nextAction: 'Emergency Contact',
-        nextDate: '23/01/2024'
+        nextDate: '23/07/2025'
       }
     }
   ]
@@ -335,6 +342,12 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       month: '2-digit',
       year: 'numeric'
     })
+  }
+
+  const formatDaysAgo = (days: number) => {
+    if (days === 0) return 'Today'
+    if (days === 1) return '1 day ago'
+    return `${days} days ago`
   }
 
   const getAutomationStatusBadge = (automationStatus: string) => {
@@ -712,28 +725,31 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
             <table className="w-full">
               <thead className="bg-gray-50/50 border-b border-gray-200">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-72">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
                     Patient Details
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
                     LTV
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
                     No. Sessions
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
                     Last Appt
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
+                    Next Appt
+                  </th>
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
                     No-Shows
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-32">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
                     Last Contact
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-64">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
                     Automation Journey
                   </th>
-                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider w-32">
+                  <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider w-40">
                     Patient Status
                   </th>
                 </tr>
@@ -742,7 +758,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
               <tbody className="bg-white divide-y divide-gray-200">
                                  {filteredPatients.map((patient) => (
                    <tr key={patient.id} className="hover:bg-gray-50 transition-colors">
-                     <td className="px-6 py-4 border-r border-gray-200 w-72">
+                     <td className="px-6 py-4 border-r border-gray-200 w-40">
                        <div className="flex items-center">
                          <div className="h-10 w-10 rounded-full bg-gradient-to-br from-routiq-core to-routiq-energy flex items-center justify-center text-white font-semibold text-sm relative">
                            {patient.name.split(' ').map(n => n[0]).join('')}
@@ -773,25 +789,35 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                        </div>
                      </td>
                      
-                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-40 text-center">
                        <div className="text-sm font-semibold text-gray-900">
                          {formatCurrency(patient.ltv)}
                        </div>
                      </td>
                      
-                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-40 text-center">
                        <div className="text-sm font-medium text-gray-800">
                          {patient.totalSessions}
                        </div>
                      </td>
                      
-                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-40 text-center">
                        <div className="text-sm text-gray-700">
                          {formatDate(patient.lastAppointment)}
                        </div>
                      </td>
                      
-                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-40 text-center">
+                       <div className={`text-sm ${
+                         patient.nextAppointment 
+                           ? 'text-green-700 font-medium' 
+                           : 'text-gray-400 italic'
+                       }`}>
+                         {patient.nextAppointment ? formatDate(patient.nextAppointment) : 'Not scheduled'}
+                       </div>
+                     </td>
+                     
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-40 text-center">
                        <div className={`text-sm font-medium ${
                          patient.noShows >= 3 ? 'text-red-600' : 
                          patient.noShows >= 2 ? 'text-orange-600' : 
@@ -801,17 +827,21 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                        </div>
                      </td>
                      
-                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-32 text-center">
-                       <div className="text-sm text-gray-700">
-                         {formatDate(patient.lastContacted)}
+                     <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-40 text-center">
+                       <div className={`text-sm ${
+                         patient.lastContacted <= 7 ? 'text-green-700' : 
+                         patient.lastContacted <= 30 ? 'text-amber-600' : 
+                         'text-red-600'
+                       }`}>
+                         {formatDaysAgo(patient.lastContacted)}
                        </div>
                      </td>
                      
-                     <td className="px-6 py-4 border-r border-gray-200 w-64">
+                     <td className="px-6 py-4 border-r border-gray-200 w-40">
                        {renderAutomationStatus(patient.automation)}
                      </td>
                      
-                     <td className="px-6 py-4 whitespace-nowrap w-32 text-center">
+                     <td className="px-6 py-4 whitespace-nowrap w-40 text-center">
                        {getStatusBadge(patient.status)}
                      </td>
                    </tr>

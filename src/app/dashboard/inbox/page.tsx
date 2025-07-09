@@ -8,6 +8,12 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { usePatientProfileByPhone } from '@/hooks/usePatientProfileByPhone'
 import { 
   MessageCircle, 
@@ -23,7 +29,8 @@ import {
   Filter,
   Zap,
   TrendingUp,
-  AlertTriangle
+  AlertTriangle,
+  ChevronDown
 } from 'lucide-react'
 import { LoadingSpinner } from "@/components/magicui"
 
@@ -158,62 +165,246 @@ function ConversationPerformancePanel({
 
   const sentimentInfo = getConversationSentiment()
 
-  // Calculate smart metrics from patient profile
-  const getSmartMetrics = () => {
-    if (!patientProfile) {
+  // Get patient-specific data based on conversation
+  const getPatientData = () => {
+    if (!conversation) {
       return {
-        riskScore: 'Unknown',
-        ltv: '$0',
-        appointments: 0,
-        upcoming: 0
+        lifetime_value: '$0',
+        session_count: 0,
+        risk_level: 'Unknown',
+        risk_color: 'gray',
+        next_appointment: 'TBD',
+        channel: 'Unknown',
+        last_contact: 'Unknown',
+        suggested_action: 'Review',
+        clinical_note: 'No information available',
+        treatment_plan: 'To be determined',
+        ai_insight: 'Please select a conversation to view insights.'
       }
     }
-
-    // Determine risk score based on engagement and churn risk
-    const getRiskScore = () => {
-      const engagement = patientProfile.engagement_level
-      const churnRisk = patientProfile.churn_risk
-      
-      // High risk: low engagement or high churn risk
-      if (engagement === 'low_engagement' || engagement === 'disengaged' || churnRisk === 'high' || churnRisk === 'critical') {
-        return 'High'
+    
+    // Get patient-specific metrics based on conversation content
+    const getLifetimeValue = () => {
+      const values: { [key: string]: number } = {
+        'sarah mitchell': 850,
+        'michael chen': 680,
+        'emma rodriguez': 1250,
+        'david thompson': 450,
+        'jessica park': 2100,
+        'robert wilson': 320,
+        'lisa anderson': 780,
+        'kevin o\'brien': 1650,
+        'michelle lee': 920,
+        'tom sullivan': 2200,
+        'james watson': 1100,
+        'corporate health services': 4500,
+        'sydney runner': 650
       }
-      // Medium risk: moderate engagement or medium churn risk
-      if (engagement === 'moderately_engaged' || churnRisk === 'medium') {
-        return 'Medium'
-      }
-      // Low risk: highly engaged and low churn risk
-      return 'Low'
+      const name = conversation.patient_name?.toLowerCase() || ''
+      return values[name] || 1200
     }
 
-    // Format LTV with commas
+    const getSessionCount = () => {
+      const sessions: { [key: string]: number } = {
+        'sarah mitchell': 1,
+        'michael chen': 0,
+        'emma rodriguez': 4,
+        'david thompson': 0,
+        'jessica park': 12,
+        'robert wilson': 2,
+        'lisa anderson': 3,
+        'kevin o\'brien': 8,
+        'michelle lee': 2,
+        'tom sullivan': 6,
+        'james watson': 0,
+        'corporate health services': 15,
+        'sydney runner': 1
+      }
+      const name = conversation.patient_name?.toLowerCase() || ''
+      return sessions[name] || 3
+    }
+
+    const getNextAppointment = () => {
+      const appointments: { [key: string]: string } = {
+        'sarah mitchell': 'Jul 22',  // Recent inquiry (Jul 15) - booked for this week
+        'michael chen': 'TBD',       // Pricing inquiry (Jul 12) - still deciding
+        'emma rodriguez': 'Jul 25',  // Follow-up (Jul 8) - scheduled for this week  
+        'david thompson': 'Jul 19',  // Urgent care (Jul 5) - booked soon after
+        'jessica park': 'Aug 2',     // ACL rehab (Jun 28) - regular sessions
+        'robert wilson': 'Aug 5',    // Pilates inquiry (Jun 25) - group class start
+        'lisa anderson': 'Jul 28',   // Running injury (Jun 22) - follow-up session
+        'kevin o\'brien': 'Jul 30',  // Chronic pain (Jun 18) - ongoing management
+        'michelle lee': 'Aug 8',     // Netball injury (Jun 12) - return to sport check
+        'tom sullivan': 'Complete',  // Hip replacement (Jun 5) - rehab finished
+        'james watson': 'TBD',       // Email inquiry (Jun 15) - assessment pending
+        'corporate health services': 'Ongoing', // Corporate program (Jun 8) - monthly reviews
+        'sydney runner': 'Jul 26'    // Instagram inquiry (Jun 2) - marathon prep session
+      }
+      const name = conversation.patient_name?.toLowerCase() || ''
+      return appointments[name] || 'TBD'
+    }
+
+    const getRiskLevel = () => {
+      const risks: { [key: string]: { level: string; color: string } } = {
+        'sarah mitchell': { level: 'Low', color: 'green' },
+        'michael chen': { level: 'Low', color: 'green' },
+        'emma rodriguez': { level: 'Low', color: 'green' },
+        'david thompson': { level: 'Medium', color: 'orange' },
+        'jessica park': { level: 'Low', color: 'green' },
+        'robert wilson': { level: 'Low', color: 'green' },
+        'lisa anderson': { level: 'Medium', color: 'orange' },
+        'kevin o\'brien': { level: 'High', color: 'red' },
+        'michelle lee': { level: 'Medium', color: 'orange' },
+        'tom sullivan': { level: 'Low', color: 'green' },
+        'james watson': { level: 'Low', color: 'green' },
+        'corporate health services': { level: 'Low', color: 'green' },
+        'sydney runner': { level: 'Medium', color: 'orange' }
+      }
+      const name = conversation.patient_name?.toLowerCase() || ''
+      return risks[name] || { level: 'Low', color: 'green' }
+    }
+
+    const getClinicalNote = () => {
+      const notes: { [key: string]: string } = {
+        'sarah mitchell': 'Lower back strain from gym exercise',
+        'michael chen': 'Tennis elbow assessment pending',
+        'emma rodriguez': 'Shoulder rehab showing excellent progress',
+        'david thompson': 'Computer-related neck strain, urgent care',
+        'jessica park': 'ACL reconstruction rehab on track',
+        'robert wilson': 'Interested in group pilates classes',
+        'lisa anderson': 'Shin splints from running training',
+        'kevin o\'brien': 'Chronic lower back pain management',
+        'michelle lee': 'Netball ankle injury follow-up',
+        'tom sullivan': 'Hip replacement rehab completed',
+        'james watson': 'Corporate ergonomic assessment request',
+        'corporate health services': 'Workplace injury prevention program',
+        'sydney runner': 'Marathon training injury prevention'
+      }
+      const name = conversation.patient_name?.toLowerCase() || ''
+      return notes[name] || 'General physiotherapy consultation'
+    }
+
+    const getTreatmentPlan = () => {
+      const plans: { [key: string]: string } = {
+        'sarah mitchell': 'Lower Back Strengthening Protocol',
+        'michael chen': 'Tennis Elbow Treatment Plan',
+        'emma rodriguez': 'Progressive Shoulder Rehabilitation',
+        'david thompson': 'Workplace Ergonomics & Neck Care',
+        'jessica park': 'Post-ACL Surgery Recovery',
+        'robert wilson': 'Group Exercise Integration',
+        'lisa anderson': 'Running Biomechanics Program',
+        'kevin o\'brien': 'Chronic Pain Management Plan',
+        'michelle lee': 'Sports Injury Recovery',
+        'tom sullivan': 'Completed Rehab Program',
+        'james watson': 'Corporate Wellness Assessment',
+        'corporate health services': 'Workplace Health Program',
+        'sydney runner': 'Marathon Training Support'
+      }
+      const name = conversation.patient_name?.toLowerCase() || ''
+      return plans[name] || 'Standard Treatment Protocol'
+    }
+
+    const getAIInsight = () => {
+      const insights: { [key: string]: string } = {
+        'sarah mitchell': 'Patient shows good understanding of exercise form - recommend home program.',
+        'michael chen': 'Cost-conscious patient - emphasize insurance benefits and value.',
+        'emma rodriguez': 'Highly compliant patient - excellent candidate for advanced exercises.',
+        'david thompson': 'Work-stress related injury - ergonomic assessment critical.',
+        'jessica park': 'Post-surgical patient progressing well - continue current plan.',
+        'robert wilson': 'Social fitness preference - group classes ideal motivation.',
+        'lisa anderson': 'Dedicated runner - focus on injury prevention strategies.',
+        'kevin o\'brien': 'Chronic pain frustration evident - requires empathetic approach.',
+        'michelle lee': 'Young athlete - emphasize return to sport timeline.',
+        'tom sullivan': 'Grateful patient - good candidate for testimonial/referrals.',
+        'james watson': 'Professional inquiry - opportunity for corporate contracts.',
+        'corporate health services': 'Large scale opportunity - prioritize relationship building.',
+        'sydney runner': 'Prevention focused - ideal for wellness programs.'
+      }
+      const name = conversation.patient_name?.toLowerCase() || ''
+      return insights[name] || 'Monitor patient response and adjust treatment accordingly.'
+    }
+
+    const getChannel = () => {
+      const source = conversation.conversation_source || 'whatsapp'
+      const channelMap: { [key: string]: string } = {
+        'whatsapp': 'WhatsApp',
+        'sms': 'SMS',
+        'email': 'Email',
+        'instagram': 'Instagram'
+      }
+      return channelMap[source] || 'WhatsApp'
+    }
+
+    const getLastContact = () => {
+      // For demo purposes, using static values that align with July 2025 timeline
+      const lastContacts: { [key: string]: string } = {
+        'sarah mitchell': 'Today',         // Jul 15 conversation - most recent
+        'michael chen': 'Today',           // Jul 12 conversation - recent 
+        'emma rodriguez': 'Today',         // Jul 8 conversation - recent
+        'david thompson': '12 days ago',   // Jul 5 conversation
+        'jessica park': '19 days ago',     // Jun 28 conversation
+        'robert wilson': '22 days ago',    // Jun 25 conversation
+        'lisa anderson': '25 days ago',    // Jun 22 conversation
+        'kevin o\'brien': '29 days ago',   // Jun 18 conversation
+        'michelle lee': '35 days ago',     // Jun 12 conversation
+        'tom sullivan': '42 days ago',     // Jun 5 conversation
+        'james watson': '32 days ago',     // Jun 15 conversation
+        'corporate health services': '39 days ago', // Jun 8 conversation
+        'sydney runner': '45 days ago'     // Jun 2 conversation
+      }
+      const name = conversation.patient_name?.toLowerCase() || ''
+      return lastContacts[name] || 'Recently'
+    }
+
+    const getSuggestedAction = () => {
+      const nextAppt = getNextAppointment()
+      if (nextAppt === 'TBD') return 'Book appointment'
+      if (nextAppt === 'Complete') return 'Follow-up care'
+      if (nextAppt === 'Ongoing') return 'Program review'
+      return 'Confirm appointment'
+    }
+
     const formatCurrency = (value: number) => {
-      return `$${value.toLocaleString()}`
+      return new Intl.NumberFormat('en-AU', { 
+        style: 'currency', 
+        currency: 'AUD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
+      }).format(value)
     }
 
+    const riskData = getRiskLevel()
+    
     return {
-      riskScore: getRiskScore(),
-      ltv: formatCurrency(patientProfile.estimated_lifetime_value || 0),
-      appointments: patientProfile.total_appointment_count || 0,
-      upcoming: 1 // Mock upcoming appointments
+      lifetime_value: formatCurrency(getLifetimeValue()),
+      session_count: getSessionCount(),
+      risk_level: riskData.level,
+      risk_color: riskData.color,
+      next_appointment: getNextAppointment(),
+      channel: getChannel(),
+      last_contact: getLastContact(),
+      suggested_action: getSuggestedAction(),
+      clinical_note: getClinicalNote(),
+      treatment_plan: getTreatmentPlan(),
+      ai_insight: getAIInsight()
     }
   }
 
-  const smartMetrics = getSmartMetrics()
+  const patientData = getPatientData()
 
   return (
-    <div className="p-4 space-y-4 h-full overflow-y-auto">
+    <div className="p-3 space-y-3 h-full overflow-y-auto">
       {/* 1. Patient Health Snapshot */}
       <Card className="border-routiq-cloud/30">
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-routiq-core flex items-center gap-2">
             <User className="h-4 w-4" />
             Patient Snapshot
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0 space-y-4">
+        <CardContent className="pt-0 space-y-3">
           {/* Patient Name & Status */}
-          <div className="p-3 rounded-lg border border-routiq-cloud/30">
+          <div className="p-2.5 rounded-lg border border-routiq-cloud/30">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-medium text-routiq-blackberry">{conversation?.patient_name || 'Unknown Patient'}</h3>
@@ -226,29 +417,37 @@ function ConversationPerformancePanel({
           </div>
 
           {/* Key Metrics Row */}
-          <div className="grid grid-cols-3 gap-3">
-            <div className="p-3 rounded-lg border border-routiq-cloud/30 text-center">
-              <div className="text-lg font-bold text-green-600">$2,400</div>
+          <div className="grid grid-cols-3 gap-2">
+            <div className="p-2.5 rounded-lg border border-routiq-cloud/30 text-center">
+              <div className="text-lg font-bold text-green-600">{patientData.lifetime_value}</div>
               <div className="text-xs text-routiq-blackberry/60">LTV</div>
             </div>
-            <div className="p-3 rounded-lg border border-routiq-cloud/30 text-center">
-              <div className="text-lg font-bold text-routiq-core">5</div>
+            <div className="p-2.5 rounded-lg border border-routiq-cloud/30 text-center">
+              <div className="text-lg font-bold text-routiq-core">{patientData.session_count}</div>
               <div className="text-xs text-routiq-blackberry/60">Sessions</div>
             </div>
-            <div className="p-3 rounded-lg border border-routiq-cloud/30 text-center">
+            <div className="p-2.5 rounded-lg border border-routiq-cloud/30 text-center">
               <div className="text-sm font-bold text-green-600">
-                Jul 25
+                {patientData.next_appointment}
               </div>
               <div className="text-xs text-routiq-blackberry/60">Upcoming</div>
             </div>
           </div>
 
           {/* Risk Level */}
-          <div className="p-3 rounded-lg border border-routiq-cloud/30">
+          <div className="p-2.5 rounded-lg border border-routiq-cloud/30">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-routiq-blackberry/70">Risk Level</span>
-              <Badge className="text-green-600 border-green-300 bg-green-50" variant="outline">
-                Low
+              <Badge 
+                className={`${
+                  patientData.risk_color === 'green' ? 'text-green-600 border-green-300 bg-green-50' :
+                  patientData.risk_color === 'orange' ? 'text-orange-600 border-orange-300 bg-orange-50' :
+                  patientData.risk_color === 'red' ? 'text-red-600 border-red-300 bg-red-50' :
+                  'text-gray-600 border-gray-300 bg-gray-50'
+                }`} 
+                variant="outline"
+              >
+                {patientData.risk_level}
               </Badge>
             </div>
           </div>
@@ -257,26 +456,26 @@ function ConversationPerformancePanel({
 
       {/* 2. Engagement & Communication */}
       <Card className="border-routiq-cloud/30">
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-routiq-core flex items-center gap-2">
             <MessageCircle className="h-4 w-4" />
             Engagement & Communication
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0 space-y-3">
+        <CardContent className="pt-0 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm text-routiq-blackberry/70">Channel Used Most</span>
-            <span className="text-sm font-medium text-routiq-core">WhatsApp</span>
+            <span className="text-sm font-medium text-routiq-core">{patientData.channel}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-sm text-routiq-blackberry/70">Last Contact</span>
-            <span className="text-sm font-medium text-routiq-blackberry">3 days ago</span>
+            <span className="text-sm font-medium text-routiq-blackberry">{patientData.last_contact}</span>
           </div>
           <div className="pt-2 border-t border-routiq-cloud/20">
             <div className="flex items-center justify-between">
               <span className="text-sm text-routiq-blackberry/70">Next Suggested Action</span>
               <Badge className="text-blue-600 border-blue-300 bg-blue-50" variant="outline">
-                Follow-up
+                {patientData.suggested_action}
               </Badge>
             </div>
           </div>
@@ -285,30 +484,30 @@ function ConversationPerformancePanel({
 
       {/* 3. Clinical Summary */}
       <Card className="border-routiq-energy/30 bg-routiq-energy/10">
-        <CardHeader className="pb-3">
+        <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-routiq-core flex items-center gap-2">
             <FileText className="h-4 w-4" />
             Clinical Summary
           </CardTitle>
         </CardHeader>
-        <CardContent className="pt-0 space-y-3">
-          <div className="p-3 rounded-lg bg-blue-50 border border-blue-200">
+        <CardContent className="pt-0 space-y-2">
+          <div className="p-2.5 rounded-lg bg-blue-50 border border-blue-200">
             <span className="text-sm font-medium text-blue-800">Latest Note</span>
-            <p className="text-sm text-routiq-blackberry mt-1">Advised shoulder rehab post-surf</p>
+            <p className="text-sm text-routiq-blackberry mt-1">{patientData.clinical_note}</p>
           </div>
-          <div className="p-3 rounded-lg bg-green-50 border border-green-200">
+          <div className="p-2.5 rounded-lg bg-green-50 border border-green-200">
             <span className="text-sm font-medium text-green-800">Treatment Plan</span>
             <p className="text-sm text-blue-600 underline cursor-pointer mt-1">
-              Surf-Specific Rib Management
+              {patientData.treatment_plan}
             </p>
           </div>
-          <div className="p-3 rounded-lg bg-purple-50 border border-purple-200">
+          <div className="p-2.5 rounded-lg bg-purple-50 border border-purple-200">
             <div className="flex items-start gap-2">
               <div className="w-2 h-2 bg-routiq-energy rounded-full mt-2 flex-shrink-0"></div>
               <div>
                 <span className="text-sm font-medium text-purple-800">AI Insight</span>
                 <p className="text-sm text-routiq-blackberry mt-1">
-                  Mentioned pain worsening during paddle out – recommend reassessment.
+                  {patientData.ai_insight}
                 </p>
               </div>
             </div>
@@ -331,7 +530,7 @@ export default function InboxPage() {
   const [loading, setLoading] = useState(true)
   const [chatLoading, setChatLoading] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [sourceFilter, setSourceFilter] = useState<'all' | 'whatsapp' | 'instagram'>('all')
+  const [sourceFilter, setSourceFilter] = useState<'all' | 'whatsapp' | 'sms' | 'email' | 'instagram'>('all')
   const [statusFilter, setStatusFilter] = useState<'all' | 'needs-followup' | 'unread'>('all')
   const [error, setError] = useState<string | null>(null)
 
@@ -617,30 +816,32 @@ export default function InboxPage() {
   }
 
   return (
-    <div className="flex overflow-hidden" style={{ height: 'calc(100vh - 80px)' }}>
+    <div className="flex overflow-hidden" style={{ height: 'calc(100vh - 60px)' }}>
       {/* Sidebar - Conversation List */}
-      <div className="w-96 bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
+      <div className="w-[500px] bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
         {/* Header */}
-        <div className="p-3 border-b border-routiq-cloud/30 flex-shrink-0">
-          <div className="flex items-center gap-3 mb-3">
-            <h1 className="text-lg font-semibold text-routiq-core">Inbox</h1>
-            <span className="text-xs text-routiq-blackberry/60 bg-routiq-cloud/20 px-2 py-1 rounded-full">
-              {filteredConversations.length} of {conversations.length}
-            </span>
-            {isDevelopment && (
-              <Button 
-                onClick={testPatientIntegration} 
-                variant="outline" 
-                size="sm" 
-                className="text-xs h-6 px-2 ml-auto"
-                title="Test Patient Integration"
-              >
-                🧪
-              </Button>
-            )}
+        <div className="p-4 border-b border-routiq-cloud/30 flex-shrink-0">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-xl font-semibold text-routiq-core">Inbox</h1>
+            <div className="flex items-center gap-3">
+              <span className="text-sm text-routiq-blackberry/60 bg-routiq-cloud/20 px-3 py-1 rounded-full">
+                {filteredConversations.length} of {conversations.length}
+              </span>
+              {isDevelopment && (
+                <Button 
+                  onClick={testPatientIntegration} 
+                  variant="outline" 
+                  size="sm" 
+                  className="text-xs h-6 px-2"
+                  title="Test Patient Integration"
+                >
+                  🧪
+                </Button>
+              )}
+            </div>
           </div>
           
-          {/* Source Filter Buttons */}
+          {/* Platform Filter Buttons */}
           <div className="mb-3">
             <div className="flex items-center gap-2 mb-2">
               <MessageCircle className="h-3 w-3 text-routiq-blackberry/50" />
@@ -659,57 +860,111 @@ export default function InboxPage() {
                 variant={sourceFilter === 'whatsapp' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSourceFilter('whatsapp')}
-                className="text-xs h-7"
+                className={`text-xs h-7 ${
+                  sourceFilter === 'whatsapp' 
+                    ? 'bg-green-500 text-white border-green-500 hover:bg-green-600' 
+                    : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'
+                }`}
               >
                 WhatsApp ({conversations.filter(c => c.conversation_source === 'whatsapp').length})
+              </Button>
+              <Button
+                variant={sourceFilter === 'sms' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSourceFilter('sms')}
+                className={`text-xs h-7 ${
+                  sourceFilter === 'sms' 
+                    ? 'bg-blue-500 text-white border-blue-500 hover:bg-blue-600' 
+                    : 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100'
+                }`}
+              >
+                SMS ({conversations.filter(c => c.conversation_source === 'sms').length})
+              </Button>
+              <Button
+                variant={sourceFilter === 'email' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setSourceFilter('email')}
+                className={`text-xs h-7 ${
+                  sourceFilter === 'email' 
+                    ? 'bg-orange-500 text-white border-orange-500 hover:bg-orange-600' 
+                    : 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100'
+                }`}
+              >
+                Email ({conversations.filter(c => c.conversation_source === 'email').length})
               </Button>
               <Button
                 variant={sourceFilter === 'instagram' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSourceFilter('instagram')}
-                className="text-xs h-7"
+                className={`text-xs h-7 ${
+                  sourceFilter === 'instagram' 
+                    ? 'bg-purple-500 text-white border-purple-500 hover:bg-purple-600' 
+                    : 'bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100'
+                }`}
               >
                 Instagram ({conversations.filter(c => c.conversation_source === 'instagram').length})
               </Button>
             </div>
           </div>
-          
-          {/* Status Filter Buttons */}
+
+          {/* Status Filter Dropdown */}
           <div className="mb-3">
-            <div className="flex items-center gap-2 mb-2">
-              <Filter className="h-3 w-3 text-routiq-blackberry/50" />
-              <span className="text-xs text-routiq-blackberry/60 font-medium">Status</span>
-            </div>
-            <div className="flex gap-1 flex-wrap">
-              <Button
-                variant={statusFilter === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('all')}
-                className="text-xs h-7"
-              >
-                All
-              </Button>
-              <Button
-                variant={statusFilter === 'needs-followup' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('needs-followup')}
-                className="text-xs h-7 gap-1"
-              >
-                <Clock className="h-3 w-3" />
-                Follow-up ({conversations.filter(c => getConversationStatus(c).includes('needs-followup')).length})
-              </Button>
-              <Button
-                variant={statusFilter === 'unread' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setStatusFilter('unread')}
-                className="text-xs h-7 gap-1"
-              >
-                <Mail className="h-3 w-3" />
-                Unread ({conversations.filter(c => getConversationStatus(c).includes('unread')).length})
-              </Button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="text-xs h-7 gap-1 justify-between min-w-[120px]"
+                >
+                  <div className="flex items-center gap-1">
+                    {statusFilter === 'all' && (
+                      <>
+                        <Filter className="h-3 w-3" />
+                        All
+                      </>
+                    )}
+                    {statusFilter === 'needs-followup' && (
+                      <>
+                        <Clock className="h-3 w-3" />
+                        Follow-up ({conversations.filter(c => getConversationStatus(c).includes('needs-followup')).length})
+                      </>
+                    )}
+                    {statusFilter === 'unread' && (
+                      <>
+                        <Mail className="h-3 w-3" />
+                        Unread ({conversations.filter(c => getConversationStatus(c).includes('unread')).length})
+                      </>
+                    )}
+                  </div>
+                  <ChevronDown className="h-3 w-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="min-w-[160px]">
+                <DropdownMenuItem 
+                  onClick={() => setStatusFilter('all')}
+                  className="gap-2"
+                >
+                  <Filter className="h-3 w-3" />
+                  All
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setStatusFilter('needs-followup')}
+                  className="gap-2"
+                >
+                  <Clock className="h-3 w-3" />
+                  Follow-up ({conversations.filter(c => getConversationStatus(c).includes('needs-followup')).length})
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={() => setStatusFilter('unread')}
+                  className="gap-2"
+                >
+                  <Mail className="h-3 w-3" />
+                  Unread ({conversations.filter(c => getConversationStatus(c).includes('unread')).length})
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          
+
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-routiq-blackberry/50 h-4 w-4" />
@@ -793,12 +1048,18 @@ export default function InboxPage() {
                         className={`text-xs h-4 px-1 ${
                           conversation.conversation_source === 'whatsapp' 
                             ? 'bg-green-50 text-green-700 border-green-200' 
+                            : conversation.conversation_source === 'sms'
+                            ? 'bg-blue-50 text-blue-700 border-blue-200'
+                            : conversation.conversation_source === 'email'
+                            ? 'bg-orange-50 text-orange-700 border-orange-200'
                             : conversation.conversation_source === 'instagram'
                             ? 'bg-purple-50 text-purple-700 border-purple-200'
                             : 'bg-gray-50 text-gray-700 border-gray-200'
                         }`}
                       >
                         {conversation.conversation_source === 'whatsapp' ? 'WA' : 
+                         conversation.conversation_source === 'sms' ? 'SMS' :
+                         conversation.conversation_source === 'email' ? 'EMAIL' :
                          conversation.conversation_source === 'instagram' ? 'IG' : 'Unknown'}
                       </Badge>
                     </div>
@@ -930,7 +1191,7 @@ export default function InboxPage() {
         )}
       </div>
 
-      {/* Performance Panel */}
+      {/* Right Sidebar - Patient Info */}
       {selectedChat && selectedChat.conversation && (
         <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
           <ConversationPerformancePanel 
