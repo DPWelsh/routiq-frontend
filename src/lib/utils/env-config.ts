@@ -10,13 +10,16 @@ export const debugConfig = {
   // Enable verbose API logging (set VERBOSE_API_LOGS=true in Vercel env vars)
   enableVerboseApiLogs: process.env.VERBOSE_API_LOGS === 'true',
   
+  // Demo mode (set DEMO_MODE=true for demo.routiq.ai)
+  isDemoMode: process.env.DEMO_MODE === 'true',
+  
   // Environment info
   isDevelopment: process.env.NODE_ENV === 'development',
   isProduction: process.env.NODE_ENV === 'production',
   isVercel: !!process.env.VERCEL,
   
   // Backend API URL
-  backendApiUrl: process.env.NEXT_PUBLIC_API_URL || 'https://routiq-backend-v10-production.up.railway.app',
+  backendApiUrl: process.env.NEXT_PUBLIC_API_URL || 'https://api.routiq.ai',
   
   // Vercel deployment info
   vercelRegion: process.env.VERCEL_REGION,
@@ -27,6 +30,7 @@ export const debugConfig = {
     console.log('🚀 Deployment Info:', {
       env: process.env.NODE_ENV,
       isVercel: this.isVercel,
+      isDemoMode: this.isDemoMode,
       region: this.vercelRegion,
       url: this.vercelUrl,
       debugLogs: this.enableDebugLogs,

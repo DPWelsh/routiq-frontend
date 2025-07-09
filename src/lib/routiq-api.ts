@@ -3,9 +3,9 @@
  * Integrates with Routiq Backend Production API
  */
 
-// API base URL - use local routes in development to avoid CORS issues
+// API base URL - use live API in development for authentication
 const API_BASE = process.env.NODE_ENV === 'development' 
-  ? 'http://localhost:3000/api'  // Use local API routes
+  ? 'https://api.routiq.ai'  // Use live API server
   : 'https://routiq-backend-prod.up.railway.app';
 
 // Type declaration for Clerk global
@@ -1179,6 +1179,48 @@ export class RoutiqAPI {
     return this.request<DashboardChartsResponse>(
       `/api/v1/dashboard/${organizationId}/charts?${params.toString()}`
     );
+  }
+
+  /**
+   * Get test clinic overview data (no auth required)
+   */
+  async getTestClinicOverview(organizationId: string): Promise<{
+    status: string;
+    org_id: string;
+    time_range: string;
+    metrics: {
+      total_bookings: number;
+      new_patients: number;
+      total_patients: number;
+      active_patients: number;
+      missed_appointments: number;
+      revenue_this_month: string;
+      bookings_change_percent: number;
+      new_patients_change_percent: number;
+      total_patients_change_percent: number;
+      active_patients_change_percent: number;
+      missed_appointments_change_percent: number | null;
+      revenue_change_percent: number | null;
+      date_range: string;
+      last_updated: string;
+    };
+    warning: string;
+  }> {
+    // Direct fetch without authentication headers (no auth endpoint)
+    const response = await fetch(
+      `${this.baseUrl}/api/v1/dashboard/test-clinic-overview/${organizationId}`,
+      {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      }
+    );
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Test Clinic Overview API Error ${response.status}: ${errorText}`);
+    }
+    
+    return response.json();
   }
 }
 

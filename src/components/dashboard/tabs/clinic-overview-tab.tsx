@@ -41,7 +41,8 @@ export function ClinicOverviewTab() {
     financialMetrics,
     automationMetrics,
     lastUpdated,
-    isUsingFallback
+    isUsingFallback,
+    testClinicOverview
   } = useDashboardAnalyticsWithFallback(organizationId, timeframe)
   
   // Get current date range based on selected period
@@ -117,6 +118,33 @@ export function ClinicOverviewTab() {
     return `${value.toFixed(1)}%`
   }
 
+  // Get percentage change with proper formatting and trend icon
+  const getPercentageChange = (value: number | null | undefined, fallback: string = '+0.0%') => {
+    if (value === null || value === undefined) return { text: fallback, isPositive: true }
+    
+    const isPositive = value >= 0
+    const formattedValue = `${isPositive ? '+' : ''}${value.toFixed(1)}%`
+    return { text: formattedValue, isPositive }
+  }
+
+  // Extract metrics from test clinic overview data
+  const getMetricsFromTestData = () => {
+    if (!testClinicOverview?.metrics) return null
+    
+    const metrics = testClinicOverview.metrics
+    return {
+      bookings_change: getPercentageChange(metrics.bookings_change_percent),
+      new_patients_change: getPercentageChange(metrics.new_patients_change_percent),
+      total_patients_change: getPercentageChange(metrics.total_patients_change_percent),
+      active_patients_change: getPercentageChange(metrics.active_patients_change_percent),
+      missed_appointments_change: getPercentageChange(metrics.missed_appointments_change_percent),
+      revenue_change: getPercentageChange(metrics.revenue_change_percent),
+      missed_appointments_count: metrics.missed_appointments || 0
+    }
+  }
+
+  const metricsChanges = getMetricsFromTestData()
+
   // Calculate daily average based on timeframe
   const calculateDailyAverage = () => {
     if (!bookingMetrics?.total_bookings) return '0.0'
@@ -165,58 +193,73 @@ export function ClinicOverviewTab() {
       })
     }
     
-    // Fallback to generated data if API data not available
+    // Demo account fallback data - more realistic healthcare clinic revenue
     const now = new Date()
     
     switch (timeframe) {
       case '7d':
         return Array.from({ length: 7 }, (_, i) => {
           const date = new Date(now.getTime() - (6 - i) * 24 * 60 * 60 * 1000)
-          const baseRevenue = 2800 + Math.random() * 400
+          // Daily revenue: $4,200-$5,800 (higher for mid-week)
+          const dayOfWeek = date.getDay()
+          const midWeekBonus = (dayOfWeek >= 2 && dayOfWeek <= 4) ? 800 : 0
+          const baseRevenue = 4200 + midWeekBonus + Math.sin(i * 0.5) * 400
+          // Use deterministic "randomness" based on index
+          const deterministicChange = (Math.sin(i * 1.7) - 0.3) * 15
           return {
             period: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
             fullDate: date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
             revenue: Math.round(baseRevenue),
-            change: (Math.random() - 0.5) * 20 // -10% to +10%
+            change: deterministicChange
           }
         })
       
       case '30d':
         return Array.from({ length: 30 }, (_, i) => {
           const date = new Date(now.getTime() - (29 - i) * 24 * 60 * 60 * 1000)
-          const baseRevenue = 2600 + Math.random() * 600
+          // Daily revenue: $3,800-$5,200 with growth trend
+          const baseRevenue = 3800 + (i * 15) + Math.sin(i * 0.3) * 600
+          // Use deterministic "randomness" based on index
+          const deterministicChange = (Math.sin(i * 1.3) - 0.2) * 20
           return {
             period: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
             fullDate: date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }),
             revenue: Math.round(baseRevenue),
-            change: (Math.random() - 0.5) * 25 // -12.5% to +12.5%
+            change: deterministicChange
           }
         })
       
       case '90d':
         return Array.from({ length: 13 }, (_, i) => {
           const date = new Date(now.getTime() - (12 - i) * 7 * 24 * 60 * 60 * 1000)
-          const baseRevenue = 18000 + Math.random() * 4000
+          // Weekly revenue: $28,000-$36,000 with seasonal variation
+          const baseRevenue = 28000 + (i * 400) + Math.sin(i * 0.4) * 4000
           const endDate = new Date(date.getTime() + 6 * 24 * 60 * 60 * 1000)
+          // Use deterministic "randomness" based on index
+          const deterministicChange = (Math.sin(i * 1.1) - 0.15) * 25
           return {
             period: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
             fullDate: `${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`,
             revenue: Math.round(baseRevenue),
-            change: (Math.random() - 0.5) * 30 // -15% to +15%
+            change: deterministicChange
           }
         })
       
       case '1y':
       default:
-        // Generate data for the last 12 months with actual dates
+        // Monthly revenue: $95,000-$135,000 with growth trend
         return Array.from({ length: 12 }, (_, i) => {
           const date = new Date(now.getFullYear(), now.getMonth() - (11 - i), 1)
-          const baseRevenue = 45000 + Math.random() * 25000 + (i * 2000) // Trending upward
+          // Seasonal pattern: higher in Jan-Mar, lower in summer, pickup in fall
+          const seasonalMultiplier = 1 + 0.2 * Math.sin((i + 1) * Math.PI / 6)
+          const baseRevenue = 95000 + (i * 2800) + (seasonalMultiplier * 15000)
+          // Use deterministic "randomness" based on index
+          const deterministicChange = (Math.sin(i * 0.9) - 0.1) * 18
           return {
             period: date.toLocaleDateString('en-US', { month: 'short' }),
             fullDate: date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' }),
             revenue: Math.round(baseRevenue),
-            change: (Math.random() - 0.3) * 20 // Slightly positive bias
+            change: deterministicChange
           }
         })
     }
@@ -253,8 +296,9 @@ export function ClinicOverviewTab() {
     }
   }
 
-  // Error state
-  if (hasError && !isUsingFallback) {
+  // Error state - Only show error if the main analytics/test clinic overview fails
+  // Charts failure is expected and handled gracefully
+  if (analyticsError && !testClinicOverview) {
     return (
       <div className="stripe-card p-8 text-center">
         <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
@@ -408,9 +452,13 @@ export function ClinicOverviewTab() {
             <div className="text-3xl font-semibold text-gray-900 mb-2">
               {bookingMetrics?.total_bookings || 0}
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingUp className="h-4 w-4" />
-              <span>+8.2% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${metricsChanges?.bookings_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              {metricsChanges?.bookings_change.isPositive ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{metricsChanges?.bookings_change.text || '+8.2%'} from last period</span>
             </div>
           </div>
         )}
@@ -427,9 +475,13 @@ export function ClinicOverviewTab() {
             <div className="text-3xl font-semibold text-gray-900 mb-2">
               {patientMetrics?.new_patients || 0}
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingUp className="h-4 w-4" />
-              <span>+15.4% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${metricsChanges?.new_patients_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              {metricsChanges?.new_patients_change.isPositive ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{metricsChanges?.new_patients_change.text || '+15.4%'} from last period</span>
             </div>
           </div>
         )}
@@ -446,9 +498,13 @@ export function ClinicOverviewTab() {
             <div className="text-3xl font-semibold text-gray-900 mb-2">
               {patientMetrics?.total_patients || 0}
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingUp className="h-4 w-4" />
-              <span>+3.7% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${metricsChanges?.total_patients_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              {metricsChanges?.total_patients_change.isPositive ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{metricsChanges?.total_patients_change.text || '+3.7%'} from last period</span>
             </div>
           </div>
         )}
@@ -465,9 +521,13 @@ export function ClinicOverviewTab() {
             <div className="text-3xl font-semibold text-gray-900 mb-2">
               {patientMetrics?.active_patients || 0}
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingUp className="h-4 w-4" />
-              <span>+6.8% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${metricsChanges?.active_patients_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              {metricsChanges?.active_patients_change.isPositive ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{metricsChanges?.active_patients_change.text || '+6.8%'} from last period</span>
             </div>
           </div>
         )}
@@ -482,11 +542,15 @@ export function ClinicOverviewTab() {
               <h3 className="text-base font-medium text-gray-600">Missed Appointments</h3>
             </div>
             <div className="text-3xl font-semibold text-gray-900 mb-2">
-              {Math.round((bookingMetrics?.total_bookings || 0) * 0.12)}
+              {metricsChanges?.missed_appointments_count || Math.round((bookingMetrics?.total_bookings || 0) * 0.12)}
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingDown className="h-4 w-4" />
-              <span>-2.3% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${metricsChanges?.missed_appointments_change.isPositive ? 'text-red-600' : 'text-green-600'}`}>
+              {metricsChanges?.missed_appointments_change.isPositive ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{metricsChanges?.missed_appointments_change.text || '-2.3%'} from last period</span>
             </div>
           </div>
         )}
@@ -505,9 +569,13 @@ export function ClinicOverviewTab() {
             <div className="text-3xl font-semibold text-gray-900 mb-2">
               {formatCurrency(financialMetrics?.total_revenue || 0)}
             </div>
-            <div className="flex items-center gap-1 text-base text-green-600">
-              <TrendingUp className="h-4 w-4" />
-              <span>+12.5% from last period</span>
+            <div className={`flex items-center gap-1 text-base ${metricsChanges?.revenue_change.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+              {metricsChanges?.revenue_change.isPositive ? (
+                <TrendingUp className="h-4 w-4" />
+              ) : (
+                <TrendingDown className="h-4 w-4" />
+              )}
+              <span>{metricsChanges?.revenue_change.text || '+12.5%'} from last period</span>
             </div>
           </div>
         )}
