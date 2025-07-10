@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils"
-import { Loader2, BarChart3, Users, Zap } from "lucide-react"
+import { BarChart3, Users, Zap } from "lucide-react"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import LoadingSpinner from "@/components/magicui/loading-spinner"
 
 interface LoadingPlaceholderProps {
   variant?: 'card' | 'metric' | 'chart' | 'table' | 'full'
@@ -89,10 +90,7 @@ export function LoadingPlaceholder({
         className
       )}>
         <div className="text-center">
-          <Loader2 className={cn('mx-auto mb-4 animate-spin text-routiq-blackberry/40', sizes.spinner)} />
-          <p className={cn('text-routiq-blackberry/70', sizes.text)}>
-            {title || 'Loading dashboard...'}
-          </p>
+          <LoadingSpinner size={size} text={title || 'Loading dashboard...'} />
           {description && (
             <p className="text-sm text-routiq-blackberry/50 mt-2">
               {description}

@@ -14,10 +14,10 @@ import {
   Clock, 
   AlertCircle,
   RefreshCw,
-  Loader2,
   Search,
   Filter
 } from "lucide-react"
+import LoadingSpinner from "@/components/magicui/loading-spinner"
 import { useOrganizationContext } from '@/hooks/useOrganizationContext'
 import { UpcomingAppointments } from '@/components/features/patients/upcoming-appointments'
 import { usePatientsData } from '@/hooks/useDashboardData'
@@ -398,7 +398,7 @@ export default function PatientsPage() {
         {/* Show risk metrics loading state */}
         {riskMetricsLoading && (
           <Alert className="mb-4">
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <LoadingSpinner size="sm" />
             <AlertDescription>
               Loading risk metrics...
             </AlertDescription>
@@ -438,7 +438,7 @@ export default function PatientsPage() {
                   size="sm"
                 >
                   {isLoading ? (
-                    <Loader2 className="h-3 w-3 animate-spin" />
+                    <LoadingSpinner size="sm" />
                   ) : (
                     <RefreshCw className="h-3 w-3" />
                   )}
@@ -541,8 +541,7 @@ export default function PatientsPage() {
             {/* Patient List */}
             {(isLoading || isPrioritizedLoading) ? (
               <div className="text-center py-12">
-                <Loader2 className="mx-auto h-8 w-8 animate-spin text-blue-600" />
-                <p className="mt-2 text-gray-600">Loading patients...</p>
+                <LoadingSpinner size="lg" text="Loading patients..." />
                           </div>
             ) : filteredPatients.length === 0 ? (
               <div className="text-center py-12 text-gray-500">

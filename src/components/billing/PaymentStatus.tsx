@@ -7,9 +7,9 @@ import {
   Clock, 
   XCircle, 
   AlertTriangle,
-  CreditCard,
-  Loader2
+  CreditCard
 } from 'lucide-react';
+import LoadingSpinner from '@/components/magicui/loading-spinner';
 
 interface PaymentStatusProps {
   status: string;
@@ -38,7 +38,7 @@ export function PaymentStatus({
         return {
           label: 'Processing',
           variant: 'secondary' as const,
-          icon: Loader2,
+          icon: LoadingSpinner,
           className: 'bg-blue-100 text-blue-800 border-blue-200'
         };
       
@@ -105,13 +105,11 @@ export function PaymentStatus({
       className={`${config.className} ${className || ''} flex items-center gap-1`}
     >
       {showIcon && (
-        <Icon 
-          className={`h-3 w-3 ${
-            status.toLowerCase() === 'processing' || status.toLowerCase() === 'pending' 
-              ? 'animate-spin' 
-              : ''
-          }`} 
-        />
+        status.toLowerCase() === 'processing' || status.toLowerCase() === 'pending' ? (
+          <LoadingSpinner size="sm" />
+        ) : (
+          <Icon className="h-3 w-3" />
+        )
       )}
       {config.label}
     </Badge>
