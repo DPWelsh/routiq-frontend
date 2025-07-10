@@ -17,7 +17,8 @@ import {
   Zap,
   Settings,
   ChevronRight,
-  HelpCircle
+  HelpCircle,
+  Bot
 } from "lucide-react"
 
 interface DashboardStats {
@@ -58,6 +59,14 @@ const navigation = [
     icon: TrendingUp, 
     roles: ["ADMIN", "USER"],
     description: "Patient journey tracking",
+    badge: null
+  },
+  { 
+    name: "Automation Sequence", 
+    href: "/dashboard/automation-sequence", 
+    icon: Bot, 
+    roles: ["ADMIN", "USER"],
+    description: "Patient communication workflows",
     badge: null
   },
   { 
