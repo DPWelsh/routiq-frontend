@@ -162,13 +162,13 @@ export function DashboardNav() {
   const userRole = (user?.publicMetadata?.role as string) || "USER"
 
   return (
-    <nav className="h-full w-64 bg-white border-r border-routiq-prompt/20 flex flex-col">
+    <>
       {/* Main Navigation Section */}
       <div className="flex-1 overflow-hidden">
         <div className="px-3 py-3">
         </div>
 
-        <div className="px-4 space-y-2 overflow-y-auto max-h-[calc(100vh-200px)]">
+        <div className="px-4 space-y-2 overflow-y-auto flex-1">
           {navigation
             .filter(item => item.roles.includes(userRole))
             .map((item) => {
@@ -240,6 +240,6 @@ export function DashboardNav() {
           </div>
         </Button>
       </div>
-    </nav>
+    </>
   )
 }

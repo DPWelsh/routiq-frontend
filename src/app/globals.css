@@ -88,6 +88,10 @@
     /* Prevent overscroll bounce effect that shows yellow */
     overscroll-behavior: none;
     -webkit-overflow-scrolling: touch;
+    /* Reduce base font size to make everything more compact */
+    font-size: 13px; /* Default is usually 16px - more compact */
+    /* Ensure proper minimum height for full page layouts */
+    min-height: 100vh;
   }
   
   body {
@@ -100,6 +104,8 @@
     overscroll-behavior: none;
     /* Use white background per brand guidelines */
     background-color: white;
+    /* Ensure body takes full height */
+    min-height: 100vh;
   }
   
   h1, h2, h3, h4, h5, h6 {
