@@ -74,7 +74,7 @@ export default function SettingsContent() {
     <div className="min-h-screen bg-routiq-cloud/5">
       <div className="max-w-8xl mx-auto space-y-6 p-6">
         {/* Header with Search */}
-        <div className="space-y-4">
+        <div className="space-y-4 bg-white p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-routiq-core">Settings</h1>

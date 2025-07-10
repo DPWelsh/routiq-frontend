@@ -820,7 +820,7 @@ export default function InboxPage() {
       {/* Header */}
       <div className="flex-shrink-0 px-6 pt-6 pb-3">
         <div className="max-w-8xl mx-auto">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between bg-white p-6 rounded-lg">
             <div>
               <h1 className="text-3xl font-bold text-routiq-core">Inbox</h1>
               <p className="text-routiq-blackberry/70 text-lg">Manage patient conversations and communication</p>

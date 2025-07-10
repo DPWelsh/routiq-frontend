@@ -160,7 +160,7 @@ export default function RoutiqAgentPerformancePage() {
   return (
     <div className="p-4 space-y-6">
       {/* Header Section with Toggle */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between bg-white p-6 rounded-lg">
         <div>
           <div className="mb-2">
             <h1 className="text-3xl font-bold text-routiq-core">Routiq Agent Performance</h1>
