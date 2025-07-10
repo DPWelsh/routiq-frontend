@@ -527,7 +527,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
           </div>
           
           <div className="flex items-center gap-3">
-            <Button variant="outline" size="sm" className="border-gray-300">
+            <Button variant="outline" size="sm" className="border-gray-300 hover:!bg-[#93B3E4]/80 hover:!text-white hover:!border-[#93B3E4]/80 transition-all duration-150 ease-out [backface-visibility:hidden] [transform:translate3d(0,0,0)]">
               <Download className="h-4 w-4 mr-2" />
               Export
             </Button>

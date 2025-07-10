@@ -56,7 +56,7 @@ export default function PatientInsightsPage() {
                 <span className="text-sm text-routiq-blackberry/60">Refresh</span>
               </button>
               
-              <button className="flex items-center gap-2 px-3 py-2 border border-routiq-cloud/30 rounded-lg hover:bg-routiq-cloud/20 transition-colors">
+              <button className="flex items-center gap-2 px-3 py-2 border border-routiq-cloud/30 rounded-lg hover:bg-[#93B3E4]/80 hover:text-white hover:border-[#93B3E4]/80 transition-all duration-150 ease-out [backface-visibility:hidden] [transform:translate3d(0,0,0)]">
                 <Download className="h-4 w-4 text-routiq-blackberry/60" />
                 <span className="text-sm text-routiq-blackberry/60">Export</span>
               </button>

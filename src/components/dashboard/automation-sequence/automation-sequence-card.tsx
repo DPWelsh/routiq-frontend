@@ -62,12 +62,12 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                 variant="outline" 
                 size="sm"
                 onClick={() => setShowPatientModal(true)}
-                className="hover:bg-[#7BA2E0]/80 hover:text-white hover:border-[#7BA2E0]/80 transition-all duration-200"
+                className="hover:!bg-[#7BA2E0]/80 hover:!text-white hover:!border-[#7BA2E0]/80 transition-all duration-150 ease-out [backface-visibility:hidden] [transform:translate3d(0,0,0)]"
               >
                 <Users className="h-4 w-4 mr-2" />
                 {sequence.patientCount} Patients
               </Button>
-              <Button variant="outline" size="sm" className="hover:bg-[#7BA2E0]/80 hover:text-white hover:border-[#7BA2E0]/80 transition-all duration-200">
+              <Button variant="outline" size="sm" className="hover:!bg-[#7BA2E0]/80 hover:!text-white hover:!border-[#7BA2E0]/80 transition-all duration-150 ease-out [backface-visibility:hidden] [transform:translate3d(0,0,0)]">
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
               </Button>
