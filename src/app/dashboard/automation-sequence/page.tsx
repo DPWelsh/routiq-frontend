@@ -136,71 +136,74 @@ export default function AutomationSequencePage() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold text-routiq-core">Automation Sequences</h1>
-          <p className="text-sm text-routiq-core/60 mt-1">
-            Manage patient communication workflows and automation sequences
-          </p>
+    <div className="min-h-screen bg-routiq-cloud/5">
+      <div className="max-w-8xl mx-auto space-y-6 p-6">
+        {/* Header */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-routiq-core">Automation Sequences</h1>
+              <p className="text-routiq-blackberry/70 text-lg">Manage patient communication workflows and automation sequences</p>
+            </div>
+            <Button className="bg-routiq-core hover:bg-routiq-core/90">
+              <Plus className="h-4 w-4 mr-2" />
+              Add Sequence
+            </Button>
+          </div>
         </div>
-        <Button className="bg-routiq-cloud hover:bg-routiq-cloud/90">
-          <Plus className="h-4 w-4 mr-2" />
-          Add Sequence
-        </Button>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Sequence List */}
-        <div className="lg:col-span-1 space-y-4">
-          {automationSequences.map((sequence) => (
-            <Card 
-              key={sequence.id}
-              className={`cursor-pointer transition-all ${
-                selectedSequence === sequence.id 
-                  ? 'ring-2 ring-routiq-cloud shadow-lg' 
-                  : 'hover:shadow-md'
-              }`}
-              onClick={() => setSelectedSequence(sequence.id)}
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${sequence.color}`} />
-                    <div>
-                      <CardTitle className="text-sm font-medium">{sequence.title}</CardTitle>
-                      <Badge 
-                        variant="secondary" 
-                        className={`text-xs mt-1 ${getStatusColor(sequence.status)}`}
-                      >
-                        {sequence.status}
-                      </Badge>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Sequence List */}
+          <div className="lg:col-span-1 space-y-4">
+            {automationSequences.map((sequence) => (
+              <Card 
+                key={sequence.id}
+                className={`cursor-pointer transition-all ${
+                  selectedSequence === sequence.id 
+                    ? 'ring-2 ring-routiq-cloud shadow-lg' 
+                    : 'hover:shadow-md'
+                }`}
+                onClick={() => setSelectedSequence(sequence.id)}
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-3 h-3 rounded-full ${sequence.color}`} />
+                      <div>
+                        <CardTitle className="text-sm font-medium">{sequence.title}</CardTitle>
+                        <Badge 
+                          variant="secondary" 
+                          className={`text-xs mt-1 ${getStatusColor(sequence.status)}`}
+                        >
+                          {sequence.status}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-1 text-routiq-core/60">
+                      <Users className="h-4 w-4" />
+                      <span className="text-sm">{sequence.patientCount}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 text-routiq-core/60">
-                    <Users className="h-4 w-4" />
-                    <span className="text-sm">{sequence.patientCount}</span>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <p className="text-xs text-routiq-core/60">{sequence.definition}</p>
-                <p className="text-xs text-routiq-core/80 mt-1 font-medium">
-                  Goal: {sequence.goal}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <p className="text-xs text-routiq-core/60">{sequence.definition}</p>
+                  <p className="text-xs text-routiq-core/80 mt-1 font-medium">
+                    Goal: {sequence.goal}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
 
-        {/* Sequence Details */}
-        <div className="lg:col-span-2">
-          {selectedSequence && (
-            <AutomationSequenceCard 
-              sequence={automationSequences.find(s => s.id === selectedSequence)!}
-              getTypeIcon={getTypeIcon}
-            />
-          )}
+          {/* Sequence Details */}
+          <div className="lg:col-span-2">
+            {selectedSequence && (
+              <AutomationSequenceCard 
+                sequence={automationSequences.find(s => s.id === selectedSequence)!}
+                getTypeIcon={getTypeIcon}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

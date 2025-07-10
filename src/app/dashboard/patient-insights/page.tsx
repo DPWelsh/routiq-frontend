@@ -33,32 +33,34 @@ export default function PatientInsightsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50/30">
+    <div className="min-h-screen bg-routiq-cloud/5">
       <div className="max-w-8xl mx-auto space-y-6 p-6">
-        {/* Header with Actions */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Patient Overview</h1>
-            <p className="text-gray-600 text-lg">
-              Comprehensive patient database with smart filtering and insights
-            </p>
-          </div>
-          
-          {/* Header Actions */}
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleRefresh}
-              className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-              title="Refresh data"
-            >
-              <RefreshCw className="h-4 w-4 text-gray-600" />
-              <span className="text-sm text-gray-600">Refresh</span>
-            </button>
+        {/* Header */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-routiq-core">Patient Overview</h1>
+              <p className="text-routiq-blackberry/70 text-lg">
+                Comprehensive patient database with smart filtering and insights
+              </p>
+            </div>
             
-            <button className="flex items-center gap-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              <Download className="h-4 w-4 text-gray-600" />
-              <span className="text-sm text-gray-600">Export</span>
-            </button>
+            {/* Header Actions */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleRefresh}
+                className="flex items-center gap-2 px-3 py-2 border border-routiq-cloud/30 rounded-lg hover:bg-routiq-cloud/20 transition-colors"
+                title="Refresh data"
+              >
+                <RefreshCw className="h-4 w-4 text-routiq-blackberry/60" />
+                <span className="text-sm text-routiq-blackberry/60">Refresh</span>
+              </button>
+              
+              <button className="flex items-center gap-2 px-3 py-2 border border-routiq-cloud/30 rounded-lg hover:bg-routiq-cloud/20 transition-colors">
+                <Download className="h-4 w-4 text-routiq-blackberry/60" />
+                <span className="text-sm text-routiq-blackberry/60">Export</span>
+              </button>
+            </div>
           </div>
         </div>
 

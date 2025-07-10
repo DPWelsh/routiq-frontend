@@ -34,55 +34,51 @@ export function MainDashboardTabs() {
   ]
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="w-full">
+    <div className="min-h-screen bg-routiq-cloud/5">
+      <div className="max-w-8xl mx-auto space-y-6 p-6">
         {/* Header */}
-        <div className="bg-white border-b border-gray-200">
-          <div className="px-8 py-8 max-w-none">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-semibold text-gray-900">
-                  Dashboard
-                </h1>
-                <p className="text-lg text-gray-600 mt-2">
-                  Overview of your healthcare practice performance
-                </p>
-              </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-routiq-core">
+                Dashboard
+              </h1>
+              <p className="text-routiq-blackberry/70 text-lg">
+                Overview of your healthcare practice performance
+              </p>
             </div>
           </div>
         </div>
 
         {/* Simple Tab Navigation */}
-        <div className="bg-gray-50 py-6">
-          <div className="flex justify-center">
-            <div className="inline-flex bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
-              {tabs.map((tab) => {
-                const Icon = tab.icon
-                const isActive = activeTab === tab.id
-                
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`
-                      flex items-center gap-2 py-3 px-5 rounded-md text-base font-medium transition-all duration-200
-                      ${isActive 
-                        ? 'bg-[#7ba2e0] text-white shadow-lg' 
-                        : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                      }
-                    `}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span>{tab.label}</span>
-                  </button>
-                )
-              })}
-            </div>
+        <div className="flex justify-center">
+          <div className="inline-flex bg-routiq-cloud/10 border border-routiq-cloud/30 rounded-lg p-1 shadow-sm">
+            {tabs.map((tab) => {
+              const Icon = tab.icon
+              const isActive = activeTab === tab.id
+              
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`
+                    flex items-center gap-2 py-3 px-5 rounded-md text-base font-medium transition-all duration-200
+                    ${isActive 
+                      ? 'bg-white text-routiq-core shadow-sm' 
+                      : 'text-routiq-blackberry/70 hover:text-routiq-core hover:bg-routiq-cloud/20'
+                    }
+                  `}
+                >
+                  <Icon className="h-5 w-5" />
+                  <span>{tab.label}</span>
+                </button>
+              )
+            })}
           </div>
         </div>
 
         {/* Tab Content */}
-        <div className="px-8 py-8">
+        <div className="mt-6">
           {tabs.find(tab => tab.id === activeTab)?.component}
         </div>
       </div>

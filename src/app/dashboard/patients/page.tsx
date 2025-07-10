@@ -201,23 +201,25 @@ export default function PatientsPage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6 py-6">
-        {/* Compact Header */}
-        <div className="flex items-center justify-between mb-6">
+    <div className="min-h-screen bg-routiq-cloud/5">
+      <div className="max-w-8xl mx-auto space-y-6 p-6">
+        {/* Header */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
             <div>
-            <h1 className="text-2xl font-bold text-gray-900">Patient Management</h1>
-            <p className="text-gray-600 text-sm">Manage patient engagement and appointments</p>
+              <h1 className="text-3xl font-bold text-routiq-core">Patient Management</h1>
+              <p className="text-routiq-blackberry/70 text-lg">Manage patient engagement and appointments</p>
+            </div>
+            {patientsError && (
+              <Alert className="max-w-md border-red-200 bg-red-50">
+                <AlertCircle className="h-4 w-4 text-red-600" />
+                <AlertDescription className="text-red-800 text-sm">
+                  Error loading patients. <Button onClick={handleRefresh} variant="link" className="p-0 h-auto text-red-800">Retry</Button>
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
-          {patientsError && (
-            <Alert className="max-w-md border-red-200 bg-red-50">
-              <AlertCircle className="h-4 w-4 text-red-600" />
-              <AlertDescription className="text-red-800 text-sm">
-                Error loading patients. <Button onClick={handleRefresh} variant="link" className="p-0 h-auto text-red-800">Retry</Button>
-              </AlertDescription>
-            </Alert>
-          )}
-      </div>
+        </div>
 
         {/* Risk Level Filter Cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">

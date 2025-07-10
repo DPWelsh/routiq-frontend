@@ -62,11 +62,11 @@ const navigation = [
     badge: null
   },
   { 
-    name: "Automation Sequence", 
+    name: "Automation Centre", 
     href: "/dashboard/automation-sequence", 
     icon: Bot, 
     roles: ["ADMIN", "USER"],
-    description: "Patient communication workflows",
+    description: "Patient engagement flows",
     badge: null
   },
   { 

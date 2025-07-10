@@ -55,8 +55,8 @@ export function TabHeader({
             className={`
               h-8 px-3 text-base font-medium transition-colors
               ${timeframe === '7d' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                ? 'bg-[#7BA2E0] text-white shadow-sm hover:bg-[#7BA2E0]/80' 
+                : 'bg-white text-gray-600 hover:bg-[#7BA2E0]/70 hover:text-white'
               }
             `}
           >
@@ -69,8 +69,8 @@ export function TabHeader({
             className={`
               h-8 px-3 text-base font-medium transition-colors
               ${timeframe === '30d' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                ? 'bg-[#7BA2E0] text-white shadow-sm hover:bg-[#7BA2E0]/80' 
+                : 'bg-white text-gray-600 hover:bg-[#7BA2E0]/70 hover:text-white'
               }
             `}
           >
@@ -83,8 +83,8 @@ export function TabHeader({
             className={`
               h-8 px-3 text-base font-medium transition-colors
               ${timeframe === '90d' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                ? 'bg-[#7BA2E0] text-white shadow-sm hover:bg-[#7BA2E0]/80' 
+                : 'bg-white text-gray-600 hover:bg-[#7BA2E0]/70 hover:text-white'
               }
             `}
           >
@@ -97,8 +97,8 @@ export function TabHeader({
             className={`
               h-8 px-3 text-base font-medium transition-colors
               ${timeframe === '1y' 
-                ? 'bg-white text-gray-900 shadow-sm' 
-                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                ? 'bg-[#7BA2E0] text-white shadow-sm hover:bg-[#7BA2E0]/80' 
+                : 'bg-white text-gray-600 hover:bg-[#7BA2E0]/70 hover:text-white'
               }
             `}
           >
