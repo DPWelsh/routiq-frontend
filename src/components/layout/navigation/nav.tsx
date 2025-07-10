@@ -211,9 +211,6 @@ export function DashboardNav() {
                               {loading ? "..." : badgeValue}
                             </Badge>
                           )}
-                          {isActive && (
-                            <div className="w-2 h-2 bg-routiq-cloud rounded-full shadow-sm"></div>
-                          )}
                         </div>
                       </div>
                       <p className="text-xs text-routiq-core/60 mt-1 truncate font-normal">
