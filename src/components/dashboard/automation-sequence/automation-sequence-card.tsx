@@ -62,11 +62,12 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                 variant="outline" 
                 size="sm"
                 onClick={() => setShowPatientModal(true)}
+                className="hover:bg-[#7BA2E0]/80 hover:text-white hover:border-[#7BA2E0]/80 transition-all duration-200"
               >
                 <Users className="h-4 w-4 mr-2" />
                 {sequence.patientCount} Patients
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="outline" size="sm" className="hover:bg-[#7BA2E0]/80 hover:text-white hover:border-[#7BA2E0]/80 transition-all duration-200">
                 <Edit className="h-4 w-4 mr-2" />
                 Edit
               </Button>
@@ -157,7 +158,7 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                               ))}
                               
                               {step.patientCount > 3 && (
-                                <Button variant="ghost" size="sm" className="w-full">
+                                <Button variant="ghost" size="sm" className="w-full hover:bg-[#7BA2E0]/80 hover:text-white transition-all duration-200">
                                   <Eye className="h-4 w-4 mr-2" />
                                   View all {step.patientCount} patients
                                 </Button>

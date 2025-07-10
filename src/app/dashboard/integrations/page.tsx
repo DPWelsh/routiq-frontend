@@ -35,7 +35,7 @@ export default function IntegrationsPage() {
         {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="bg-white p-6 rounded-lg">
               <h1 className="text-3xl font-bold text-routiq-core">Integrations</h1>
               <p className="text-routiq-blackberry/70 text-lg">Connect and manage your healthcare platform integrations</p>
             </div>
