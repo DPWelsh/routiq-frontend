@@ -25,22 +25,22 @@ export default function HomePage() {
 
   // Show loading spinner while Clerk is initializing
   if (!isLoaded) {
+    console.log('🔄 ROOT PAGE: Showing loading spinner - Clerk not loaded yet')
     return (
       <div className="min-h-screen bg-gradient-to-br from-routiq-cloud/20 to-white flex items-center justify-center">
         <div className="text-center space-y-4">
-          <LoadingSpinner size="lg" />
-          <p className="text-sm text-routiq-blackberry/60">Loading Routiq Hub...</p>
+          <LoadingSpinner size="lg" text="Loading Routiq Hub..." />
         </div>
       </div>
     )
   }
 
   // This should not render as we redirect above, but just in case
+  console.log('🔄 ROOT PAGE: Showing fallback loading spinner - Should not normally render')
   return (
     <div className="min-h-screen bg-gradient-to-br from-routiq-cloud/20 to-white flex items-center justify-center">
       <div className="text-center space-y-4">
-        <LoadingSpinner size="lg" />
-        <p className="text-sm text-routiq-blackberry/60">Redirecting...</p>
+        <LoadingSpinner size="lg" text="Redirecting..." />
       </div>
     </div>
   )

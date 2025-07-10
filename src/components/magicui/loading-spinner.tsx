@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
@@ -14,10 +15,18 @@ export default function LoadingSpinner({
   text = "Loading..."
 }: LoadingSpinnerProps) {
   const sizeClasses = {
-    sm: "h-4 w-4",
-    md: "h-8 w-8", 
-    lg: "h-12 w-12"
+    sm: "h-8 w-8",
+    md: "h-12 w-12", 
+    lg: "h-20 w-20"
   };
+
+  const logoSizes = {
+    sm: { width: 16, height: 16 },
+    md: { width: 24, height: 24 },
+    lg: { width: 40, height: 40 }
+  };
+
+  console.log('🎯 LoadingSpinner rendered with size:', size, 'text:', text);
 
   return (
     <div className={cn("flex flex-col items-center justify-center gap-3", className)}>
@@ -35,11 +44,19 @@ export default function LoadingSpinner({
         )} 
         style={{ animationDuration: "0.8s" }} />
         
-        {/* Center dot */}
+        {/* Routiq Logo in Center */}
         <div className={cn(
-          "absolute inset-0 m-auto rounded-full bg-routiq-prompt animate-routiq-pulse",
-          size === "sm" ? "h-1 w-1" : size === "md" ? "h-2 w-2" : "h-3 w-3"
-        )} />
+          "absolute inset-0 flex items-center justify-center animate-routiq-fade-in",
+          sizeClasses[size]
+        )}>
+          <Image
+            src="/logos/routiq-logomark-core.svg"
+            alt="Routiq"
+            width={logoSizes[size].width}
+            height={logoSizes[size].height}
+            className="opacity-80"
+          />
+        </div>
       </div>
       
       {text && (

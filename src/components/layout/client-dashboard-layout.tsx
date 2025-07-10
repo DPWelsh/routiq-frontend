@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import Image from 'next/image'
 import { DashboardNav } from "@/components/layout/navigation/nav-wrapper"
 import { DashboardHeader } from "@/components/layout/header/header-wrapper"
 import { MobileNavigationProvider } from "@/components/providers/mobile-navigation-provider"
+import { LoadingSpinner } from '@/components/magicui'
 
 interface ClientDashboardLayoutProps {
   children: React.ReactNode
@@ -23,26 +23,10 @@ export function ClientDashboardLayout({ children }: ClientDashboardLayoutProps) 
   }, [])
   
   if (!hasMounted) {
+    console.log('🔄 CLIENT DASHBOARD LAYOUT: Showing loading spinner - Component not mounted yet')
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="relative">
-          {/* Outer spinning ring */}
-          <div className="absolute inset-0 w-20 h-20 border-4 border-gray-200 border-t-routiq-energy rounded-full animate-routiq-spin"></div>
-          
-          {/* Inner pulsing ring */}
-          <div className="absolute inset-2 w-16 h-16 border-2 border-routiq-cloud/30 rounded-full animate-routiq-pulse"></div>
-          
-          {/* Routiq Logo */}
-          <div className="w-20 h-20 flex items-center justify-center animate-routiq-fade-in">
-            <Image
-              src="/logos/routiq-logomark-core.svg"
-              alt="Routiq"
-              width={40}
-              height={40}
-              className="w-10 h-10"
-            />
-          </div>
-        </div>
+        <LoadingSpinner size="lg" text="Loading dashboard..." />
       </div>
     )
   }

@@ -794,7 +794,7 @@ export default function InboxPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center" style={{ height: 'calc(100vh - 60px)' }}>
         <LoadingSpinner text="Loading conversations..." />
       </div>
     )
@@ -802,7 +802,7 @@ export default function InboxPage() {
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center" style={{ height: 'calc(100vh - 60px)' }}>
         <div className="text-center">
           <MessageCircle className="h-16 w-16 text-routiq-blackberry/40 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-routiq-core mb-2">Unable to load conversations</h2>
