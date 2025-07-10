@@ -823,22 +823,6 @@ export default function InboxPage() {
         <div className="p-4 border-b border-routiq-cloud/30 flex-shrink-0">
           <div className="flex items-center justify-between mb-4">
             <h1 className="text-xl font-semibold text-routiq-core">Inbox</h1>
-            <div className="flex items-center gap-3">
-              <span className="text-sm text-routiq-blackberry/60 bg-routiq-cloud/20 px-3 py-1 rounded-full">
-                {filteredConversations.length} of {conversations.length}
-              </span>
-              {isDevelopment && (
-                <Button 
-                  onClick={testPatientIntegration} 
-                  variant="outline" 
-                  size="sm" 
-                  className="text-xs h-6 px-2"
-                  title="Test Patient Integration"
-                >
-                  🧪
-                </Button>
-              )}
-            </div>
           </div>
           
           {/* Platform Filter Buttons */}
@@ -852,7 +836,11 @@ export default function InboxPage() {
                 variant={sourceFilter === 'all' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setSourceFilter('all')}
-                className="text-xs h-7"
+                className={`text-xs h-7 ${
+                  sourceFilter === 'all' 
+                    ? '' 
+                    : 'hover:text-routiq-core'
+                }`}
               >
                 All ({conversations.length})
               </Button>
@@ -862,8 +850,8 @@ export default function InboxPage() {
                 onClick={() => setSourceFilter('whatsapp')}
                 className={`text-xs h-7 ${
                   sourceFilter === 'whatsapp' 
-                    ? 'bg-green-500 text-white border-green-500 hover:bg-green-600' 
-                    : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100'
+                    ? 'bg-green-500 text-white border-green-500 hover:bg-green-600 hover:text-white' 
+                    : 'bg-green-50 text-green-600 border-green-200 hover:bg-green-100 hover:text-green-600'
                 }`}
               >
                 WhatsApp ({conversations.filter(c => c.conversation_source === 'whatsapp').length})
@@ -874,8 +862,8 @@ export default function InboxPage() {
                 onClick={() => setSourceFilter('sms')}
                 className={`text-xs h-7 ${
                   sourceFilter === 'sms' 
-                    ? 'bg-blue-500 text-white border-blue-500 hover:bg-blue-600' 
-                    : 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100'
+                    ? 'bg-blue-500 text-white border-blue-500 hover:bg-blue-600 hover:text-white' 
+                    : 'bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100 hover:text-blue-600'
                 }`}
               >
                 SMS ({conversations.filter(c => c.conversation_source === 'sms').length})
@@ -886,8 +874,8 @@ export default function InboxPage() {
                 onClick={() => setSourceFilter('email')}
                 className={`text-xs h-7 ${
                   sourceFilter === 'email' 
-                    ? 'bg-orange-500 text-white border-orange-500 hover:bg-orange-600' 
-                    : 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100'
+                    ? 'bg-orange-500 text-white border-orange-500 hover:bg-orange-600 hover:text-white' 
+                    : 'bg-orange-50 text-orange-600 border-orange-200 hover:bg-orange-100 hover:text-orange-600'
                 }`}
               >
                 Email ({conversations.filter(c => c.conversation_source === 'email').length})
@@ -898,8 +886,8 @@ export default function InboxPage() {
                 onClick={() => setSourceFilter('instagram')}
                 className={`text-xs h-7 ${
                   sourceFilter === 'instagram' 
-                    ? 'bg-purple-500 text-white border-purple-500 hover:bg-purple-600' 
-                    : 'bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100'
+                    ? 'bg-purple-500 text-white border-purple-500 hover:bg-purple-600 hover:text-white' 
+                    : 'bg-purple-50 text-purple-600 border-purple-200 hover:bg-purple-100 hover:text-purple-600'
                 }`}
               >
                 Instagram ({conversations.filter(c => c.conversation_source === 'instagram').length})
@@ -909,12 +897,16 @@ export default function InboxPage() {
 
           {/* Status Filter Dropdown */}
           <div className="mb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Clock className="h-3 w-3 text-routiq-blackberry/50" />
+              <span className="text-xs text-routiq-blackberry/60 font-medium">Urgency</span>
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="outline"
                   size="sm"
-                  className="text-xs h-7 gap-1 justify-between min-w-[120px]"
+                  className="text-xs h-7 gap-1 justify-between min-w-[120px] hover:text-routiq-core"
                 >
                   <div className="flex items-center gap-1">
                     {statusFilter === 'all' && (
