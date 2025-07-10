@@ -42,7 +42,7 @@ interface AllPatientsTabProps {
   searchTerm: string
 }
 
-type FilterType = 'all' | 'active' | 'at-risk' | 'high-ltv' | 'no-shows' | 'dormant' | 'vips' | 'top-opportunities'
+type FilterType = 'all' | 'active' | 'at-risk' | 'high-ltv' | 'upcoming' | 'dormant' | 'vips' | 'top-opportunities'
 
 interface AutomationStatus {
   title: string
@@ -338,8 +338,8 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
       case 'high-ltv':
         filtered = filtered.filter(p => p.ltv >= 3000)
         break
-      case 'no-shows':
-        filtered = filtered.filter(p => p.noShows >= 2)
+      case 'upcoming':
+        filtered = filtered.filter(p => p.nextAppointment !== null)
         break
       case 'dormant':
         filtered = filtered.filter(p => p.status === 'Dormant')
@@ -762,11 +762,11 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                     High LTV
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    onClick={() => setActiveFilter('no-shows')}
-                    className={`cursor-pointer ${activeFilter === 'no-shows' ? 'bg-orange-50 text-orange-900' : ''}`}
+                    onClick={() => setActiveFilter('upcoming')}
+                    className={`cursor-pointer ${activeFilter === 'upcoming' ? 'bg-blue-50 text-blue-900' : ''}`}
                   >
-                    <CalendarX className="h-4 w-4 mr-2 text-orange-600" />
-                    No Shows
+                    <Calendar className="h-4 w-4 mr-2 text-blue-600" />
+                    Upcoming Appointments
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     onClick={() => setActiveFilter('dormant')}
@@ -817,7 +817,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                     Next Appt
                   </th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
-                    No-Shows
+                    No. of upcoming
                   </th>
                   <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-r border-gray-200 w-40">
                     Last Contact
@@ -894,12 +894,8 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                      </td>
                      
                      <td className="px-6 py-4 whitespace-nowrap border-r border-gray-200 w-40 text-center">
-                       <div className={`text-sm font-medium ${
-                         patient.noShows >= 3 ? 'text-red-600' : 
-                         patient.noShows >= 2 ? 'text-orange-600' : 
-                         'text-gray-700'
-                       }`}>
-                         {patient.noShows}
+                       <div className="text-sm font-medium text-gray-700">
+                         {patient.nextAppointment ? 1 : 0}
                        </div>
                      </td>
                      

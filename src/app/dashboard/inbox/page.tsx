@@ -816,14 +816,27 @@ export default function InboxPage() {
   }
 
   return (
-    <div className="flex overflow-hidden" style={{ height: 'calc(100vh - 60px)' }}>
-      {/* Sidebar - Conversation List */}
-      <div className="w-[500px] bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
+    <div className="min-h-screen bg-routiq-cloud/5">
+      <div className="max-w-8xl mx-auto space-y-6 p-6">
         {/* Header */}
-        <div className="p-4 border-b border-routiq-cloud/30 flex-shrink-0">
-          <div className="flex items-center justify-between mb-4">
-            <h1 className="text-xl font-semibold text-routiq-core">Inbox</h1>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-routiq-core">Inbox</h1>
+              <p className="text-routiq-blackberry/70 text-lg">Manage patient conversations and communication</p>
+            </div>
           </div>
+        </div>
+
+        {/* Inbox Interface */}
+        <div className="flex overflow-hidden rounded-lg border border-routiq-cloud/30 bg-white" style={{ height: 'calc(100vh - 200px)' }}>
+          {/* Sidebar - Conversation List */}
+          <div className="w-[500px] bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
+            {/* Search and Filters Header */}
+            <div className="p-4 border-b border-routiq-cloud/30 flex-shrink-0">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-routiq-core">Conversations</h2>
+              </div>
           
           {/* Platform Filter Buttons */}
           <div className="mb-3">
@@ -1183,15 +1196,17 @@ export default function InboxPage() {
         )}
       </div>
 
-      {/* Right Sidebar - Patient Info */}
-      {selectedChat && selectedChat.conversation && (
-        <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
-          <ConversationPerformancePanel 
-            conversation={selectedChat.conversation}
-            messages={selectedChat.messages}
-          />
+          {/* Right Sidebar - Patient Info */}
+          {selectedChat && selectedChat.conversation && (
+            <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
+              <ConversationPerformancePanel 
+                conversation={selectedChat.conversation}
+                messages={selectedChat.messages}
+              />
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 } 

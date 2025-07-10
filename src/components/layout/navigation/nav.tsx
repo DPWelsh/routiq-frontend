@@ -181,10 +181,10 @@ export function DashboardNav() {
                 <Link key={item.name} href={item.href}>
                   <div
                     className={cn(
-                      "group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out relative",
+                      "group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out relative border",
                       isActive
-                        ? "bg-routiq-cloud/15 text-routiq-cloud shadow-sm border border-routiq-cloud/20 font-semibold"
-                        : "text-routiq-core hover:bg-routiq-core/8 hover:text-routiq-core hover:shadow-sm hover:border hover:border-routiq-core/10"
+                        ? "bg-routiq-cloud/15 text-routiq-cloud shadow-sm border-routiq-cloud/20 font-semibold"
+                        : "text-routiq-core border-transparent hover:bg-routiq-core/8 hover:text-routiq-core hover:shadow-sm hover:border-routiq-core/10"
                     )}
                   >
                     <item.icon className={cn(
@@ -229,7 +229,7 @@ export function DashboardNav() {
         <Button
           variant="ghost"
           onClick={handleHelpClick}
-          className="w-full justify-start gap-3 text-routiq-core hover:bg-routiq-core/8 hover:text-routiq-core py-3 px-4 rounded-xl transition-all duration-200 ease-in-out hover:shadow-sm hover:border hover:border-routiq-core/10"
+          className="w-full justify-start gap-3 text-routiq-core border border-transparent hover:bg-routiq-core/8 hover:text-routiq-core py-3 px-4 rounded-xl transition-all duration-200 ease-in-out hover:shadow-sm hover:border-routiq-core/10"
         >
           <HelpCircle className="h-5 w-5 flex-shrink-0 transition-colors duration-200" />
           <div className="flex-1 text-left">
