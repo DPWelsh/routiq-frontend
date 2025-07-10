@@ -816,10 +816,10 @@ export default function InboxPage() {
   }
 
   return (
-    <div className="min-h-screen bg-routiq-cloud/5">
-      <div className="max-w-8xl mx-auto space-y-6 p-6">
-        {/* Header */}
-        <div className="space-y-4">
+    <div className="h-[calc(100vh-4rem)] bg-routiq-cloud/5 flex flex-col">
+      {/* Header */}
+      <div className="flex-shrink-0 px-6 pt-6 pb-3">
+        <div className="max-w-8xl mx-auto">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-routiq-core">Inbox</h1>
@@ -827,9 +827,12 @@ export default function InboxPage() {
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Inbox Interface */}
-        <div className="flex overflow-hidden rounded-lg border border-routiq-cloud/30 bg-white" style={{ height: 'calc(100vh - 200px)' }}>
+      {/* Inbox Interface */}
+      <div className="flex-1 px-6 pb-6 min-h-0">
+        <div className="max-w-8xl mx-auto h-full">
+          <div className="flex overflow-hidden rounded-lg border border-routiq-cloud/30 bg-white h-full">
           {/* Sidebar - Conversation List */}
           <div className="w-[500px] bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
             {/* Search and Filters Header */}
@@ -1196,15 +1199,16 @@ export default function InboxPage() {
         )}
       </div>
 
-          {/* Right Sidebar - Patient Info */}
-          {selectedChat && selectedChat.conversation && (
-            <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
-              <ConversationPerformancePanel 
-                conversation={selectedChat.conversation}
-                messages={selectedChat.messages}
-              />
-            </div>
-          )}
+            {/* Right Sidebar - Patient Info */}
+            {selectedChat && selectedChat.conversation && (
+              <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
+                <ConversationPerformancePanel 
+                  conversation={selectedChat.conversation}
+                  messages={selectedChat.messages}
+                />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

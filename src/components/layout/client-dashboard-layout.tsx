@@ -15,8 +15,8 @@ export function ClientDashboardLayout({ children }: ClientDashboardLayoutProps) 
   const [hasMounted, setHasMounted] = useState(false)
   const pathname = usePathname()
   
-  // Check if this is a full-height page (like phone conversations)
-  const isFullHeightPage = pathname?.includes('/conversations/phone')
+  // Check if this is a full-height page (like phone conversations or inbox)
+  const isFullHeightPage = pathname?.includes('/conversations/phone') || pathname?.includes('/inbox')
   
   useEffect(() => {
     setHasMounted(true)
