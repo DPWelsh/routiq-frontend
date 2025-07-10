@@ -1120,7 +1120,7 @@ export default function InboxPage() {
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-3 bg-routiq-cloud/5 min-h-0">
               {chatLoading ? (
-                <div className="flex items-center justify-center h-full">
+                <div className="flex items-center justify-center min-h-[400px]">
                   <LoadingSpinner text="Loading messages..." />
                 </div>
               ) : (
