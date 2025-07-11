@@ -157,11 +157,12 @@ export function OnboardingAdmin() {
           <p className="text-sm text-orange-700 mb-3">Contextual tours appear automatically when users visit sections:</p>
           <div className="space-y-1 text-xs bg-white p-3 rounded border border-orange-200">
             <div className="text-orange-800 font-semibold">Automatic contextual prompts:</div>
-            <div className="text-orange-600 ml-2">• Dashboard → Analytics tour (3 min)</div>
-            <div className="text-orange-600 ml-2">• Patient Insights → Engagement tour (3 min)</div>
-            <div className="text-orange-600 ml-2">• Inbox → Communication tour (3 min)</div>
-            <div className="text-orange-600 ml-2">• Automation → Workflow tour (3 min)</div>
-            <div className="text-orange-600 ml-2">• Integrations → Setup tour (3 min)</div>
+            <div className="text-orange-600 ml-2">• Dashboard → Dashboard analytics (3 min)</div>
+            <div className="text-orange-600 ml-2">• Patient Overview → Patient journey tracking (3 min)</div>
+            <div className="text-orange-600 ml-2">• Inbox → Traditional message inbox (3 min)</div>
+            <div className="text-orange-600 ml-2">• Automation Centre → Patient engagement flows (3 min)</div>
+            <div className="text-orange-600 ml-2">• Integrations → Connected services (3 min)</div>
+            <div className="text-orange-600 ml-2">• Settings → System configuration (3 min)</div>
           </div>
           
           <div className="mt-3 space-y-1 text-xs font-mono bg-white p-3 rounded border border-orange-200">

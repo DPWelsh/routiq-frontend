@@ -37,24 +37,24 @@ const tourOptions: TourOption[] = [
   },
   {
     id: 'dashboard-contextual',
-    name: 'Dashboard Tour',
-    description: 'Learn about analytics and key metrics',
+    name: 'Dashboard',
+    description: 'Dashboard analytics',
     icon: Play,
     color: 'bg-blue-500',
     duration: '3 min'
   },
   {
     id: 'patient-insights-contextual',
-    name: 'Patient Analytics',
-    description: 'Discover engagement patterns and insights',
+    name: 'Patient Overview',
+    description: 'Patient journey tracking',
     icon: Route,
     color: 'bg-green-500',
     duration: '3 min'
   },
   {
     id: 'automation-contextual',
-    name: 'Automation Center',
-    description: 'Build patient re-engagement workflows',
+    name: 'Automation Centre',
+    description: 'Patient engagement flows',
     icon: HelpCircle,
     color: 'bg-purple-500',
     duration: '3 min'

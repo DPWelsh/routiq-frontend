@@ -33,48 +33,48 @@ interface SectionInfo {
 const sectionMappings: SectionInfo[] = [
   {
     path: '/dashboard',
-    title: 'Dashboard Analytics',
-    description: 'Explore your practice performance metrics and insights',
+    title: 'Dashboard',
+    description: 'Dashboard analytics',
     tourId: 'dashboard-contextual',
     icon: BarChart3,
     color: 'from-blue-500 to-blue-600'
   },
   {
     path: '/dashboard/patient-insights',
-    title: 'Patient Journey Analytics',
-    description: 'Discover patient engagement patterns and re-engagement opportunities',
+    title: 'Patient Overview',
+    description: 'Patient journey tracking',
     tourId: 'patient-insights-contextual',
     icon: Users,
     color: 'from-green-500 to-emerald-600'
   },
   {
     path: '/dashboard/inbox',
-    title: 'Communication Hub',
-    description: 'Master unified patient communications and smart filtering',
+    title: 'Inbox',
+    description: 'Traditional message inbox',
     tourId: 'inbox-contextual',
     icon: Mail,
     color: 'from-purple-500 to-violet-600'
   },
   {
     path: '/dashboard/automation-sequence',
-    title: 'Automation Center',
-    description: 'Build and manage patient re-engagement workflows',
+    title: 'Automation Centre',
+    description: 'Patient engagement flows',
     tourId: 'automation-contextual',
     icon: Bot,
     color: 'from-orange-500 to-red-600'
   },
   {
     path: '/dashboard/integrations',
-    title: 'Connected Services',
-    description: 'Set up and monitor your practice integrations',
+    title: 'Integrations',
+    description: 'Connected services',
     tourId: 'integrations-contextual',
     icon: Zap,
     color: 'from-indigo-500 to-purple-600'
   },
   {
     path: '/dashboard/settings',
-    title: 'Practice Configuration',
-    description: 'Configure your clinic profile and team settings',
+    title: 'Settings',
+    description: 'System configuration',
     tourId: 'settings-contextual',
     icon: Settings,
     color: 'from-gray-500 to-gray-600'

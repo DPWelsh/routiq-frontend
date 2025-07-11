@@ -32,20 +32,24 @@ export const dashboardContextualTour: TourStep[] = [
     id: 'patient-insights-preview',
     title: 'Patient Engagement Insights',
     description: 'Click the Patient Overview tab to see detailed patient analytics, sentiment tracking, and re-engagement opportunities.',
-    target: '[data-tour="patient-insights"]',
+    target: '[data-tour="insights-tabs"]',
     position: 'top',
     action: 'click',
     actionText: 'Explore insights',
+    page: '/dashboard/patient-insights',
+    waitForElement: true,
     offset: { x: 0, y: -20 }
   },
   {
     id: 'automation-summary-preview',
     title: 'Automation ROI Tracking',
     description: 'View your automated campaign performance and revenue impact. Click to see your active workflows.',
-    target: '[data-tour="automation-panel"]',
+    target: '[data-tour="active-sequences"]',
     position: 'top',
     action: 'click',
     actionText: 'View automation',
+    page: '/dashboard/automation-sequence',
+    waitForElement: true,
     offset: { x: 0, y: -20 }
   }
 ]
