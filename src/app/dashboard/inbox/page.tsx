@@ -544,8 +544,14 @@ export default function InboxPage() {
       if (conversation) {
         fetchChatMessages(selectedPhone)
       }
+    } else if (!selectedPhone && conversations.length > 0) {
+      // Auto-select the first conversation if none is selected
+      const firstConversation = conversations[0]
+      if (firstConversation) {
+        router.push(`/dashboard/inbox?phone=${encodeURIComponent(firstConversation.phone)}`)
+      }
     }
-  }, [selectedPhone, conversations])
+  }, [selectedPhone, conversations, router])
 
   useEffect(() => {
     scrollToBottom()
@@ -832,7 +838,7 @@ export default function InboxPage() {
       {/* Inbox Interface */}
       <div className="flex-1 px-6 pb-6 min-h-0">
         <div className="max-w-8xl mx-auto h-full">
-          <div className="flex overflow-hidden rounded-lg border border-routiq-cloud/30 bg-white h-full">
+          <div className="flex overflow-hidden rounded-lg border border-routiq-cloud/30 bg-white h-full" data-tour="inbox-content">
           {/* Sidebar - Conversation List */}
           <div className="w-[500px] bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
             {/* Search and Filters Header */}
@@ -842,7 +848,7 @@ export default function InboxPage() {
               </div>
           
           {/* Platform Filter Buttons */}
-          <div className="mb-3">
+          <div className="mb-3" data-tour="message-filters">
             <div className="flex items-center gap-2 mb-2">
               <MessageCircle className="h-3 w-3 text-routiq-blackberry/50" />
               <span className="text-xs text-routiq-blackberry/60 font-medium">Platform</span>
@@ -1201,7 +1207,7 @@ export default function InboxPage() {
 
             {/* Right Sidebar - Patient Info */}
             {selectedChat && selectedChat.conversation && (
-              <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
+              <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full" data-tour="conversation-context">
                 <ConversationPerformancePanel 
                   conversation={selectedChat.conversation}
                   messages={selectedChat.messages}
