@@ -6,16 +6,17 @@ import { useEffect } from 'react'
 import { LoadingSpinner } from '@/components/magicui'
 
 export default function HomePage() {
-  const { isLoaded, isSignedIn } = useUser()
+  const { isLoaded, isSignedIn, user } = useUser()
   const router = useRouter()
 
   useEffect(() => {
     console.log('🔍 Root page - Auth state:', { isLoaded, isSignedIn })
     
     if (isLoaded) {
-      if (isSignedIn) {
-        // Check if user has completed onboarding
-        const hasCompletedOnboarding = localStorage.getItem('routiq-onboarding-completed')
+      if (isSignedIn && user) {
+        // Check if THIS USER has completed onboarding (user-specific key)
+        const userOnboardingKey = `routiq-onboarding-completed-${user.id}`
+        const hasCompletedOnboarding = localStorage.getItem(userOnboardingKey)
         
         if (hasCompletedOnboarding) {
           console.log('✅ User authenticated and onboarded, redirecting to dashboard')
@@ -29,7 +30,7 @@ export default function HomePage() {
         router.push('/sign-in')
       }
     }
-  }, [isLoaded, isSignedIn, router])
+  }, [isLoaded, isSignedIn, user, router])
 
   // Show loading spinner while Clerk is initializing
   if (!isLoaded) {

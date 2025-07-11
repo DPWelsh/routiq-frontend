@@ -8,20 +8,21 @@ import { LoadingSpinner } from '@/components/magicui'
 import { useTour } from '@/components/onboarding/tour-provider'
 
 export default function OnboardingPage() {
-  const { isLoaded, isSignedIn } = useUser()
+  const { isLoaded, isSignedIn, user } = useUser()
   const router = useRouter()
   const { startTour } = useTour()
   const [showOnboarding, setShowOnboarding] = useState(false)
 
   useEffect(() => {
     if (isLoaded) {
-      if (!isSignedIn) {
+      if (!isSignedIn || !user) {
         router.push('/sign-in')
         return
       }
       
-      // Check if user has completed onboarding before
-      const hasCompletedOnboarding = localStorage.getItem('routiq-onboarding-completed')
+      // Check if THIS USER has completed onboarding before
+      const userOnboardingKey = `routiq-onboarding-completed-${user.id}`
+      const hasCompletedOnboarding = localStorage.getItem(userOnboardingKey)
       
       if (hasCompletedOnboarding) {
         router.push('/dashboard')
@@ -30,28 +31,37 @@ export default function OnboardingPage() {
       
       setShowOnboarding(true)
     }
-  }, [isLoaded, isSignedIn, router])
+  }, [isLoaded, isSignedIn, user, router])
 
   const handleOnboardingComplete = () => {
-    // Mark onboarding as completed
-    localStorage.setItem('routiq-onboarding-completed', 'true')
-    router.push('/dashboard')
+    if (user) {
+      // Mark onboarding as completed for this specific user
+      const userOnboardingKey = `routiq-onboarding-completed-${user.id}`
+      localStorage.setItem(userOnboardingKey, 'true')
+      router.push('/dashboard')
+    }
   }
 
   const handleSkip = () => {
-    // Mark onboarding as completed even if skipped
-    localStorage.setItem('routiq-onboarding-completed', 'true')
-    router.push('/dashboard')
+    if (user) {
+      // Mark onboarding as completed even if skipped for this specific user
+      const userOnboardingKey = `routiq-onboarding-completed-${user.id}`
+      localStorage.setItem(userOnboardingKey, 'true')
+      router.push('/dashboard')
+    }
   }
 
   const handleStartInteractiveTour = () => {
-    // Mark onboarding as completed and start interactive tour
-    localStorage.setItem('routiq-onboarding-completed', 'true')
-    router.push('/dashboard')
-    // Start the dashboard tour after a short delay to allow navigation
-    setTimeout(() => {
-      startTour('dashboard')
-    }, 1000)
+    if (user) {
+      // Mark onboarding as completed and start interactive tour for this specific user
+      const userOnboardingKey = `routiq-onboarding-completed-${user.id}`
+      localStorage.setItem(userOnboardingKey, 'true')
+      router.push('/dashboard')
+      // Start the dashboard tour after a short delay to allow navigation
+      setTimeout(() => {
+        startTour('dashboard')
+      }, 1000)
+    }
   }
 
   // Show loading while checking auth state

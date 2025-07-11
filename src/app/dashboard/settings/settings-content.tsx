@@ -34,6 +34,7 @@ import {
   Route
 } from 'lucide-react'
 import { useTour } from '@/components/onboarding/tour-provider'
+import { OnboardingAdmin } from '@/components/onboarding/onboarding-admin'
 
 export default function SettingsContent() {
   const { user, isLoaded } = useUser()
@@ -49,10 +50,13 @@ export default function SettingsContent() {
   })
 
   const handleShowOnboarding = () => {
-    // Clear the onboarding completed flag to show it again
-    localStorage.removeItem('routiq-onboarding-completed')
-    // Navigate to onboarding page
-    window.location.href = '/onboarding'
+    if (user) {
+      // Clear the onboarding completed flag for this specific user
+      const userOnboardingKey = `routiq-onboarding-completed-${user.id}`
+      localStorage.removeItem(userOnboardingKey)
+      // Navigate to onboarding page
+      window.location.href = '/onboarding'
+    }
   }
 
   const handleStartTour = (tourType: string) => {
@@ -729,6 +733,9 @@ export default function SettingsContent() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Onboarding Admin (Admin users only) */}
+            <OnboardingAdmin />
 
             {/* Backup & Maintenance */}
             <Card className="border-routiq-cloud/30">

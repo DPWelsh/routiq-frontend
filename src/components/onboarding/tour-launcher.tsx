@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useTour } from './tour-provider'
+import { useUser } from '@clerk/nextjs'
 import { 
   Play, 
   Route, 
@@ -55,6 +56,7 @@ const tourOptions: TourOption[] = [
 export function TourLauncher() {
   const [isExpanded, setIsExpanded] = useState(false)
   const { startTour, isActive } = useTour()
+  const { user } = useUser()
 
   // Don't show if a tour is already active
   if (isActive) return null
@@ -118,9 +120,12 @@ export function TourLauncher() {
                 <div className="mt-4 pt-3 border-t border-routiq-cloud/20">
                   <button
                     onClick={() => {
-                      // Clear onboarding and restart
-                      localStorage.removeItem('routiq-onboarding-completed')
-                      window.location.href = '/onboarding'
+                      if (user) {
+                        // Clear onboarding and restart for this specific user
+                        const userOnboardingKey = `routiq-onboarding-completed-${user.id}`
+                        localStorage.removeItem(userOnboardingKey)
+                        window.location.href = '/onboarding'
+                      }
                     }}
                     className="w-full flex items-center justify-center gap-2 p-2 text-sm text-routiq-core/70 hover:text-routiq-core transition-colors"
                   >
