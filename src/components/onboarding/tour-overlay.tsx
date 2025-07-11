@@ -80,8 +80,11 @@ export function TourOverlay({
 
       // Update target position
       const updateTargetPosition = () => {
+        console.log(`🎯 Tour: Looking for target "${currentTourStep.target}" (step ${step + 1}/${steps.length}, retry ${retryCount})`)
         const targetElement = document.querySelector(currentTourStep.target)
+        
         if (targetElement) {
+          console.log(`✅ Tour: Found target "${currentTourStep.target}"`)
           const rect = targetElement.getBoundingClientRect()
           const scrollTop = window.pageYOffset || document.documentElement.scrollTop
           const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
@@ -94,19 +97,23 @@ export function TourOverlay({
           })
           setIsVisible(true)
           setIsNavigating(false)
+          setRetryCount(0)
         } else if (currentTourStep.waitForElement && retryCount < 10) {
           // Keep trying to find the element after navigation (max 10 retries = 5 seconds)
+          console.log(`⏳ Tour: Target not found, retrying ${retryCount + 1}/10 for "${currentTourStep.target}"`)
           setRetryCount(prev => prev + 1)
           setTimeout(updateTargetPosition, 500)
         } else {
-          console.warn(`Tour target not found after ${retryCount} retries: ${currentTourStep.target}`)
+          console.warn(`❌ Tour: Target not found after ${retryCount} retries: ${currentTourStep.target} - skipping step`)
           setIsVisible(false)
           setIsNavigating(false)
           setRetryCount(0)
           // Skip to next step if element not found
           if (onStepChange && step < steps.length - 1) {
+            console.log(`⏭️ Tour: Skipping to step ${step + 2}/${steps.length}`)
             onStepChange(step + 1)
           } else {
+            console.log(`🏁 Tour: Completing tour - no more steps`)
             onComplete()
           }
         }

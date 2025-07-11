@@ -76,6 +76,7 @@ export function TourProvider({ children }: TourProviderProps) {
 
   const startTour = useCallback((tourName: string) => {
     if (tourConfigs[tourName]) {
+      console.log(`🚀 Tour: Starting "${tourName}" with ${tourConfigs[tourName].length} steps`)
       setCurrentTour(tourName)
       setCurrentStep(0)
       setIsActive(true)
