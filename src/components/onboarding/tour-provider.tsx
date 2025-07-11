@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from 'react'
 import { TourOverlay } from './tour-overlay'
 import { 
   dashboardTourSteps, 
@@ -123,6 +123,35 @@ export function TourProvider({ children }: TourProviderProps) {
   const getCurrentSteps = () => {
     return currentTour ? tourConfigs[currentTour] || [] : []
   }
+
+  // Keyboard shortcuts for demo purposes
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      // Ctrl+Shift+T to start dashboard tour
+      if (event.ctrlKey && event.shiftKey && event.key === 'T') {
+        event.preventDefault()
+        startTour('dashboard')
+      }
+      // Ctrl+Shift+N to start navigation tour
+      if (event.ctrlKey && event.shiftKey && event.key === 'N') {
+        event.preventDefault()
+        startTour('navigation')
+      }
+      // Ctrl+Shift+Q for quick tour
+      if (event.ctrlKey && event.shiftKey && event.key === 'Q') {
+        event.preventDefault()
+        startTour('quick-feature')
+      }
+      // Escape to stop tour
+      if (event.key === 'Escape' && isActive) {
+        event.preventDefault()
+        stopTour()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [startTour, stopTour, isActive])
 
   return (
     <TourContext.Provider
