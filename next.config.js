@@ -49,7 +49,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self' 'unsafe-eval' 'unsafe-inline' https: data: blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https: data: blob:; script-src-elem 'self' 'unsafe-eval' 'unsafe-inline' https: data: blob:; style-src 'self' 'unsafe-inline' https: data: blob:; font-src 'self' https: data:; img-src 'self' https: data: blob:; connect-src 'self' https: wss: data: blob:; frame-src 'self' https: data: blob:;",
+            value: "default-src 'self' 'unsafe-eval' 'unsafe-inline'; script-src 'self' 'unsafe-eval' 'unsafe-inline' * data: blob:; script-src-elem 'self' 'unsafe-eval' 'unsafe-inline' * data: blob:; style-src 'self' 'unsafe-inline' *; font-src 'self' *; img-src 'self' * data: blob:; connect-src 'self' * wss: data: blob:; frame-src 'self' * https://challenges.cloudflare.com;",
           },
         ],
       },
