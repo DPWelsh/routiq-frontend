@@ -93,27 +93,6 @@ export function TourOverlay({
           })
           setIsVisible(true)
           setIsNavigating(false)
-
-          // Scroll element into view with better positioning
-          targetElement.scrollIntoView({ 
-            behavior: 'smooth', 
-            block: 'center',
-            inline: 'center'
-          })
-
-          // Add a small delay after scrolling to ensure position is stable
-          setTimeout(() => {
-            const updatedRect = targetElement.getBoundingClientRect()
-            const updatedScrollTop = window.pageYOffset || document.documentElement.scrollTop
-            const updatedScrollLeft = window.pageXOffset || document.documentElement.scrollLeft
-            
-            setTargetPosition({
-              top: updatedRect.top + updatedScrollTop,
-              left: updatedRect.left + updatedScrollLeft,
-              width: updatedRect.width,
-              height: updatedRect.height
-            })
-          }, 300)
         } else if (currentTourStep.waitForElement) {
           // Keep trying to find the element after navigation
           setTimeout(updateTargetPosition, 500)
