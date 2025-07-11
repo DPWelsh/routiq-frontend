@@ -27,15 +27,30 @@ const nextConfig = {
   
   // Security headers - disabled in development to fix Clerk loading issues
   async headers() {
+    // Debug logging to help troubleshoot
+    console.log('🔍 headers() called with NODE_ENV:', process.env.NODE_ENV)
+    console.log('🔍 Environment variables:', {
+      NODE_ENV: process.env.NODE_ENV,
+      VERCEL_ENV: process.env.VERCEL_ENV,
+      NEXT_PHASE: process.env.NEXT_PHASE
+    })
+    
     // Skip CSP in development
     if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Development mode detected - skipping CSP headers')
       return []
     }
+    
+    console.log('⚠️ Production mode - applying CSP headers')
     
     return [
       {
         source: '/(.*)',
         headers: [
+          {
+            key: 'X-Debug-Deploy',
+            value: 'headers-updated-' + Date.now(),
+          },
           {
             key: 'X-Frame-Options',
             value: 'DENY',
@@ -54,7 +69,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self' 'unsafe-eval' 'unsafe-inline'; script-src 'self' 'unsafe-eval' 'unsafe-inline' * data: blob: https://challenges.cloudflare.com; script-src-elem 'self' 'unsafe-eval' 'unsafe-inline' * data: blob: https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' *; font-src 'self' *; img-src 'self' * data: blob:; connect-src 'self' * wss: data: blob:; frame-src 'self' * https://challenges.cloudflare.com;",
+            value: "default-src 'self' 'unsafe-eval' 'unsafe-inline'; script-src 'self' 'unsafe-eval' 'unsafe-inline' * data: blob: https://challenges.cloudflare.com https://js.stripe.com https://clerk.com https://*.clerk.com https://*.clerk.dev; script-src-elem 'self' 'unsafe-eval' 'unsafe-inline' * data: blob: https://challenges.cloudflare.com https://js.stripe.com https://clerk.com https://*.clerk.com https://*.clerk.dev; style-src 'self' 'unsafe-inline' *; font-src 'self' *; img-src 'self' * data: blob:; connect-src 'self' * wss: data: blob:; frame-src 'self' * https://challenges.cloudflare.com https://js.stripe.com https://clerk.com https://*.clerk.com https://*.clerk.dev;",
           },
         ],
       },
