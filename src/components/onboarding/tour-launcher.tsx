@@ -28,36 +28,36 @@ interface TourOption {
 
 const tourOptions: TourOption[] = [
   {
-    id: 'app-wide',
-    name: 'Complete App Tour',
-    description: 'Comprehensive walkthrough of ALL features',
+    id: 'navigation-discovery',
+    name: 'App Overview',
+    description: 'Quick introduction to Routiq sections',
     icon: Sparkles,
     color: 'bg-gradient-to-r from-routiq-cloud to-routiq-energy',
-    duration: '15 min'
+    duration: '2 min'
   },
   {
-    id: 'navigation',
-    name: 'Navigation Tour',
-    description: 'Learn about the main navigation and features',
-    icon: Route,
+    id: 'dashboard-contextual',
+    name: 'Dashboard Tour',
+    description: 'Learn about analytics and key metrics',
+    icon: Play,
     color: 'bg-blue-500',
     duration: '3 min'
   },
   {
-    id: 'dashboard',
-    name: 'Dashboard Features',
-    description: 'Explore analytics and key metrics',
-    icon: Play,
+    id: 'patient-insights-contextual',
+    name: 'Patient Analytics',
+    description: 'Discover engagement patterns and insights',
+    icon: Route,
     color: 'bg-green-500',
-    duration: '4 min'
+    duration: '3 min'
   },
   {
-    id: 'quick-feature',
-    name: 'Quick Overview',
-    description: 'Brief tour of main features',
+    id: 'automation-contextual',
+    name: 'Automation Center',
+    description: 'Build patient re-engagement workflows',
     icon: HelpCircle,
     color: 'bg-purple-500',
-    duration: '2 min'
+    duration: '3 min'
   }
 ]
 

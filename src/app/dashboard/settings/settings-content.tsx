@@ -663,23 +663,23 @@ export default function SettingsContent() {
                 <div className="space-y-3">
                   <h4 className="font-medium text-routiq-core mb-3">Interactive Tours & Help</h4>
                   
-                  {/* Complete App Tour - NEW! */}
+                  {/* Smart Contextual Tours - NEW! */}
                   <div className="flex items-center justify-between p-3 border-2 border-routiq-cloud/40 rounded-lg bg-gradient-to-r from-routiq-cloud/10 to-routiq-energy/10">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <h5 className="font-medium text-routiq-core">Complete App Tour</h5>
-                        <Badge className="bg-routiq-cloud text-white text-xs">NEW!</Badge>
+                        <h5 className="font-medium text-routiq-core">Smart Section Tours</h5>
+                        <Badge className="bg-routiq-cloud text-white text-xs">SMART!</Badge>
                       </div>
-                      <p className="text-sm text-routiq-blackberry/60">Comprehensive walkthrough of ALL Routiq features (15 min)</p>
+                      <p className="text-sm text-routiq-blackberry/60">Tours appear automatically when you visit new sections (no overwhelm!)</p>
                     </div>
                     <Button 
                       variant="outline" 
                       size="sm"
-                      onClick={() => handleStartTour('app-wide')}
+                      onClick={() => handleStartTour('navigation-discovery')}
                       className="bg-gradient-to-r from-routiq-cloud to-routiq-energy text-white border-none hover:opacity-90"
                     >
                       <Sparkles className="h-4 w-4 mr-1" />
-                      Full Tour
+                      Overview
                     </Button>
                   </div>
 

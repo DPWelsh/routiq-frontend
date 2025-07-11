@@ -94,12 +94,26 @@ export function TourOverlay({
           setIsVisible(true)
           setIsNavigating(false)
 
-          // Scroll element into view smoothly
+          // Scroll element into view with better positioning
           targetElement.scrollIntoView({ 
             behavior: 'smooth', 
             block: 'center',
             inline: 'center'
           })
+
+          // Add a small delay after scrolling to ensure position is stable
+          setTimeout(() => {
+            const updatedRect = targetElement.getBoundingClientRect()
+            const updatedScrollTop = window.pageYOffset || document.documentElement.scrollTop
+            const updatedScrollLeft = window.pageXOffset || document.documentElement.scrollLeft
+            
+            setTargetPosition({
+              top: updatedRect.top + updatedScrollTop,
+              left: updatedRect.left + updatedScrollLeft,
+              width: updatedRect.width,
+              height: updatedRect.height
+            })
+          }, 300)
         } else if (currentTourStep.waitForElement) {
           // Keep trying to find the element after navigation
           setTimeout(updateTargetPosition, 500)
@@ -114,14 +128,21 @@ export function TourOverlay({
       const delay = isNavigating ? 1000 : 100
       const timer = setTimeout(updateTargetPosition, delay)
       
-      // Update position on window resize
+      // Update position on window resize and scroll
       window.addEventListener('resize', updateTargetPosition)
-      window.addEventListener('scroll', updateTargetPosition)
+      
+      // More responsive scroll handling
+      const handleScroll = () => {
+        if (targetPosition) {
+          updateTargetPosition()
+        }
+      }
+      window.addEventListener('scroll', handleScroll, { passive: true })
 
       return () => {
         clearTimeout(timer)
         window.removeEventListener('resize', updateTargetPosition)
-        window.removeEventListener('scroll', updateTargetPosition)
+        window.removeEventListener('scroll', handleScroll)
       }
     }
 
@@ -171,39 +192,94 @@ export function TourOverlay({
   const getTooltipPosition = () => {
     if (!targetPosition) return { top: 0, left: 0 }
 
-    const offset = currentTourStep.offset || { x: 0, y: 0 }
-    const tooltipWidth = 320
-    const tooltipHeight = 200
-    const padding = 20
+    // Get viewport dimensions first
+    const viewportWidth = window.innerWidth
+    const viewportHeight = window.innerHeight
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop
 
+    const offset = currentTourStep.offset || { x: 0, y: 0 }
+    const tooltipWidth = Math.min(320, viewportWidth - 40) // Responsive width
+    const tooltipHeight = 280 // Increased to match min-height
+    const padding = 20
+    const margin = 10 // Margin from viewport edges
+
+    let position = { top: 0, left: 0 }
+
+    // Calculate initial position based on preferred placement
     switch (currentTourStep.position) {
       case 'top':
-        return {
+        position = {
           top: targetPosition.top - tooltipHeight - padding + offset.y,
           left: targetPosition.left + (targetPosition.width / 2) - (tooltipWidth / 2) + offset.x
         }
+        break
       case 'bottom':
-        return {
+        position = {
           top: targetPosition.top + targetPosition.height + padding + offset.y,
           left: targetPosition.left + (targetPosition.width / 2) - (tooltipWidth / 2) + offset.x
         }
+        break
       case 'left':
-        return {
+        position = {
           top: targetPosition.top + (targetPosition.height / 2) - (tooltipHeight / 2) + offset.y,
           left: targetPosition.left - tooltipWidth - padding + offset.x
         }
+        break
       case 'right':
-        return {
+        position = {
           top: targetPosition.top + (targetPosition.height / 2) - (tooltipHeight / 2) + offset.y,
           left: targetPosition.left + targetPosition.width + padding + offset.x
         }
+        break
       case 'center':
       default:
-        return {
-          top: window.innerHeight / 2 - tooltipHeight / 2 + offset.y,
-          left: window.innerWidth / 2 - tooltipWidth / 2 + offset.x
+        position = {
+          top: scrollTop + viewportHeight / 2 - tooltipHeight / 2 + offset.y,
+          left: viewportWidth / 2 - tooltipWidth / 2 + offset.x
         }
+        break
     }
+
+    // Adjust position to stay within viewport bounds
+    
+    // Horizontal bounds checking
+    if (position.left < margin) {
+      position.left = margin
+    } else if (position.left + tooltipWidth > viewportWidth - margin) {
+      position.left = viewportWidth - tooltipWidth - margin
+    }
+
+    // Vertical bounds checking
+    const minTop = scrollTop + margin
+    const maxTop = scrollTop + viewportHeight - tooltipHeight - margin
+
+    if (position.top < minTop) {
+      position.top = minTop
+    } else if (position.top > maxTop) {
+      position.top = maxTop
+    }
+
+    // For elements that are very close to viewport edges, prefer center positioning
+    const targetCenterY = targetPosition.top + targetPosition.height / 2
+    const targetCenterX = targetPosition.left + targetPosition.width / 2
+    
+    // If target is near edges and tooltip would be cut off, use center position
+    if (currentTourStep.position !== 'center') {
+      const isNearTopEdge = targetCenterY - scrollTop < tooltipHeight + padding * 2
+      const isNearBottomEdge = scrollTop + viewportHeight - targetCenterY < tooltipHeight + padding * 2
+      const isNearLeftEdge = targetCenterX < tooltipWidth + padding * 2
+      const isNearRightEdge = viewportWidth - targetCenterX < tooltipWidth + padding * 2
+
+      if ((isNearTopEdge && isNearBottomEdge) || (isNearLeftEdge && isNearRightEdge)) {
+        // Use center position when near multiple edges
+        position = {
+          top: scrollTop + viewportHeight / 2 - tooltipHeight / 2,
+          left: viewportWidth / 2 - tooltipWidth / 2
+        }
+      }
+    }
+
+    return position
   }
 
   // Show navigation indicator while navigating between pages
@@ -329,10 +405,11 @@ export function TourOverlay({
 
         {/* Tooltip card */}
         <motion.div
-          className="absolute pointer-events-auto"
+          className="absolute pointer-events-auto z-10"
           style={{
-            top: Math.max(10, Math.min(window.innerHeight - 220, tooltipPosition.top)),
-            left: Math.max(10, Math.min(window.innerWidth - 330, tooltipPosition.left)),
+            top: tooltipPosition.top,
+            left: tooltipPosition.left,
+            maxWidth: '90vw', // Ensure tooltip doesn't exceed viewport
           }}
           initial={{ 
             opacity: 0, 
@@ -349,7 +426,7 @@ export function TourOverlay({
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <Card className="w-80 bg-white/95 backdrop-blur-sm border-routiq-cloud/30 shadow-2xl">
+          <Card className="w-80 min-h-[280px] bg-white/95 backdrop-blur-sm border-routiq-cloud/30 shadow-2xl">
             <div className="p-6">
               {/* Header */}
               <div className="flex items-start justify-between mb-4">

@@ -49,8 +49,8 @@ export const appWideTourSteps: TourStep[] = [
     title: 'Practice Performance Metrics',
     description: 'Monitor your most critical KPIs: active patient count, booking trends, revenue analytics, and conversion rates. These metrics help you identify growth opportunities.',
     target: '[data-tour="clinic-metrics"]',
-    position: 'bottom',
-    offset: { x: 0, y: 20 }
+    position: 'center',
+    offset: { x: 0, y: 0 }
   },
 
   {

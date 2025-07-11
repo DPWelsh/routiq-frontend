@@ -11,6 +11,15 @@ import {
   appWideTourSteps,
   focusedTourConfigs
 } from './tour-configs'
+import {
+  dashboardContextualTour,
+  patientInsightsContextualTour,
+  inboxContextualTour,
+  automationContextualTour,
+  integrationsContextualTour,
+  settingsContextualTour,
+  navigationDiscoveryTour
+} from './contextual-tours'
 import { TourStep } from './tour-overlay'
 
 interface TourContextType {
@@ -39,6 +48,7 @@ interface TourProviderProps {
 }
 
 const tourConfigs: Record<string, TourStep[]> = {
+  // Original tours
   dashboard: dashboardTourSteps,
   navigation: navigationTourSteps,
   'patient-insights': patientInsightsTourSteps,
@@ -48,6 +58,15 @@ const tourConfigs: Record<string, TourStep[]> = {
   'patient-management': focusedTourConfigs['patient-management'] || [],
   'automation-focus': focusedTourConfigs['automation-focus'] || [],
   'communications-focus': focusedTourConfigs['communications-focus'] || [],
+  
+  // New contextual tours
+  'dashboard-contextual': dashboardContextualTour,
+  'patient-insights-contextual': patientInsightsContextualTour,
+  'inbox-contextual': inboxContextualTour,
+  'automation-contextual': automationContextualTour,
+  'integrations-contextual': integrationsContextualTour,
+  'settings-contextual': settingsContextualTour,
+  'navigation-discovery': navigationDiscoveryTour,
 }
 
 export function TourProvider({ children }: TourProviderProps) {
@@ -133,25 +152,25 @@ export function TourProvider({ children }: TourProviderProps) {
   // Keyboard shortcuts for demo purposes
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      // Ctrl+Shift+F for FULL app tour (most impressive)
-      if (event.ctrlKey && event.shiftKey && event.key === 'F') {
+      // Ctrl+Shift+O for Overview tour (navigation discovery)
+      if (event.ctrlKey && event.shiftKey && event.key === 'O') {
         event.preventDefault()
-        startTour('app-wide')
+        startTour('navigation-discovery')
       }
-      // Ctrl+Shift+T to start dashboard tour
-      if (event.ctrlKey && event.shiftKey && event.key === 'T') {
+      // Ctrl+Shift+D to start dashboard contextual tour
+      if (event.ctrlKey && event.shiftKey && event.key === 'D') {
         event.preventDefault()
-        startTour('dashboard')
+        startTour('dashboard-contextual')
       }
-      // Ctrl+Shift+N to start navigation tour
-      if (event.ctrlKey && event.shiftKey && event.key === 'N') {
+      // Ctrl+Shift+P for patient insights contextual tour
+      if (event.ctrlKey && event.shiftKey && event.key === 'P') {
         event.preventDefault()
-        startTour('navigation')
+        startTour('patient-insights-contextual')
       }
-      // Ctrl+Shift+Q for quick tour
-      if (event.ctrlKey && event.shiftKey && event.key === 'Q') {
+      // Ctrl+Shift+A for automation contextual tour
+      if (event.ctrlKey && event.shiftKey && event.key === 'A') {
         event.preventDefault()
-        startTour('quick-feature')
+        startTour('automation-contextual')
       }
       // Escape to stop tour
       if (event.key === 'Escape' && isActive) {
