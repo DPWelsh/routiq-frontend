@@ -58,6 +58,7 @@ export function TourOverlay({
   const [targetPosition, setTargetPosition] = useState<TargetPosition | null>(null)
   const [isVisible, setIsVisible] = useState(false)
   const [isNavigating, setIsNavigating] = useState(false)
+  const [retryCount, setRetryCount] = useState(0)
   const overlayRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
   const pathname = usePathname()
@@ -93,13 +94,21 @@ export function TourOverlay({
           })
           setIsVisible(true)
           setIsNavigating(false)
-        } else if (currentTourStep.waitForElement) {
-          // Keep trying to find the element after navigation
+        } else if (currentTourStep.waitForElement && retryCount < 10) {
+          // Keep trying to find the element after navigation (max 10 retries = 5 seconds)
+          setRetryCount(prev => prev + 1)
           setTimeout(updateTargetPosition, 500)
         } else {
-          console.warn(`Tour target not found: ${currentTourStep.target}`)
+          console.warn(`Tour target not found after ${retryCount} retries: ${currentTourStep.target}`)
           setIsVisible(false)
           setIsNavigating(false)
+          setRetryCount(0)
+          // Skip to next step if element not found
+          if (onStepChange && step < steps.length - 1) {
+            onStepChange(step + 1)
+          } else {
+            onComplete()
+          }
         }
       }
 
@@ -147,11 +156,13 @@ export function TourOverlay({
 
   useEffect(() => {
     setStep(currentStep)
+    setRetryCount(0) // Reset retry count when step changes
   }, [currentStep])
 
   const handleNext = () => {
     if (step < steps.length - 1) {
       setStep(step + 1)
+      setRetryCount(0)
     } else {
       onComplete()
     }
@@ -160,6 +171,7 @@ export function TourOverlay({
   const handlePrevious = () => {
     if (step > 0) {
       setStep(step - 1)
+      setRetryCount(0)
     }
   }
 
