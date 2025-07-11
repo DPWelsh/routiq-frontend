@@ -14,6 +14,8 @@ export default clerkMiddleware(async (auth, req) => {
       return new Response('Unauthorized', { status: 401 })
     }
   }
+  // Return undefined to continue with the request
+  return undefined
 })
 
 export const config = {

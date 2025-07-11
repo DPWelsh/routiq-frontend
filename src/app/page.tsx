@@ -14,8 +14,16 @@ export default function HomePage() {
     
     if (isLoaded) {
       if (isSignedIn) {
-        console.log('✅ User authenticated, redirecting to dashboard')
-        router.push('/dashboard')
+        // Check if user has completed onboarding
+        const hasCompletedOnboarding = localStorage.getItem('routiq-onboarding-completed')
+        
+        if (hasCompletedOnboarding) {
+          console.log('✅ User authenticated and onboarded, redirecting to dashboard')
+          router.push('/dashboard')
+        } else {
+          console.log('✅ User authenticated but not onboarded, redirecting to onboarding')
+          router.push('/onboarding')
+        }
       } else {
         console.log('❌ User not authenticated, redirecting to sign-in')
         router.push('/sign-in')

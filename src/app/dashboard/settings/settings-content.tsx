@@ -27,7 +27,9 @@ import {
   Building2,
   Search,
   Upload,
-  UserPlus
+  UserPlus,
+  Sparkles,
+  HelpCircle
 } from 'lucide-react'
 
 export default function SettingsContent() {
@@ -41,6 +43,13 @@ export default function SettingsContent() {
     push: false,
     marketing: false
   })
+
+  const handleShowOnboarding = () => {
+    // Clear the onboarding completed flag to show it again
+    localStorage.removeItem('routiq-onboarding-completed')
+    // Navigate to onboarding page
+    window.location.href = '/onboarding'
+  }
 
   // Search functionality across all settings
   const searchableContent = {
@@ -634,6 +643,25 @@ export default function SettingsContent() {
                     <option>Spanish</option>
                     <option>French</option>
                   </select>
+                </div>
+
+                <Separator />
+                
+                {/* App Tour Section */}
+                <div className="flex items-center justify-between p-3 border border-routiq-cloud/20 rounded-lg">
+                  <div>
+                    <h4 className="font-medium text-routiq-core">App Tour</h4>
+                    <p className="text-sm text-routiq-blackberry/60">Replay the welcome tour and feature overview</p>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={handleShowOnboarding}
+                    className="bg-routiq-energy/20 border-routiq-energy/40 text-routiq-core hover:bg-routiq-energy/30"
+                  >
+                    <Sparkles className="h-4 w-4 mr-1" />
+                    Show Tour
+                  </Button>
                 </div>
               </CardContent>
             </Card>
