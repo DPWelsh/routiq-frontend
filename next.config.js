@@ -47,10 +47,6 @@ const nextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
-          {
-            key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.clerk.com https://*.clerk.dev https://*.clerk-js.clerk.dev https://challenges.cloudflare.com https://demo.routiq.ai; script-src-elem 'self' 'unsafe-inline' https://*.clerk.com https://*.clerk.dev https://*.clerk-js.clerk.dev https://challenges.cloudflare.com https://demo.routiq.ai; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.clerk.com https://*.clerk.dev https://chatwoot.routiq.com.au wss://chatwoot.routiq.com.au https://demo.routiq.ai; frame-src 'self' https://*.clerk.com https://*.clerk.dev https://challenges.cloudflare.com https://demo.routiq.ai;",
-          },
         ],
       },
     ]
