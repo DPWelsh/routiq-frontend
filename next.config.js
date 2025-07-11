@@ -25,8 +25,13 @@ const nextConfig = {
     minimumCacheTTL: 60,
   },
   
-  // Security headers
+  // Security headers - disabled in development to fix Clerk loading issues
   async headers() {
+    // Skip CSP in development
+    if (process.env.NODE_ENV === 'development') {
+      return []
+    }
+    
     return [
       {
         source: '/(.*)',

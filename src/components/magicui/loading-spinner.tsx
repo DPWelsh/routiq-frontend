@@ -25,9 +25,6 @@ export default function LoadingSpinner({
     md: { width: 24, height: 24 },
     lg: { width: 40, height: 40 }
   };
-  // updates
-
-  console.log('🎯 LoadingSpinner rendered with size:', size, 'text:', text);
 
   return (
     <div className={cn("flex flex-col items-center justify-center gap-3", className)}>
