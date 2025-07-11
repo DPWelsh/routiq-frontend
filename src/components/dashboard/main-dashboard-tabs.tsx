@@ -52,7 +52,7 @@ export function MainDashboardTabs() {
 
         {/* Simple Tab Navigation */}
         <div className="flex justify-center">
-          <div className="inline-flex bg-routiq-cloud/10 border border-routiq-cloud/30 rounded-lg p-1 shadow-sm">
+          <div className="inline-flex bg-routiq-cloud/10 border border-routiq-cloud/30 rounded-lg p-1 shadow-sm" data-tour="dashboard-tabs">
             {tabs.map((tab) => {
               const Icon = tab.icon
               const isActive = activeTab === tab.id
@@ -79,7 +79,15 @@ export function MainDashboardTabs() {
 
         {/* Tab Content */}
         <div className="mt-6">
-          {tabs.find(tab => tab.id === activeTab)?.component}
+          <div data-tour="clinic-metrics" className={activeTab === 'clinic-overview' ? '' : 'hidden'}>
+            {activeTab === 'clinic-overview' && <ClinicOverviewTab />}
+          </div>
+          <div data-tour="patient-insights" className={activeTab === 'patient-insights' ? '' : 'hidden'}>
+            {activeTab === 'patient-insights' && <PatientInsightsTab />}
+          </div>
+          <div data-tour="automation-panel" className={activeTab === 'automation-summary' ? '' : 'hidden'}>
+            {activeTab === 'automation-summary' && <AutomationSummaryTab />}
+          </div>
         </div>
       </div>
     </div>

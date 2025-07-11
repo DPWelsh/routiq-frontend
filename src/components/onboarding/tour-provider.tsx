@@ -1,0 +1,153 @@
+'use client'
+
+import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import { TourOverlay } from './tour-overlay'
+import { 
+  dashboardTourSteps, 
+  navigationTourSteps, 
+  patientInsightsTourSteps,
+  automationTourSteps,
+  quickFeatureTourSteps
+} from './tour-configs'
+import { TourStep } from './tour-overlay'
+
+interface TourContextType {
+  isActive: boolean
+  currentTour: string | null
+  currentStep: number
+  startTour: (tourName: string) => void
+  stopTour: () => void
+  nextStep: () => void
+  previousStep: () => void
+  skipTour: () => void
+}
+
+const TourContext = createContext<TourContextType | undefined>(undefined)
+
+export function useTour() {
+  const context = useContext(TourContext)
+  if (context === undefined) {
+    throw new Error('useTour must be used within a TourProvider')
+  }
+  return context
+}
+
+interface TourProviderProps {
+  children: ReactNode
+}
+
+const tourConfigs: Record<string, TourStep[]> = {
+  dashboard: dashboardTourSteps,
+  navigation: navigationTourSteps,
+  'patient-insights': patientInsightsTourSteps,
+  automation: automationTourSteps,
+  'quick-feature': quickFeatureTourSteps,
+}
+
+export function TourProvider({ children }: TourProviderProps) {
+  const [isActive, setIsActive] = useState(false)
+  const [currentTour, setCurrentTour] = useState<string | null>(null)
+  const [currentStep, setCurrentStep] = useState(0)
+
+  const startTour = useCallback((tourName: string) => {
+    if (tourConfigs[tourName]) {
+      setCurrentTour(tourName)
+      setCurrentStep(0)
+      setIsActive(true)
+      
+      // Store tour state for persistence
+      localStorage.setItem('routiq-active-tour', JSON.stringify({
+        tourName,
+        step: 0,
+        timestamp: Date.now()
+      }))
+    } else {
+      console.warn(`Tour "${tourName}" not found`)
+    }
+  }, [])
+
+  const stopTour = useCallback(() => {
+    setIsActive(false)
+    setCurrentTour(null)
+    setCurrentStep(0)
+    localStorage.removeItem('routiq-active-tour')
+  }, [])
+
+  const nextStep = useCallback(() => {
+    if (!currentTour) return
+    
+    const steps = tourConfigs[currentTour]
+    if (currentStep < steps.length - 1) {
+      const newStep = currentStep + 1
+      setCurrentStep(newStep)
+      
+      // Update stored state
+      localStorage.setItem('routiq-active-tour', JSON.stringify({
+        tourName: currentTour,
+        step: newStep,
+        timestamp: Date.now()
+      }))
+    } else {
+      stopTour()
+    }
+  }, [currentTour, currentStep, stopTour])
+
+  const previousStep = useCallback(() => {
+    if (currentStep > 0) {
+      const newStep = currentStep - 1
+      setCurrentStep(newStep)
+      
+      // Update stored state
+      if (currentTour) {
+        localStorage.setItem('routiq-active-tour', JSON.stringify({
+          tourName: currentTour,
+          step: newStep,
+          timestamp: Date.now()
+        }))
+      }
+    }
+  }, [currentStep, currentTour])
+
+  const skipTour = useCallback(() => {
+    // Mark tour as skipped for analytics
+    if (currentTour) {
+      localStorage.setItem('routiq-tour-skipped', JSON.stringify({
+        tourName: currentTour,
+        step: currentStep,
+        timestamp: Date.now()
+      }))
+    }
+    stopTour()
+  }, [currentTour, currentStep, stopTour])
+
+  const getCurrentSteps = () => {
+    return currentTour ? tourConfigs[currentTour] || [] : []
+  }
+
+  return (
+    <TourContext.Provider
+      value={{
+        isActive,
+        currentTour,
+        currentStep,
+        startTour,
+        stopTour,
+        nextStep,
+        previousStep,
+        skipTour,
+      }}
+    >
+      {children}
+      
+      {/* Tour Overlay */}
+      <TourOverlay
+        steps={getCurrentSteps()}
+        isActive={isActive}
+        currentStep={currentStep}
+        onComplete={stopTour}
+        onSkip={skipTour}
+        onStepChange={setCurrentStep}
+      />
+    </TourContext.Provider>
+  )
+}

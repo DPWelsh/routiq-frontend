@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation'
 import { useUser } from '@clerk/nextjs'
 import { WelcomeOnboarding } from '@/components/onboarding/welcome-onboarding'
 import { LoadingSpinner } from '@/components/magicui'
+import { useTour } from '@/components/onboarding/tour-provider'
 
 export default function OnboardingPage() {
   const { isLoaded, isSignedIn } = useUser()
   const router = useRouter()
+  const { startTour } = useTour()
   const [showOnboarding, setShowOnboarding] = useState(false)
 
   useEffect(() => {
@@ -42,6 +44,16 @@ export default function OnboardingPage() {
     router.push('/dashboard')
   }
 
+  const handleStartInteractiveTour = () => {
+    // Mark onboarding as completed and start interactive tour
+    localStorage.setItem('routiq-onboarding-completed', 'true')
+    router.push('/dashboard')
+    // Start the dashboard tour after a short delay to allow navigation
+    setTimeout(() => {
+      startTour('dashboard')
+    }, 1000)
+  }
+
   // Show loading while checking auth state
   if (!isLoaded || !showOnboarding) {
     return (
@@ -57,6 +69,7 @@ export default function OnboardingPage() {
     <WelcomeOnboarding 
       onComplete={handleOnboardingComplete}
       onSkip={handleSkip}
+      onStartInteractiveTour={handleStartInteractiveTour}
     />
   )
 }

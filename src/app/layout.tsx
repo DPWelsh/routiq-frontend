@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { DynamicClerk } from '@/components/providers/dynamic-clerk';
 import { QueryProvider } from '@/components/providers/query-provider';
+import { TourProvider } from '@/components/onboarding/tour-provider';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -50,7 +51,9 @@ export default function RootLayout({
       <body className={inter.className} suppressHydrationWarning={true}>
         <QueryProvider>
           <DynamicClerk>
-            {children}
+            <TourProvider>
+              {children}
+            </TourProvider>
           </DynamicClerk>
         </QueryProvider>
       </body>

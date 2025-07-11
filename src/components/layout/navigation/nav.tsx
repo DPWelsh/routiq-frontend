@@ -43,7 +43,8 @@ const navigation = [
     icon: BarChart3, 
     roles: ["ADMIN", "USER"],
     description: "Dashboard analytics",
-    badge: null
+    badge: null,
+    tourId: "nav-dashboard"
   },
   { 
     name: "Inbox", 
@@ -51,7 +52,8 @@ const navigation = [
     icon: Mail, 
     roles: ["ADMIN", "USER"],
     description: "Traditional message inbox",
-    badge: null
+    badge: null,
+    tourId: "nav-inbox"
   },
   { 
     name: "Patient Overview", 
@@ -59,7 +61,8 @@ const navigation = [
     icon: TrendingUp, 
     roles: ["ADMIN", "USER"],
     description: "Patient journey tracking",
-    badge: null
+    badge: null,
+    tourId: "nav-patient-insights"
   },
   { 
     name: "Automation Centre", 
@@ -67,7 +70,8 @@ const navigation = [
     icon: Bot, 
     roles: ["ADMIN", "USER"],
     description: "Patient engagement flows",
-    badge: null
+    badge: null,
+    tourId: "nav-automation"
   },
   { 
     name: "Integrations", 
@@ -75,7 +79,8 @@ const navigation = [
     icon: Zap, 
     roles: ["ADMIN", "USER"],
     description: "Connected services",
-    badge: null
+    badge: null,
+    tourId: "nav-integrations"
   },
   { 
     name: "Settings", 
@@ -83,7 +88,8 @@ const navigation = [
     icon: Settings, 
     roles: ["ADMIN", "USER"],
     description: "System configuration",
-    badge: null
+    badge: null,
+    tourId: "nav-settings"
   }
 ]
 
@@ -164,7 +170,7 @@ export function DashboardNav() {
   return (
     <>
       {/* Main Navigation Section */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden" data-tour="navigation-menu">
         <div className="px-3 py-3">
         </div>
 
@@ -180,6 +186,7 @@ export function DashboardNav() {
               return (
                 <Link key={item.name} href={item.href}>
                   <div
+                    data-tour={item.tourId}
                     className={cn(
                       "group flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-xl transition-all duration-200 ease-in-out relative border",
                       isActive
@@ -229,6 +236,7 @@ export function DashboardNav() {
         <Button
           variant="ghost"
           onClick={handleHelpClick}
+          data-tour="help-button"
           className="w-full justify-start gap-3 text-routiq-core border border-transparent hover:bg-routiq-core/8 hover:text-routiq-core py-3 px-4 rounded-xl transition-all duration-200 ease-in-out hover:shadow-sm hover:border-routiq-core/10"
         >
           <HelpCircle className="h-5 w-5 flex-shrink-0 transition-colors duration-200" />

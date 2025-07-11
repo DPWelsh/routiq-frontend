@@ -29,12 +29,16 @@ import {
   Upload,
   UserPlus,
   Sparkles,
-  HelpCircle
+  HelpCircle,
+  Play,
+  Route
 } from 'lucide-react'
+import { useTour } from '@/components/onboarding/tour-provider'
 
 export default function SettingsContent() {
   const { user, isLoaded } = useUser()
   const { signOut } = useClerk()
+  const { startTour } = useTour()
   
   const [activeTab, setActiveTab] = useState('account')
   const [searchTerm, setSearchTerm] = useState('')
@@ -49,6 +53,10 @@ export default function SettingsContent() {
     localStorage.removeItem('routiq-onboarding-completed')
     // Navigate to onboarding page
     window.location.href = '/onboarding'
+  }
+
+  const handleStartTour = (tourType: string) => {
+    startTour(tourType)
   }
 
   // Search functionality across all settings
@@ -647,21 +655,77 @@ export default function SettingsContent() {
 
                 <Separator />
                 
-                {/* App Tour Section */}
-                <div className="flex items-center justify-between p-3 border border-routiq-cloud/20 rounded-lg">
-                  <div>
-                    <h4 className="font-medium text-routiq-core">App Tour</h4>
-                    <p className="text-sm text-routiq-blackberry/60">Replay the welcome tour and feature overview</p>
+                {/* App Tours Section */}
+                <div className="space-y-3">
+                  <h4 className="font-medium text-routiq-core mb-3">Interactive Tours & Help</h4>
+                  
+                  {/* Welcome Onboarding */}
+                  <div className="flex items-center justify-between p-3 border border-routiq-cloud/20 rounded-lg">
+                    <div>
+                      <h5 className="font-medium text-routiq-core">Welcome Tour</h5>
+                      <p className="text-sm text-routiq-blackberry/60">Complete app overview with feature highlights</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={handleShowOnboarding}
+                      className="bg-routiq-energy/20 border-routiq-energy/40 text-routiq-core hover:bg-routiq-energy/30"
+                    >
+                      <Sparkles className="h-4 w-4 mr-1" />
+                      Start Tour
+                    </Button>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={handleShowOnboarding}
-                    className="bg-routiq-energy/20 border-routiq-energy/40 text-routiq-core hover:bg-routiq-energy/30"
-                  >
-                    <Sparkles className="h-4 w-4 mr-1" />
-                    Show Tour
-                  </Button>
+
+                  {/* Navigation Tour */}
+                  <div className="flex items-center justify-between p-3 border border-routiq-cloud/20 rounded-lg">
+                    <div>
+                      <h5 className="font-medium text-routiq-core">Navigation Guide</h5>
+                      <p className="text-sm text-routiq-blackberry/60">Interactive walkthrough of navigation features</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleStartTour('navigation')}
+                      className="bg-blue-50 border-blue-200 text-blue-700 hover:bg-blue-100"
+                    >
+                      <Route className="h-4 w-4 mr-1" />
+                      Start Guide
+                    </Button>
+                  </div>
+
+                  {/* Dashboard Tour */}
+                  <div className="flex items-center justify-between p-3 border border-routiq-cloud/20 rounded-lg">
+                    <div>
+                      <h5 className="font-medium text-routiq-core">Dashboard Features</h5>
+                      <p className="text-sm text-routiq-blackberry/60">Learn about analytics and key metrics</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleStartTour('dashboard')}
+                      className="bg-green-50 border-green-200 text-green-700 hover:bg-green-100"
+                    >
+                      <Play className="h-4 w-4 mr-1" />
+                      Show Features
+                    </Button>
+                  </div>
+
+                  {/* Quick Feature Tour */}
+                  <div className="flex items-center justify-between p-3 border border-routiq-cloud/20 rounded-lg">
+                    <div>
+                      <h5 className="font-medium text-routiq-core">Quick Overview</h5>
+                      <p className="text-sm text-routiq-blackberry/60">Brief tour of main features (2 minutes)</p>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleStartTour('quick-feature')}
+                      className="bg-purple-50 border-purple-200 text-purple-700 hover:bg-purple-100"
+                    >
+                      <HelpCircle className="h-4 w-4 mr-1" />
+                      Quick Tour
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

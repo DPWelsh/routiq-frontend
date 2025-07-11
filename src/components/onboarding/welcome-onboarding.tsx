@@ -101,9 +101,10 @@ const onboardingSteps: OnboardingStep[] = [
 interface WelcomeOnboardingProps {
   onComplete: () => void
   onSkip: () => void
+  onStartInteractiveTour?: () => void
 }
 
-export function WelcomeOnboarding({ onComplete, onSkip }: WelcomeOnboardingProps) {
+export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }: WelcomeOnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const totalSteps = onboardingSteps.length
 
@@ -235,22 +236,35 @@ export function WelcomeOnboarding({ onComplete, onSkip }: WelcomeOnboardingProps
                     ))}
                   </div>
 
-                  <Button
-                    onClick={handleNext}
-                    className="bg-routiq-cloud hover:bg-routiq-cloud/90 text-white shadow-lg"
-                  >
-                    {currentStep === totalSteps - 1 ? (
-                      <>
+                  {currentStep === totalSteps - 1 ? (
+                    <div className="flex gap-2">
+                      {onStartInteractiveTour && (
+                        <Button
+                          variant="outline"
+                          onClick={onStartInteractiveTour}
+                          className="bg-white/60 border-white/40 hover:bg-white/80"
+                        >
+                          <Target className="mr-2 h-4 w-4" />
+                          Interactive Tour
+                        </Button>
+                      )}
+                      <Button
+                        onClick={handleNext}
+                        className="bg-routiq-cloud hover:bg-routiq-cloud/90 text-white shadow-lg"
+                      >
                         Get Started
                         <Sparkles className="ml-2 h-4 w-4" />
-                      </>
-                    ) : (
-                      <>
-                        Next
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </>
-                    )}
-                  </Button>
+                      </Button>
+                    </div>
+                  ) : (
+                    <Button
+                      onClick={handleNext}
+                      className="bg-routiq-cloud hover:bg-routiq-cloud/90 text-white shadow-lg"
+                    >
+                      Next
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </Card>
             </motion.div>
