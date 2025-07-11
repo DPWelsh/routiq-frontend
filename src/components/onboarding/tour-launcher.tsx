@@ -28,6 +28,14 @@ interface TourOption {
 
 const tourOptions: TourOption[] = [
   {
+    id: 'app-wide',
+    name: 'Complete App Tour',
+    description: 'Comprehensive walkthrough of ALL features',
+    icon: Sparkles,
+    color: 'bg-gradient-to-r from-routiq-cloud to-routiq-energy',
+    duration: '15 min'
+  },
+  {
     id: 'navigation',
     name: 'Navigation Tour',
     description: 'Learn about the main navigation and features',

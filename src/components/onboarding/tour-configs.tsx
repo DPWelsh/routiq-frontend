@@ -1,4 +1,5 @@
 import { TourStep } from './tour-overlay'
+import { appWideTourSteps, focusedTourConfigs } from './app-wide-tour'
 
 // Dashboard Tour - Highlights key dashboard features
 export const dashboardTourSteps: TourStep[] = [
@@ -209,5 +210,8 @@ export const quickFeatureTourSteps: TourStep[] = [
     offset: { x: 0, y: -20 }
   }
 ]
+
+// Export the comprehensive app-wide tour
+export { appWideTourSteps, focusedTourConfigs }
 
 // TourStep interface is now imported from tour-overlay.tsx

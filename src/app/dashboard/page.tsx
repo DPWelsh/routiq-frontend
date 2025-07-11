@@ -22,6 +22,14 @@ export default function DashboardPage() {
         startTour(tourParam)
       }, 1000)
     }
+
+    // Check for special 'full' parameter for complete app tour
+    const fullTour = searchParams.get('full')
+    if (fullTour === 'true') {
+      setTimeout(() => {
+        startTour('app-wide')
+      }, 1000)
+    }
   }, [searchParams, startTour])
 
   return <UnifiedDashboard />

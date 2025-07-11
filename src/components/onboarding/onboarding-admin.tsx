@@ -156,9 +156,16 @@ export function OnboardingAdmin() {
           <h4 className="font-medium text-orange-900 mb-2">Quick Tour Access</h4>
           <p className="text-sm text-orange-700 mb-3">Demo-friendly URLs for immediate tour access:</p>
           <div className="space-y-1 text-xs font-mono bg-white p-3 rounded border border-orange-200">
+            <div className="text-orange-800 font-semibold">/dashboard?full=true</div>
+            <div className="text-orange-600 text-xs mb-2">↳ Complete app-wide tour (15 min)</div>
+            <div className="text-orange-800">/dashboard?tour=app-wide</div>
             <div className="text-orange-800">/dashboard?tour=dashboard</div>
             <div className="text-orange-800">/dashboard?tour=navigation</div>
             <div className="text-orange-800">/dashboard?tour=quick-feature</div>
+          </div>
+          
+          <div className="mt-3 p-2 bg-orange-100 rounded text-xs text-orange-800">
+            <strong>Pro tip:</strong> Use <code>/dashboard?full=true</code> for the most impressive demo experience!
           </div>
         </div>
       </CardContent>

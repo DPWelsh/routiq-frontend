@@ -7,7 +7,9 @@ import {
   navigationTourSteps, 
   patientInsightsTourSteps,
   automationTourSteps,
-  quickFeatureTourSteps
+  quickFeatureTourSteps,
+  appWideTourSteps,
+  focusedTourConfigs
 } from './tour-configs'
 import { TourStep } from './tour-overlay'
 
@@ -42,6 +44,10 @@ const tourConfigs: Record<string, TourStep[]> = {
   'patient-insights': patientInsightsTourSteps,
   automation: automationTourSteps,
   'quick-feature': quickFeatureTourSteps,
+  'app-wide': appWideTourSteps,
+  'patient-management': focusedTourConfigs['patient-management'] || [],
+  'automation-focus': focusedTourConfigs['automation-focus'] || [],
+  'communications-focus': focusedTourConfigs['communications-focus'] || [],
 }
 
 export function TourProvider({ children }: TourProviderProps) {
@@ -127,6 +133,11 @@ export function TourProvider({ children }: TourProviderProps) {
   // Keyboard shortcuts for demo purposes
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
+      // Ctrl+Shift+F for FULL app tour (most impressive)
+      if (event.ctrlKey && event.shiftKey && event.key === 'F') {
+        event.preventDefault()
+        startTour('app-wide')
+      }
       // Ctrl+Shift+T to start dashboard tour
       if (event.ctrlKey && event.shiftKey && event.key === 'T') {
         event.preventDefault()

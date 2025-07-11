@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -12,7 +13,8 @@ import {
   Target,
   MousePointer,
   Sparkles,
-  CheckCircle
+  CheckCircle,
+  Navigation
 } from 'lucide-react'
 
 export interface TourStep {
@@ -24,6 +26,8 @@ export interface TourStep {
   action?: 'click' | 'hover' | 'none'
   actionText?: string
   offset?: { x: number; y: number }
+  page?: string // Optional: page to navigate to for this step
+  waitForElement?: boolean // Wait for element to appear after navigation
 }
 
 interface TourOverlayProps {
@@ -53,54 +57,86 @@ export function TourOverlay({
   const [step, setStep] = useState(currentStep)
   const [targetPosition, setTargetPosition] = useState<TargetPosition | null>(null)
   const [isVisible, setIsVisible] = useState(false)
+  const [isNavigating, setIsNavigating] = useState(false)
   const overlayRef = useRef<HTMLDivElement>(null)
+  const router = useRouter()
+  const pathname = usePathname()
 
   const currentTourStep = steps[step]
 
-  // Update position when step changes or component mounts
+  // Handle page navigation and element positioning
   useEffect(() => {
     if (!isActive || !currentTourStep) return
 
-    const updateTargetPosition = () => {
-      const targetElement = document.querySelector(currentTourStep.target)
-      if (targetElement) {
-        const rect = targetElement.getBoundingClientRect()
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
-        
-        setTargetPosition({
-          top: rect.top + scrollTop,
-          left: rect.left + scrollLeft,
-          width: rect.width,
-          height: rect.height
-        })
-        setIsVisible(true)
-
-        // Scroll element into view smoothly
-        targetElement.scrollIntoView({ 
-          behavior: 'smooth', 
-          block: 'center',
-          inline: 'center'
-        })
-      } else {
-        console.warn(`Tour target not found: ${currentTourStep.target}`)
+    const handleStepNavigation = async () => {
+      // Check if we need to navigate to a different page
+      if (currentTourStep.page && pathname !== currentTourStep.page) {
+        setIsNavigating(true)
         setIsVisible(false)
+        router.push(currentTourStep.page)
+        return
+      }
+
+      // Update target position
+      const updateTargetPosition = () => {
+        const targetElement = document.querySelector(currentTourStep.target)
+        if (targetElement) {
+          const rect = targetElement.getBoundingClientRect()
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop
+          const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft
+          
+          setTargetPosition({
+            top: rect.top + scrollTop,
+            left: rect.left + scrollLeft,
+            width: rect.width,
+            height: rect.height
+          })
+          setIsVisible(true)
+          setIsNavigating(false)
+
+          // Scroll element into view smoothly
+          targetElement.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'center',
+            inline: 'center'
+          })
+        } else if (currentTourStep.waitForElement) {
+          // Keep trying to find the element after navigation
+          setTimeout(updateTargetPosition, 500)
+        } else {
+          console.warn(`Tour target not found: ${currentTourStep.target}`)
+          setIsVisible(false)
+          setIsNavigating(false)
+        }
+      }
+
+      // Delay to ensure DOM is ready (longer delay after navigation)
+      const delay = isNavigating ? 1000 : 100
+      const timer = setTimeout(updateTargetPosition, delay)
+      
+      // Update position on window resize
+      window.addEventListener('resize', updateTargetPosition)
+      window.addEventListener('scroll', updateTargetPosition)
+
+      return () => {
+        clearTimeout(timer)
+        window.removeEventListener('resize', updateTargetPosition)
+        window.removeEventListener('scroll', updateTargetPosition)
       }
     }
 
-    // Slight delay to ensure DOM is ready
-    const timer = setTimeout(updateTargetPosition, 100)
-    
-    // Update position on window resize
-    window.addEventListener('resize', updateTargetPosition)
-    window.addEventListener('scroll', updateTargetPosition)
+    handleStepNavigation()
+  }, [step, isActive, currentTourStep, pathname, router, isNavigating])
 
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener('resize', updateTargetPosition)
-      window.removeEventListener('scroll', updateTargetPosition)
+  // Reset navigation state when pathname changes
+  useEffect(() => {
+    if (isNavigating) {
+      const timer = setTimeout(() => {
+        setIsNavigating(false)
+      }, 1500)
+      return () => clearTimeout(timer)
     }
-  }, [step, isActive, currentTourStep])
+  }, [pathname, isNavigating])
 
   // Sync with external step control
   useEffect(() => {
@@ -170,7 +206,53 @@ export function TourOverlay({
     }
   }
 
-  if (!isActive || !isVisible || !targetPosition || !currentTourStep) {
+  // Show navigation indicator while navigating between pages
+  if (!isActive) {
+    return null
+  }
+
+  if (isNavigating) {
+    return (
+      <motion.div
+        className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <Card className="w-80 bg-white/95 backdrop-blur-sm border-routiq-cloud/30 shadow-2xl">
+          <div className="p-6 text-center">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="w-12 h-12 mx-auto mb-4"
+            >
+              <Navigation className="w-12 h-12 text-routiq-cloud" />
+            </motion.div>
+            <h3 className="text-lg font-semibold text-routiq-core mb-2">
+              Navigating to Next Feature
+            </h3>
+            <p className="text-routiq-core/70 text-sm">
+              Taking you to <strong>{currentTourStep?.title}</strong>...
+            </p>
+            <div className="mt-4 flex gap-1 justify-center">
+              {steps.map((_, index) => (
+                <div
+                  key={index}
+                  className={`h-1.5 w-6 rounded-full transition-all duration-300 ${
+                    index <= step 
+                      ? 'bg-routiq-cloud' 
+                      : 'bg-gray-200'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </Card>
+      </motion.div>
+    )
+  }
+
+  if (!isVisible || !targetPosition || !currentTourStep) {
     return null
   }
 
