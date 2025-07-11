@@ -49,7 +49,7 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://js.clerk.com https://clerk.com https://staging.clerk.com https://clerk.dev https://clerk-js.clerk.dev https://js.clerk.dev https://challenges.cloudflare.com https://demo.routiq.ai; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://api.clerk.com https://clerk.com https://clerk.dev https://api.clerk.dev https://staging.clerk.com https://chatwoot.routiq.com.au wss://chatwoot.routiq.com.au https://demo.routiq.ai; frame-src 'self' https://js.clerk.com https://challenges.cloudflare.com https://demo.routiq.ai;",
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.clerk.com https://*.clerk.dev https://*.clerk-js.clerk.dev https://challenges.cloudflare.com https://demo.routiq.ai; script-src-elem 'self' 'unsafe-inline' https://*.clerk.com https://*.clerk.dev https://*.clerk-js.clerk.dev https://challenges.cloudflare.com https://demo.routiq.ai; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; connect-src 'self' https://*.clerk.com https://*.clerk.dev https://chatwoot.routiq.com.au wss://chatwoot.routiq.com.au https://demo.routiq.ai; frame-src 'self' https://*.clerk.com https://*.clerk.dev https://challenges.cloudflare.com https://demo.routiq.ai;",
           },
         ],
       },
