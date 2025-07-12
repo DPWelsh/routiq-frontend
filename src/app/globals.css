@@ -72,6 +72,8 @@
 @layer base {
   * {
     @apply border-border;
+    /* Remove webkit tap highlight that can cause yellow flashes */
+    -webkit-tap-highlight-color: transparent;
   }
   
   *:focus {
@@ -114,13 +116,49 @@
   }
 }
 
-/* Remove default browser outlines */
+/* Remove default browser outlines and webkit tap highlights */
 button:focus,
 input:focus,
 textarea:focus,
 select:focus {
   outline: none !important;
   box-shadow: 0 0 0 2px rgb(var(--routiq-cloud) / 0.3) !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Ensure all interactive elements have transparent tap highlights */
+button,
+a,
+input,
+textarea,
+select,
+[role="button"],
+[tabindex],
+.clickable {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+}
+
+/* Additional webkit fixes for yellow rendering artifacts */
+*,
+*::before,
+*::after {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-focus-ring-color: transparent !important;
+}
+
+/* Fix for iOS Safari button styling */
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+button {
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
 }
 
 /* Prevent overscroll glow on webkit browsers */
