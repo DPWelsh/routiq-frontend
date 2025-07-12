@@ -31,31 +31,32 @@ export default function IntegrationsPage() {
 
   return (
     <div className="min-h-screen bg-routiq-cloud/5">
-      <div className="max-w-8xl mx-auto space-y-6 p-6">
+      <div className="max-w-8xl mx-auto space-y-4 md:space-y-6 p-4 md:p-6">
         {/* Header */}
-        <div className="space-y-4 bg-white p-6 rounded-lg">
+        <div className="space-y-4 bg-white p-4 md:p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-routiq-core">Integrations</h1>
-              <p className="text-routiq-blackberry/70 text-lg">Connect and manage your healthcare platform integrations</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-routiq-core">Integrations</h1>
+              <p className="text-routiq-blackberry/70 text-base md:text-lg">Connect and manage your healthcare platform integrations</p>
             </div>
           </div>
         </div>
 
       {/* Tabs Navigation */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-routiq-cloud/10 p-1 h-12">
-          <TabsTrigger value="connected" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors">
-            <Check className="h-4 w-4" />
-            <span className="font-medium">Connected</span>
+        <TabsList className="grid w-full grid-cols-3 bg-routiq-cloud/10 p-1 h-11 md:h-12">
+          <TabsTrigger value="connected" className="flex items-center gap-1 md:gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors px-2 md:px-4">
+            <Check className="h-3 w-3 md:h-4 md:w-4" />
+            <span className="font-medium text-xs md:text-sm">Connected</span>
           </TabsTrigger>
-          <TabsTrigger value="available" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors">
-            <ExternalLink className="h-4 w-4" />
-            <span className="font-medium">Available</span>
+          <TabsTrigger value="available" className="flex items-center gap-1 md:gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors px-2 md:px-4">
+            <ExternalLink className="h-3 w-3 md:h-4 md:w-4" />
+            <span className="font-medium text-xs md:text-sm">Available</span>
           </TabsTrigger>
-          <TabsTrigger value="api" className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors">
-            <Settings className="h-4 w-4" />
-            <span className="font-medium">API & Webhooks</span>
+          <TabsTrigger value="api" className="flex items-center gap-1 md:gap-2 data-[state=active]:bg-white data-[state=active]:text-routiq-core data-[state=active]:shadow-sm text-routiq-blackberry/70 hover:text-routiq-core transition-colors px-2 md:px-4">
+            <Settings className="h-3 w-3 md:h-4 md:w-4" />
+            <span className="font-medium text-xs md:text-sm hidden sm:inline">API & Webhooks</span>
+            <span className="font-medium text-xs md:text-sm sm:hidden">API</span>
           </TabsTrigger>
         </TabsList>
 
@@ -69,219 +70,233 @@ export default function IntegrationsPage() {
             <CardContent className="p-0">
               <div className="space-y-0 divide-y divide-gray-200">
                 {/* Chatwoot */}
-                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-                      <MessageSquare className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-routiq-core">Chatwoot</h3>
-                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                <div className="p-4 md:p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+                      <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                        <MessageSquare className="h-5 w-5 md:h-6 md:w-6 text-blue-600" />
                       </div>
-                      <p className="text-sm text-gray-600">Customer support conversations</p>
-                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
-                        <span>surf-rehab.chatwoot.com</span>
-                        <span>47 conversations today</span>
-                        <span>Last sync: 2 minutes ago</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h3 className="font-semibold text-routiq-core text-sm md:text-base">Chatwoot</h3>
+                          <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">Connected</Badge>
+                        </div>
+                        <p className="text-xs md:text-sm text-gray-600 mt-1">Customer support conversations</p>
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-6 mt-2 text-xs text-gray-500">
+                          <span className="truncate">surf-rehab.chatwoot.com</span>
+                          <span>47 conversations today</span>
+                          <span>Last sync: 2 minutes ago</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 pt-1">
-                    <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Configure
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <RefreshCw className="h-4 w-4 mr-2" />
-                      Test
-                    </Button>
+                    <div className="flex items-center gap-2 pt-1 md:pt-0 md:ml-4">
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <Settings className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Configure</span>
+                      </Button>
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <RefreshCw className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Test</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
                 {/* n8n Workflows */}
-                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-purple-100 flex items-center justify-center">
-                      <Webhook className="h-6 w-6 text-purple-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-routiq-core">n8n Workflows</h3>
-                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                <div className="p-4 md:p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+                      <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                        <Webhook className="h-5 w-5 md:h-6 md:w-6 text-purple-600" />
                       </div>
-                      <p className="text-sm text-gray-600">Automation and data processing</p>
-                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
-                        <span>routiq-workflows.n8n.cloud</span>
-                        <span>12 active workflows</span>
-                        <span>98.5% success rate</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h3 className="font-semibold text-routiq-core text-sm md:text-base">n8n Workflows</h3>
+                          <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">Connected</Badge>
+                        </div>
+                        <p className="text-xs md:text-sm text-gray-600 mt-1">Automation and data processing</p>
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-6 mt-2 text-xs text-gray-500">
+                          <span className="truncate">routiq-workflows.n8n.cloud</span>
+                          <span>12 active workflows</span>
+                          <span>98.5% success rate</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 pt-1">
-                    <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Configure
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Open n8n
-                    </Button>
+                    <div className="flex items-center gap-2 pt-1 md:pt-0 md:ml-4">
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <Settings className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Configure</span>
+                      </Button>
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <ExternalLink className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Open n8n</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
                 {/* Twilio */}
-                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-red-100 flex items-center justify-center">
-                      <MessageSquare className="h-6 w-6 text-red-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-routiq-core">Twilio</h3>
-                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                <div className="p-4 md:p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+                      <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                        <MessageSquare className="h-5 w-5 md:h-6 md:w-6 text-red-600" />
                       </div>
-                      <p className="text-sm text-gray-600">SMS & voice communications</p>
-                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
-                        <span>+61 4 0000 0000</span>
-                        <span>34 SMS sent today</span>
-                        <span>99.2% delivery rate</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h3 className="font-semibold text-routiq-core text-sm md:text-base">Twilio</h3>
+                          <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">Connected</Badge>
+                        </div>
+                        <p className="text-xs md:text-sm text-gray-600 mt-1">SMS & voice communications</p>
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-6 mt-2 text-xs text-gray-500">
+                          <span className="truncate">+61 4 0000 0000</span>
+                          <span>34 SMS sent today</span>
+                          <span>99.2% delivery rate</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 pt-1">
-                    <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Configure
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Console
-                    </Button>
+                    <div className="flex items-center gap-2 pt-1 md:pt-0 md:ml-4">
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <Settings className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Configure</span>
+                      </Button>
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <ExternalLink className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Console</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
                 {/* Cliniko */}
-                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-teal-100 flex items-center justify-center">
-                      <Database className="h-6 w-6 text-teal-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-routiq-core">Cliniko</h3>
-                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                <div className="p-4 md:p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+                      <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-teal-100 flex items-center justify-center flex-shrink-0">
+                        <Database className="h-5 w-5 md:h-6 md:w-6 text-teal-600" />
                       </div>
-                      <p className="text-sm text-gray-600">Practice management system</p>
-                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
-                        <span>Surf Rehab Clinic</span>
-                        <span>247 patients synced</span>
-                        <span>Last sync: 8 minutes ago</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h3 className="font-semibold text-routiq-core text-sm md:text-base">Cliniko</h3>
+                          <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">Connected</Badge>
+                        </div>
+                        <p className="text-xs md:text-sm text-gray-600 mt-1">Practice management system</p>
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-6 mt-2 text-xs text-gray-500">
+                          <span className="truncate">Surf Rehab Clinic</span>
+                          <span>247 patients synced</span>
+                          <span>Last sync: 8 minutes ago</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 pt-1">
-                    <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Configure
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <RefreshCw className="h-4 w-4 mr-2" />
-                      Sync
-                    </Button>
+                    <div className="flex items-center gap-2 pt-1 md:pt-0 md:ml-4">
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <Settings className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Configure</span>
+                      </Button>
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <RefreshCw className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Sync</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
                 {/* Nookal */}
-                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-orange-100 flex items-center justify-center">
-                      <Database className="h-6 w-6 text-orange-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-routiq-core">Nookal</h3>
-                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                <div className="p-4 md:p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+                      <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-orange-100 flex items-center justify-center flex-shrink-0">
+                        <Database className="h-5 w-5 md:h-6 md:w-6 text-orange-600" />
                       </div>
-                      <p className="text-sm text-gray-600">Appointment booking & management</p>
-                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
-                        <span>Surf Rehab Center</span>
-                        <span>18 appointments today</span>
-                        <span>Last sync: 12 minutes ago</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h3 className="font-semibold text-routiq-core text-sm md:text-base">Nookal</h3>
+                          <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">Connected</Badge>
+                        </div>
+                        <p className="text-xs md:text-sm text-gray-600 mt-1">Appointment booking & management</p>
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-6 mt-2 text-xs text-gray-500">
+                          <span className="truncate">Surf Rehab Center</span>
+                          <span>18 appointments today</span>
+                          <span>Last sync: 12 minutes ago</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 pt-1">
-                    <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Configure
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Open
-                    </Button>
+                    <div className="flex items-center gap-2 pt-1 md:pt-0 md:ml-4">
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <Settings className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Configure</span>
+                      </Button>
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <ExternalLink className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Open</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
                 {/* HICAPS */}
-                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                      <ExternalLink className="h-6 w-6 text-indigo-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-routiq-core">HICAPS</h3>
-                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                <div className="p-4 md:p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+                      <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                        <ExternalLink className="h-5 w-5 md:h-6 md:w-6 text-indigo-600" />
                       </div>
-                      <p className="text-sm text-gray-600">Insurance claims & payments</p>
-                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
-                        <span>Terminal: SR-001-MEL</span>
-                        <span>12 claims today</span>
-                        <span>98.5% success rate</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h3 className="font-semibold text-routiq-core text-sm md:text-base">HICAPS</h3>
+                          <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">Connected</Badge>
+                        </div>
+                        <p className="text-xs md:text-sm text-gray-600 mt-1">Insurance claims & payments</p>
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-6 mt-2 text-xs text-gray-500">
+                          <span className="truncate">Terminal: SR-001-MEL</span>
+                          <span>12 claims today</span>
+                          <span>98.5% success rate</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 pt-1">
-                    <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Configure
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Test
-                    </Button>
+                    <div className="flex items-center gap-2 pt-1 md:pt-0 md:ml-4">
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <Settings className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Configure</span>
+                      </Button>
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <ExternalLink className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Test</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
 
                 {/* Coviu */}
-                <div className="flex items-start justify-between p-6 hover:bg-gray-50 transition-colors">
-                  <div className="flex items-center gap-4">
-                    <div className="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center">
-                      <ExternalLink className="h-6 w-6 text-blue-600" />
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h3 className="font-semibold text-routiq-core">Coviu</h3>
-                        <Badge className="bg-green-100 text-green-800 border-green-200">Connected</Badge>
+                <div className="p-4 md:p-6 hover:bg-gray-50 transition-colors">
+                  <div className="flex flex-col space-y-4 md:flex-row md:items-start md:justify-between md:space-y-0">
+                    <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+                      <div className="h-10 w-10 md:h-12 md:w-12 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                        <ExternalLink className="h-5 w-5 md:h-6 md:w-6 text-blue-600" />
                       </div>
-                      <p className="text-sm text-gray-600">Telehealth consultations</p>
-                      <div className="flex items-center gap-6 mt-2 text-xs text-gray-500">
-                        <span>Surf Rehab</span>
-                        <span>3 sessions today</span>
-                        <span>156 total sessions</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                          <h3 className="font-semibold text-routiq-core text-sm md:text-base">Coviu</h3>
+                          <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">Connected</Badge>
+                        </div>
+                        <p className="text-xs md:text-sm text-gray-600 mt-1">Telehealth consultations</p>
+                        <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-6 mt-2 text-xs text-gray-500">
+                          <span className="truncate">Surf Rehab</span>
+                          <span>3 sessions today</span>
+                          <span>156 total sessions</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2 pt-1">
-                    <Button variant="outline" size="sm">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Configure
-                    </Button>
-                    <Button variant="outline" size="sm">
-                      <ExternalLink className="h-4 w-4 mr-2" />
-                      Open
-                    </Button>
+                    <div className="flex items-center gap-2 pt-1 md:pt-0 md:ml-4">
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <Settings className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Configure</span>
+                      </Button>
+                      <Button variant="outline" size="sm" className="min-h-[44px] px-3 md:px-4">
+                        <ExternalLink className="h-4 w-4 mr-1 md:mr-2" />
+                        <span className="text-xs md:text-sm">Open</span>
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -290,31 +305,31 @@ export default function IntegrationsPage() {
         </TabsContent>
 
         {/* Available Integrations Tab */}
-        <TabsContent value="available" className="space-y-6 mt-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <TabsContent value="available" className="space-y-4 md:space-y-6 mt-4 md:mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {/* WhatsApp Business */}
-            <Card>
-              <CardHeader>
+            <Card className="p-1">
+              <CardHeader className="p-4 md:p-6">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-                    <MessageSquare className="h-5 w-5 text-green-600" />
+                  <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <MessageSquare className="h-4 w-4 md:h-5 md:w-5 text-green-600" />
                   </div>
-                  <div>
-                    <CardTitle className="text-lg">WhatsApp Business</CardTitle>
-                    <CardDescription>Direct patient messaging</CardDescription>
+                  <div className="min-w-0 flex-1">
+                    <CardTitle className="text-base md:text-lg">WhatsApp Business</CardTitle>
+                    <CardDescription className="text-sm">Direct patient messaging</CardDescription>
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-sm text-gray-600">
+              <CardContent className="space-y-4 p-4 md:p-6 pt-0">
+                <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
                   Connect WhatsApp Business API to enable direct patient communication and automated responses.
                 </p>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Messaging</Badge>
-                  <Badge variant="secondary">Automation</Badge>
-                  <Badge variant="secondary">Media</Badge>
+                <div className="flex flex-wrap gap-1 md:gap-2">
+                  <Badge variant="secondary" className="text-xs">Messaging</Badge>
+                  <Badge variant="secondary" className="text-xs">Automation</Badge>
+                  <Badge variant="secondary" className="text-xs">Media</Badge>
                 </div>
-                <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
+                <Button className="w-full bg-routiq-core hover:bg-routiq-core/90 min-h-[44px] text-sm">
                   Connect WhatsApp
                 </Button>
               </CardContent>

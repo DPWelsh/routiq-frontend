@@ -25,6 +25,7 @@ type TimeframeOption = '7d' | '30d' | '90d' | '1y'
 export function ClinicOverviewTab() {
   const [viewPeriod, setViewPeriod] = useState<ViewPeriod>('month')
   const [timeframe, setTimeframe] = useState<TimeframeOption>('30d')
+  const [isMobile, setIsMobile] = useState(false)
   
   // Get organization context
   const { organizationId } = useOrganizationContext()
@@ -45,6 +46,17 @@ export function ClinicOverviewTab() {
     isUsingFallback,
     testClinicOverview
   } = useDashboardAnalyticsWithFallback(organizationId, timeframe)
+  
+  // Check for mobile viewport
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
   
   // Get current date range based on selected period
   const getCurrentDateRange = () => {
@@ -403,181 +415,181 @@ export function ClinicOverviewTab() {
         isUsingFallback={isUsingFallback}
       />
 
-      {/* Key Metrics Grid - Stripe style */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Key Metrics Grid - Mobile Optimized */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {/* 1. Total Bookings */}
         {isLoading ? <MetricSkeleton /> : (
-          <div className="stripe-metric-card">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
-                <Calendar className="h-5 w-5 text-routiq-cloud" />
+          <div className="stripe-metric-card p-4 md:p-6">
+            <div className="flex items-center gap-3 mb-3 md:mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <Calendar className="h-4 w-4 md:h-5 md:w-5 text-routiq-cloud" />
               </div>
-              <h3 className="text-base font-medium text-gray-600">Total Bookings</h3>
+              <h3 className="text-sm md:text-base font-medium text-gray-600 min-w-0">Total Bookings</h3>
             </div>
-            <div className="text-3xl font-semibold text-gray-900 mb-2">
+            <div className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
               {dummyData.totalBookings}
             </div>
-            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.bookings.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`flex items-center gap-1 text-sm md:text-base ${dummyData.comparisons.bookings.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
               {dummyData.comparisons.bookings.startsWith('+') ? (
-                <TrendingUp className="h-4 w-4" />
+                <TrendingUp className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               ) : (
-                <TrendingDown className="h-4 w-4" />
+                <TrendingDown className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               )}
-              <span>{dummyData.comparisons.bookings} from last period</span>
+              <span className="min-w-0">{dummyData.comparisons.bookings} from last period</span>
             </div>
           </div>
         )}
 
         {/* 2. New Patients */}
         {isLoading ? <MetricSkeleton /> : (
-          <div className="stripe-metric-card">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
-                <UserPlus className="h-5 w-5 text-routiq-cloud" />
+          <div className="stripe-metric-card p-4 md:p-6">
+            <div className="flex items-center gap-3 mb-3 md:mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <UserPlus className="h-4 w-4 md:h-5 md:w-5 text-routiq-cloud" />
               </div>
-              <h3 className="text-base font-medium text-gray-600">New Patients</h3>
+              <h3 className="text-sm md:text-base font-medium text-gray-600 min-w-0">New Patients</h3>
             </div>
-            <div className="text-3xl font-semibold text-gray-900 mb-2">
+            <div className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
               {dummyData.newPatients}
             </div>
-            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.newPatients.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`flex items-center gap-1 text-sm md:text-base ${dummyData.comparisons.newPatients.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
               {dummyData.comparisons.newPatients.startsWith('+') ? (
-                <TrendingUp className="h-4 w-4" />
+                <TrendingUp className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               ) : (
-                <TrendingDown className="h-4 w-4" />
+                <TrendingDown className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               )}
-              <span>{dummyData.comparisons.newPatients} from last period</span>
+              <span className="min-w-0">{dummyData.comparisons.newPatients} from last period</span>
             </div>
           </div>
         )}
 
         {/* 3. Total Patients */}
         {isLoading ? <MetricSkeleton /> : (
-          <div className="stripe-metric-card">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
-                <Users className="h-5 w-5 text-routiq-cloud" />
+          <div className="stripe-metric-card p-4 md:p-6">
+            <div className="flex items-center gap-3 mb-3 md:mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <Users className="h-4 w-4 md:h-5 md:w-5 text-routiq-cloud" />
               </div>
-              <h3 className="text-base font-medium text-gray-600">Total Patients</h3>
+              <h3 className="text-sm md:text-base font-medium text-gray-600 min-w-0">Total Patients</h3>
             </div>
-            <div className="text-3xl font-semibold text-gray-900 mb-2">
+            <div className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
               {dummyData.totalPatients}
             </div>
-            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.totalPatients.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`flex items-center gap-1 text-sm md:text-base ${dummyData.comparisons.totalPatients.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
               {dummyData.comparisons.totalPatients.startsWith('+') ? (
-                <TrendingUp className="h-4 w-4" />
+                <TrendingUp className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               ) : (
-                <TrendingDown className="h-4 w-4" />
+                <TrendingDown className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               )}
-              <span>{dummyData.comparisons.totalPatients} from last period</span>
+              <span className="min-w-0">{dummyData.comparisons.totalPatients} from last period</span>
             </div>
           </div>
         )}
 
         {/* 4. Active Patients */}
         {isLoading ? <MetricSkeleton /> : (
-          <div className="stripe-metric-card">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
-                <Activity className="h-5 w-5 text-routiq-cloud" />
+          <div className="stripe-metric-card p-4 md:p-6">
+            <div className="flex items-center gap-3 mb-3 md:mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <Activity className="h-4 w-4 md:h-5 md:w-5 text-routiq-cloud" />
               </div>
-              <h3 className="text-base font-medium text-gray-600">Active Patients</h3>
+              <h3 className="text-sm md:text-base font-medium text-gray-600 min-w-0">Active Patients</h3>
             </div>
-            <div className="text-3xl font-semibold text-gray-900 mb-2">
+            <div className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
               {dummyData.activePatients}
             </div>
-            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.activePatients.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`flex items-center gap-1 text-sm md:text-base ${dummyData.comparisons.activePatients.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
               {dummyData.comparisons.activePatients.startsWith('+') ? (
-                <TrendingUp className="h-4 w-4" />
+                <TrendingUp className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               ) : (
-                <TrendingDown className="h-4 w-4" />
+                <TrendingDown className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               )}
-              <span>{dummyData.comparisons.activePatients} from last period</span>
+              <span className="min-w-0">{dummyData.comparisons.activePatients} from last period</span>
             </div>
           </div>
         )}
 
         {/* 5. Missed Appointments */}
         {isLoading ? <MetricSkeleton /> : (
-          <div className="stripe-metric-card">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-red-50 rounded-full flex items-center justify-center">
-                <Clock className="h-5 w-5 text-red-600" />
+          <div className="stripe-metric-card p-4 md:p-6">
+            <div className="flex items-center gap-3 mb-3 md:mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-red-50 rounded-full flex items-center justify-center flex-shrink-0">
+                <Clock className="h-4 w-4 md:h-5 md:w-5 text-red-600" />
               </div>
-              <h3 className="text-base font-medium text-gray-600">Missed Appointments</h3>
+              <h3 className="text-sm md:text-base font-medium text-gray-600 min-w-0">Missed Appointments</h3>
             </div>
-            <div className="text-3xl font-semibold text-gray-900 mb-2">
+            <div className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
               {dummyData.missedAppointments}
             </div>
-            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.missedAppointments.startsWith('+') ? 'text-red-600' : 'text-green-600'}`}>
+            <div className={`flex items-center gap-1 text-sm md:text-base ${dummyData.comparisons.missedAppointments.startsWith('+') ? 'text-red-600' : 'text-green-600'}`}>
               {dummyData.comparisons.missedAppointments.startsWith('+') ? (
-                <TrendingUp className="h-4 w-4" />
+                <TrendingUp className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               ) : (
-                <TrendingDown className="h-4 w-4" />
+                <TrendingDown className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               )}
-              <span>{dummyData.comparisons.missedAppointments} from last period</span>
+              <span className="min-w-0">{dummyData.comparisons.missedAppointments} from last period</span>
             </div>
           </div>
         )}
 
         {/* 6. Revenue this [period] */}
         {isLoading ? <MetricSkeleton /> : (
-          <div className="stripe-metric-card">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
-                <DollarSign className="h-5 w-5 text-routiq-cloud" />
+          <div className="stripe-metric-card p-4 md:p-6">
+            <div className="flex items-center gap-3 mb-3 md:mb-4">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-routiq-cloud" />
               </div>
-              <h3 className="text-base font-medium text-gray-600">
+              <h3 className="text-sm md:text-base font-medium text-gray-600 min-w-0">
                 Revenue this {timeframe === '7d' ? 'Week' : timeframe === '30d' ? 'Month' : timeframe === '90d' ? 'Quarter' : 'Year'}
               </h3>
             </div>
-            <div className="text-3xl font-semibold text-gray-900 mb-2">
+            <div className="text-2xl md:text-3xl font-semibold text-gray-900 mb-2">
               {formatCurrency(dummyData.revenue)}
             </div>
-            <div className={`flex items-center gap-1 text-base ${dummyData.comparisons.revenue.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
+            <div className={`flex items-center gap-1 text-sm md:text-base ${dummyData.comparisons.revenue.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>
               {dummyData.comparisons.revenue.startsWith('+') ? (
-                <TrendingUp className="h-4 w-4" />
+                <TrendingUp className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               ) : (
-                <TrendingDown className="h-4 w-4" />
+                <TrendingDown className="h-3 w-3 md:h-4 md:w-4 flex-shrink-0" />
               )}
-              <span>{dummyData.comparisons.revenue} from last period</span>
+              <span className="min-w-0">{dummyData.comparisons.revenue} from last period</span>
             </div>
           </div>
         )}
       </div>
 
-      {/* Revenue Trends Chart - Stripe style */}
+      {/* Revenue Trends Chart - Mobile Optimized */}
       <div className="stripe-card">
-        <div className="stripe-card-header">
-          <div className="flex items-center justify-between">
+        <div className="stripe-card-header p-4 md:p-6">
+          <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center">
-                <Activity className="h-5 w-5 text-routiq-cloud" />
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-routiq-cloud/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <Activity className="h-4 w-4 md:h-5 md:w-5 text-routiq-cloud" />
               </div>
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900">Revenue Trends</h3>
-                <p className="text-base text-gray-600">
-                  {timeframe === '7d' && 'Daily revenue performance over 7 days'}
-                  {timeframe === '30d' && 'Daily revenue performance over 30 days'}
-                  {timeframe === '90d' && 'Weekly revenue performance over 90 days'}
-                  {timeframe === '1y' && 'Monthly revenue performance over 1 year'}
+              <div className="min-w-0">
+                <h3 className="text-lg md:text-xl font-semibold text-gray-900">Revenue Trends</h3>
+                <p className="text-sm md:text-base text-gray-600">
+                  {timeframe === '7d' && 'Daily revenue over 7 days'}
+                  {timeframe === '30d' && 'Daily revenue over 30 days'}
+                  {timeframe === '90d' && 'Weekly revenue over 90 days'}
+                  {timeframe === '1y' && 'Monthly revenue over 1 year'}
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-4">
               {/* Current vs Previous Period Comparison */}
-              <div className="text-right">
-                <div className="text-sm text-gray-600">
+              <div className="text-left md:text-right">
+                <div className="text-xs md:text-sm text-gray-600">
                   {timeframe === '7d' && 'This Week vs Last Week'}
                   {timeframe === '30d' && 'This Month vs Last Month'}
                   {timeframe === '90d' && 'This Quarter vs Last Quarter'}
                   {timeframe === '1y' && 'This Year vs Last Year'}
                 </div>
-                <div className="flex items-center gap-1 text-base font-semibold">
+                <div className="flex items-center gap-1 text-sm md:text-base font-semibold">
                   {getRevenueInsights().growthRate.startsWith('-') ? (
-                    <ArrowDown className="h-4 w-4 text-red-600" />
+                    <ArrowDown className="h-3 w-3 md:h-4 md:w-4 text-red-600 flex-shrink-0" />
                   ) : (
-                    <ArrowUp className="h-4 w-4 text-green-600" />
+                    <ArrowUp className="h-3 w-3 md:h-4 md:w-4 text-green-600 flex-shrink-0" />
                   )}
                   <span className={getRevenueInsights().growthRate.startsWith('-') ? 'text-red-600' : 'text-green-600'}>
                     {getRevenueInsights().growthRate.startsWith('-') ? '' : '+'}{getRevenueInsights().growthRate}%
@@ -587,23 +599,30 @@ export function ClinicOverviewTab() {
             </div>
           </div>
         </div>
-        <div className="stripe-card-content">
-          <div className="h-80">
+        <div className="stripe-card-content p-4 md:p-6 pt-0">
+          <div className="h-72 md:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={getRevenueData()}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                margin={{ 
+                  top: 5, 
+                  right: isMobile ? 10 : 30, 
+                  left: isMobile ? 10 : 20, 
+                  bottom: 5 
+                }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                 <XAxis 
                   dataKey="period" 
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: isMobile ? 10 : 12 }}
                   axisLine={{ stroke: '#e5e7eb' }}
+                  interval={isMobile ? 'preserveStartEnd' : 0}
                 />
                 <YAxis 
-                  tick={{ fill: '#6b7280', fontSize: 12 }}
+                  tick={{ fill: '#6b7280', fontSize: isMobile ? 10 : 12 }}
                   axisLine={{ stroke: '#e5e7eb' }}
                   tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                  width={isMobile ? 40 : 60}
                 />
                 <Tooltip 
                   formatter={(value: number, name: string) => {
@@ -624,16 +643,16 @@ export function ClinicOverviewTab() {
                     border: '1px solid #e5e7eb',
                     borderRadius: '8px',
                     boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-                    fontSize: '14px'
+                    fontSize: isMobile ? '12px' : '14px'
                   }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="revenue" 
                   stroke="#7ba2e0" 
-                  strokeWidth={3}
-                  dot={{ fill: '#7ba2e0', strokeWidth: 2, r: 4 }}
-                  activeDot={{ r: 6, fill: '#7ba2e0' }}
+                  strokeWidth={isMobile ? 2 : 3}
+                  dot={{ fill: '#7ba2e0', strokeWidth: 2, r: isMobile ? 3 : 4 }}
+                  activeDot={{ r: isMobile ? 5 : 6, fill: '#7ba2e0' }}
                 />
               </LineChart>
             </ResponsiveContainer>
