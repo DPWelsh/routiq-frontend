@@ -195,37 +195,47 @@ function ResponsiveDashboardNav() {
               const badgeValue = getBadgeValue(item.badge)
 
               return (
-                <Link key={item.name} href={item.href} onClick={handleNavClick}>
-                  <MobileNavItem
-                    isActive={isActive}
-                    icon={<item.icon className="h-5 w-5" />}
-                    className="mb-1"
-                  >
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <span className="truncate font-medium">{item.name}</span>
-                        {badgeValue && (
-                          <Badge 
-                            variant={badgeValue === "New" ? "default" : "secondary"}
-                            className={cn(
-                              "text-xs h-5 px-2.5 ml-2 rounded-full font-medium",
-                              badgeValue === "New" 
-                                ? "bg-routiq-cloud text-white shadow-sm" 
-                                : loading 
-                                  ? "animate-pulse bg-routiq-energy" 
-                                  : "bg-routiq-energy text-routiq-core"
-                            )}
-                          >
-                            {loading ? "..." : badgeValue}
-                          </Badge>
-                        )}
+                <div key={item.name}>
+                  <Link href={item.href} onClick={handleNavClick}>
+                    <MobileNavItem
+                      isActive={isActive}
+                      icon={<item.icon className="h-5 w-5" />}
+                      className="mb-1"
+                    >
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between">
+                          <span className="truncate font-medium">{item.name}</span>
+                          {badgeValue && (
+                            <Badge 
+                              variant={badgeValue === "New" ? "default" : "secondary"}
+                              className={cn(
+                                "text-xs h-5 px-2.5 ml-2 rounded-full font-medium",
+                                badgeValue === "New" 
+                                  ? "bg-routiq-cloud text-white shadow-sm" 
+                                  : loading 
+                                    ? "animate-pulse bg-routiq-energy" 
+                                    : "bg-routiq-energy text-routiq-core"
+                              )}
+                            >
+                              {loading ? "..." : badgeValue}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-xs text-routiq-core/60 mt-1 truncate font-normal">
+                          {item.description}
+                        </p>
                       </div>
-                      <p className="text-xs text-routiq-core/60 mt-1 truncate font-normal">
-                        {item.description}
-                      </p>
+                    </MobileNavItem>
+                  </Link>
+                  
+                  {/* Organization Switcher - Only show after Settings */}
+                  {item.name === "Settings" && (
+                    <div className="mt-2 px-4">
+                      <div className="text-xs text-routiq-core/60 mb-2 font-medium">Organization</div>
+                      <ClerkOrganizationSwitcher />
                     </div>
-                  </MobileNavItem>
-                </Link>
+                  )}
+                </div>
               )
             })}
         </div>

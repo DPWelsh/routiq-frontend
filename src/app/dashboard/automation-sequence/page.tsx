@@ -140,12 +140,12 @@ export default function AutomationSequencePage() {
       <div className="max-w-8xl mx-auto space-y-6 p-6">
         {/* Header */}
         <div className="space-y-4 bg-white p-6 rounded-lg">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-routiq-core">Automation Sequences</h1>
               <p className="text-routiq-blackberry/70 text-lg">Manage patient communication workflows and automation sequences</p>
             </div>
-            <Button className="bg-routiq-core hover:bg-routiq-core/90">
+            <Button className="hidden md:flex bg-routiq-core hover:bg-routiq-core/90">
               <Plus className="h-4 w-4 mr-2" />
               Add Sequence
             </Button>
@@ -155,43 +155,54 @@ export default function AutomationSequencePage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Sequence List */}
           <div className="lg:col-span-1 space-y-4">
-            {automationSequences.map((sequence) => (
-              <Card 
-                key={sequence.id}
-                className={`cursor-pointer transition-all ${
-                  selectedSequence === sequence.id 
-                    ? 'ring-2 ring-routiq-cloud shadow-lg' 
-                    : 'hover:shadow-md'
-                }`}
-                onClick={() => setSelectedSequence(sequence.id)}
-              >
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-3 h-3 rounded-full ${sequence.color}`} />
-                      <div>
-                        <CardTitle className="text-sm font-medium">{sequence.title}</CardTitle>
-                        <Badge 
-                          variant="secondary" 
-                          className={`text-xs mt-1 ${getStatusColor(sequence.status)}`}
-                        >
-                          {sequence.status}
-                        </Badge>
+            {automationSequences.map((sequence, index) => (
+              <div key={sequence.id}>
+                <Card 
+                  className={`cursor-pointer transition-all ${
+                    selectedSequence === sequence.id 
+                      ? 'ring-2 ring-routiq-cloud shadow-lg' 
+                      : 'hover:shadow-md'
+                  }`}
+                  onClick={() => setSelectedSequence(sequence.id)}
+                >
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-3 h-3 rounded-full ${sequence.color}`} />
+                        <div>
+                          <CardTitle className="text-sm font-medium">{sequence.title}</CardTitle>
+                          <Badge 
+                            variant="secondary" 
+                            className={`text-xs mt-1 ${getStatusColor(sequence.status)}`}
+                          >
+                            {sequence.status}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1 text-routiq-core/60">
+                        <Users className="h-4 w-4" />
+                        <span className="text-sm">{sequence.patientCount}</span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1 text-routiq-core/60">
-                      <Users className="h-4 w-4" />
-                      <span className="text-sm">{sequence.patientCount}</span>
-                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <p className="text-xs text-routiq-core/60">{sequence.definition}</p>
+                    <p className="text-xs text-routiq-core/80 mt-1 font-medium">
+                      Goal: {sequence.goal}
+                    </p>
+                  </CardContent>
+                </Card>
+                
+                {/* Add Sequence Button - Mobile Only (after At-Risk sequence) */}
+                {sequence.id === 'at-risk-intervention' && (
+                  <div className="md:hidden mt-4">
+                    <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Sequence
+                    </Button>
                   </div>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  <p className="text-xs text-routiq-core/60">{sequence.definition}</p>
-                  <p className="text-xs text-routiq-core/80 mt-1 font-medium">
-                    Goal: {sequence.goal}
-                  </p>
-                </CardContent>
-              </Card>
+                )}
+              </div>
             ))}
           </div>
 

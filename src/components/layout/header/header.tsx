@@ -111,26 +111,18 @@ export function DashboardHeader() {
   return (
     <header className="bg-[#ededeb] border-b border-gray-200">
       <div className="px-6 py-3">
-        <div className="flex items-center justify-between">
-          {/* Left Section - Logo and Page Info */}
-          <div className="flex items-center space-x-6">
-            {/* Mobile Menu Button - Always show on small screens */}
-            <div className="md:hidden">
-              <HamburgerMenu 
-                isOpen={isOpen} 
-                onClick={toggle}
-                className="mr-2"
-              />
-            </div>
-            
-            {/* Debug: Also show when isMobile is true (for testing) */}
-            {isMobile && (
-              <div className="hidden md:block text-xs text-red-500 p-1">
-                Mobile detected
-              </div>
-            )}
+        <div className="flex items-center justify-between md:justify-between">
+          {/* Mobile Menu Button - Only on mobile */}
+          <div className="md:hidden">
+            <HamburgerMenu 
+              isOpen={isOpen} 
+              onClick={toggle}
+              className=""
+            />
+          </div>
 
-            {/* Logo Section */}
+          {/* Logo Section - Centered on mobile, left-aligned on desktop */}
+          <div className="flex-1 flex justify-center md:justify-start md:flex-initial">
             <div className="flex items-center space-x-3">
               <div className="relative">
                 <Image
@@ -143,6 +135,13 @@ export function DashboardHeader() {
               </div>
             </div>
           </div>
+          
+          {/* Debug: Also show when isMobile is true (for testing) */}
+          {isMobile && (
+            <div className="hidden md:block text-xs text-red-500 p-1">
+              Mobile detected
+            </div>
+          )}
 
           {/* Right Section - Organization Switcher, Actions and User */}
           <div className="flex items-center space-x-4">
@@ -153,11 +152,13 @@ export function DashboardHeader() {
             </div>
             
             {/* Mobile Organization Display */}
-            <div className="md:hidden">
-              <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-700 border-gray-300">
-                {organizationName}
-              </Badge>
-            </div>
+            {organizationName && (
+              <div className="md:hidden">
+                <Badge variant="secondary" className="text-xs bg-gray-100 text-gray-700 border-gray-300">
+                  {organizationName}
+                </Badge>
+              </div>
+            )}
 
             {/* User Menu */}
             <DropdownMenu>
@@ -172,11 +173,16 @@ export function DashboardHeader() {
                         {user?.fullName ? getInitials(user.fullName) : "U"}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="hidden md:block text-left">
+                    <div className="text-left">
                       <p className="text-sm font-medium text-gray-900 leading-tight">
-                        {user?.fullName || user?.firstName}
+                        <span className="md:hidden">
+                          {user?.firstName || user?.fullName?.split(' ')[0] || 'User'}
+                        </span>
+                        <span className="hidden md:inline">
+                          {user?.fullName || user?.firstName}
+                        </span>
                       </p>
-                      <p className="text-xs text-gray-600 leading-tight">
+                      <p className="text-xs text-gray-600 leading-tight hidden md:block">
                         Healthcare Admin
                       </p>
                     </div>
