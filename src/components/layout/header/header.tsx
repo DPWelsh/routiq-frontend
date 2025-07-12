@@ -28,6 +28,8 @@ export function DashboardHeader() {
   const { isOpen, isMobile, toggle } = useMobileNavigationContext()
   const { organizationName } = useOrganizationContext()
 
+  console.log('🔍 HEADER: Rendering with state', { isOpen, isMobile, pathname })
+
   const handleSignOut = async () => {
     try {
       await signOut({ redirectUrl: '/sign-in' })

@@ -7,6 +7,7 @@ import { useState, useEffect, useCallback } from 'react'
 function getInitialMobileState(): boolean {
   // On server-side, assume mobile-first to be safe
   if (typeof window === 'undefined') {
+    console.log('🔍 MOBILE NAV: Server-side rendering, assuming mobile=true')
     return true
   }
   
@@ -19,7 +20,17 @@ function getInitialMobileState(): boolean {
   const hasSmallScreen = window.innerWidth < 768
   
   // Return true if either User-Agent indicates mobile OR screen is small
-  return isMobileUserAgent || hasSmallScreen
+  const result = isMobileUserAgent || hasSmallScreen
+  
+  console.log('🔍 MOBILE NAV: Initial state calculation', {
+    userAgent: userAgent.substring(0, 50) + '...',
+    isMobileUserAgent,
+    screenWidth: window.innerWidth,
+    hasSmallScreen,
+    finalResult: result
+  })
+  
+  return result
 }
 
 /**
@@ -71,8 +82,11 @@ export function useMobileNavigation(): MobileNavigationState {
   const [isMobile, setIsMobile] = useState(() => getInitialMobileState())
   const [hasMounted, setHasMounted] = useState(false)
 
+  console.log('🔍 MOBILE NAV: Hook state', { isOpen, isMobile, hasMounted })
+
   // Track when component has mounted to prevent hydration issues
   useEffect(() => {
+    console.log('🔍 MOBILE NAV: Component mounted')
     setHasMounted(true)
   }, [])
 
@@ -82,15 +96,22 @@ export function useMobileNavigation(): MobileNavigationState {
 
     function checkIsMobile() {
       const mobile = window.innerWidth < 768
+      console.log('🔍 MOBILE NAV: Resize check', { 
+        screenWidth: window.innerWidth, 
+        mobile, 
+        previousIsMobile: isMobile 
+      })
       setIsMobile(mobile)
       
       // Auto-close drawer when switching to desktop
       if (!mobile && isOpen) {
+        console.log('🔍 MOBILE NAV: Auto-closing drawer (switched to desktop)')
         setIsOpen(false)
       }
     }
 
     // Initial check after mount
+    console.log('🔍 MOBILE NAV: Running initial check after mount')
     checkIsMobile()
 
     // Listen for resize events

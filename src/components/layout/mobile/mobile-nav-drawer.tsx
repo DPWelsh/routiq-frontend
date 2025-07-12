@@ -1,9 +1,11 @@
 "use client"
 
 import { useEffect } from "react"
+import { createPortal } from "react-dom"
 import { cn } from "@/lib/utils"
 import { X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import Image from "next/image"
 
 /**
  * Mobile Navigation Drawer Props
@@ -20,31 +22,8 @@ interface MobileNavDrawerProps {
 }
 
 /**
- * Mobile Navigation Drawer
- * 
- * ⚠️  CRITICAL: Mobile-only navigation overlay component
- * 
- * Features:
- * - Full-height overlay with backdrop blur
- * - Smooth slide animations (150ms duration)
- * - Touch-to-close functionality on backdrop
- * - Navigation items with ≥48px touch targets
- * - Proper z-index layering (z-50)
- * - Escape key closes drawer (handled by hook)
- * - Focus trap when open
- * - Prevents body scroll when open
- * 
- * @param props - MobileNavDrawerProps
- * @returns JSX.Element
- * 
- * @example
- * ```tsx
- * const { isOpen, close } = useMobileNavigation()
- * 
- * <MobileNavDrawer isOpen={isOpen} onClose={close}>
- *   <YourNavigationContent />
- * </MobileNavDrawer>
- * ```
+ * Simple Portal-based Mobile Navigation Drawer
+ * Renders directly to document.body to avoid layout issues
  */
 export function MobileNavDrawer({ 
   isOpen, 
@@ -52,17 +31,18 @@ export function MobileNavDrawer({
   children, 
   className 
 }: MobileNavDrawerProps) {
+  // Debug logging
+  console.log('🔍 PORTAL DRAWER: Rendering with isOpen:', isOpen)
+  
   // Prevent body scroll when drawer is open
   useEffect(() => {
+    console.log('🔍 PORTAL DRAWER: useEffect triggered, isOpen:', isOpen)
     if (isOpen) {
       document.body.style.overflow = 'hidden'
-      // Focus the drawer when it opens
-      const drawer = document.getElementById('mobile-nav-drawer')
-      if (drawer) {
-        drawer.focus()
-      }
+      console.log('🔍 PORTAL DRAWER: Setting body overflow hidden')
     } else {
       document.body.style.overflow = ''
+      console.log('🔍 PORTAL DRAWER: Restoring body overflow')
     }
 
     return () => {
@@ -72,26 +52,32 @@ export function MobileNavDrawer({
 
   // Handle backdrop click
   const handleBackdropClick = (e: React.MouseEvent) => {
+    console.log('🔍 PORTAL DRAWER: Backdrop clicked')
     if (e.target === e.currentTarget) {
       onClose()
     }
   }
 
-  if (!isOpen) {
+  // Only render if we're in the browser
+  if (typeof window === 'undefined') {
     return null
   }
 
-  return (
+  const drawerContent = (
     <>
       {/* Backdrop overlay */}
       <div
-        className={cn(
-          "fixed inset-0 z-50 bg-black/50 backdrop-blur-sm",
-          "transition-opacity duration-150 ease-in-out",
-          isOpen ? "opacity-100" : "opacity-0"
-        )}
         onClick={handleBackdropClick}
-        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          zIndex: 9998,
+          display: isOpen ? 'block' : 'none',
+        }}
       />
 
       {/* Navigation drawer */}
@@ -100,45 +86,73 @@ export function MobileNavDrawer({
         role="navigation"
         aria-label="Mobile navigation menu"
         tabIndex={-1}
-        className={cn(
-          "fixed left-0 top-0 z-50 h-full w-80 max-w-[85vw]",
-          "bg-white border-r border-border shadow-xl",
-          "transform transition-transform duration-200 ease-out",
-          "focus:outline-none",
-          isOpen ? "translate-x-0" : "-translate-x-full",
-          className
-        )}
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          height: '100vh',
+          width: '320px',
+          maxWidth: '85vw',
+          backgroundColor: '#ffffff',
+          borderRight: '1px solid rgb(237, 237, 235)', // --routiq-energy
+          boxShadow: '0 25px 50px -12px rgba(26, 28, 18, 0.15)', // --routiq-core shadow
+          zIndex: 9999,
+          transform: isOpen ? 'translateX(0)' : 'translateX(-100%)',
+          transition: 'transform 200ms ease-out',
+        }}
       >
         {/* Drawer header */}
-        <div className="flex items-center justify-between border-b border-border p-4 bg-routiq-energy/50">
-          <h2 className="text-lg font-semibold text-routiq-core">
-            Navigation
-          </h2>
-          
-          {/* Close button */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '1rem 1.5rem',
+          borderBottom: '1px solid rgb(237, 237, 235)', // --routiq-energy
+          backgroundColor: 'rgb(237, 237, 235, 0.3)' // --routiq-energy/30
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Image
+              src="/logos/routiq_print_cmyk_routiq_primary%20logo_core.svg"
+              alt="Routiq"
+              width={120}
+              height={48}
+              style={{ height: '32px', width: 'auto' }}
+              priority
+            />
+          </div>
           <Button
             variant="ghost"
-            size="icon"
-            onClick={onClose}
-            className={cn(
-              "h-11 w-11 p-2", // 44px touch target
-              "hover:bg-routiq-cloud/10 focus-visible:ring-2 focus-visible:ring-routiq-core"
-            )}
-            aria-label="Close navigation menu"
+            size="sm"
+            onClick={() => {
+              console.log('🔍 DRAWER: Close button clicked')
+              onClose()
+            }}
+            style={{
+              padding: '0.5rem',
+              border: 'none',
+              background: 'transparent',
+              cursor: 'pointer',
+              borderRadius: '0.5rem'
+            }}
           >
-            <X className="h-5 w-5 text-routiq-core" />
+            <X className="h-4 w-4" style={{ color: 'rgb(26, 28, 18)' }} />
           </Button>
         </div>
 
         {/* Drawer content */}
-        <div className="flex-1 overflow-y-auto p-4">
-          <div className="space-y-2">
-            {children}
-          </div>
+        <div style={{
+          padding: '1rem',
+          height: 'calc(100vh - 73px)', // Subtract header height
+          overflowY: 'auto'
+        }}>
+          {children}
         </div>
       </div>
     </>
   )
+
+  // Render to document.body using portal
+  return createPortal(drawerContent, document.body)
 }
 
 /**
@@ -183,17 +197,17 @@ export function MobileNavItem({
 }: MobileNavItemProps) {
   const baseClasses = cn(
     // Touch-friendly sizing (48px minimum height)
-    "flex items-center gap-3 rounded-lg px-3 py-3 min-h-[48px]",
+    "flex items-center gap-3 rounded-lg px-4 py-3 min-h-[48px]",
     // Typography
-    "text-sm font-medium transition-colors duration-150",
+    "text-sm font-medium transition-all duration-200",
     // Touch optimization
     "touch-manipulation",
     // Focus and hover states
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-routiq-core",
-    // Active state
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-routiq-cloud",
+    // Active state with brand colors
     isActive
-      ? "bg-routiq-core text-white" 
-      : "text-routiq-core hover:bg-routiq-cloud/10 hover:text-routiq-core",
+      ? "bg-routiq-cloud text-white shadow-sm" 
+      : "text-routiq-core hover:bg-routiq-energy/50 hover:text-routiq-core",
     className
   )
 

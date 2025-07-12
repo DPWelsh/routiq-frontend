@@ -18,7 +18,9 @@ import {
   Mail,
   TrendingUp,
   Settings,
-  HelpCircle
+  HelpCircle,
+  Bot,
+  Zap
 } from "lucide-react"
 import { ClerkOrganizationSwitcher } from "@/components/clerk-organization-switcher"
 
@@ -60,6 +62,22 @@ const navigation = [
     icon: TrendingUp, 
     roles: ["ADMIN", "USER"],
     description: "Patient journey tracking",
+    badge: null
+  },
+  { 
+    name: "Automation Centre", 
+    href: "/dashboard/automation-sequence", 
+    icon: Bot, 
+    roles: ["ADMIN", "USER"],
+    description: "Patient engagement flows",
+    badge: null
+  },
+  { 
+    name: "Integrations", 
+    href: "/dashboard/integrations", 
+    icon: Zap, 
+    roles: ["ADMIN", "USER"],
+    description: "Connected services",
     badge: null
   },
   { 
@@ -164,23 +182,12 @@ function ResponsiveDashboardNav() {
   // Mobile Navigation Content
   const MobileNavContent = (
     <>
-      {/* Organization Switcher Section */}
-      <div className="mb-6 pb-4 border-b border-routiq-prompt/20">
-        <p className="text-xs font-semibold text-routiq-core/60 uppercase tracking-wider mb-3">
-          ORGANIZATION
-        </p>
-        <div className="bg-routiq-energy/30 rounded-lg p-3">
-          <ClerkOrganizationSwitcher />
-        </div>
-      </div>
-
       {/* Main Navigation Section */}
       <div className="mb-6">
         
         <div className="space-y-2">
           {navigation
             .filter(item => item.roles.includes(userRole))
-            .filter(item => !["Engagement Centre", "Inbox"].includes(item.name)) // Hide messaging features from mobile
             .map((item) => {
               const isActive = pathname === item.href || 
                 (item.href !== "/dashboard" && pathname.startsWith(item.href))

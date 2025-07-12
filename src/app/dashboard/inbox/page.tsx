@@ -823,17 +823,37 @@ export default function InboxPage() {
 
   return (
     <div className="h-[calc(100vh-4rem)] bg-routiq-cloud/5 flex flex-col">
-      {/* Header */}
-      <div className="flex-shrink-0 px-6 pt-6 pb-3">
-        <div className="max-w-8xl mx-auto">
-          <div className="flex items-center justify-between bg-white p-6 rounded-lg">
-            <div>
-              <h1 className="text-3xl font-bold text-routiq-core">Inbox</h1>
-              <p className="text-routiq-blackberry/70 text-lg">Manage patient conversations and communication</p>
-            </div>
+      {/* Mobile Not Supported Message */}
+      <div className="md:hidden flex-1 flex items-center justify-center p-6">
+        <div className="text-center max-w-sm mx-auto">
+          <MessageCircle className="h-16 w-16 text-routiq-blackberry/40 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-routiq-core mb-3">
+            Mobile View Coming Soon
+          </h2>
+          <p className="text-routiq-blackberry/70 mb-4 leading-relaxed">
+            The inbox experience is optimized for desktop and tablets. Please use a larger screen to access patient conversations.
+          </p>
+          <div className="bg-routiq-energy/30 rounded-lg p-4 border border-routiq-energy">
+            <p className="text-sm text-routiq-blackberry/60">
+              💡 <strong>Tip:</strong> You can still access patient data and analytics from other sections of the mobile app.
+            </p>
           </div>
         </div>
       </div>
+
+      {/* Desktop Content */}
+      <div className="hidden md:block md:h-full">
+        {/* Header */}
+        <div className="flex-shrink-0 px-6 pt-6 pb-3">
+          <div className="max-w-8xl mx-auto">
+            <div className="flex items-center justify-between bg-white p-6 rounded-lg">
+              <div>
+                <h1 className="text-3xl font-bold text-routiq-core">Inbox</h1>
+                <p className="text-routiq-blackberry/70 text-lg">Manage patient conversations and communication</p>
+              </div>
+            </div>
+          </div>
+        </div>
 
       {/* Inbox Interface */}
       <div className="flex-1 px-6 pb-6 min-h-0">
@@ -1216,6 +1236,7 @@ export default function InboxPage() {
             )}
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

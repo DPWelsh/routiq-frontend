@@ -50,11 +50,15 @@ export function HamburgerMenu({
   className,
   disabled = false 
 }: HamburgerMenuProps) {
+  console.log('🔍 HAMBURGER: Rendering with props', { isOpen, disabled, className })
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={onClick}
+      onClick={() => {
+        console.log('🔍 HAMBURGER: Button clicked!')
+        onClick()
+      }}
       disabled={disabled}
       className={cn(
         // Base styles - 44px minimum touch target
