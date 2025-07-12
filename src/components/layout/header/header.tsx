@@ -112,13 +112,20 @@ export function DashboardHeader() {
         <div className="flex items-center justify-between">
           {/* Left Section - Logo and Page Info */}
           <div className="flex items-center space-x-6">
-            {/* Mobile Menu Button */}
-            {isMobile && (
+            {/* Mobile Menu Button - Always show on small screens */}
+            <div className="md:hidden">
               <HamburgerMenu 
                 isOpen={isOpen} 
                 onClick={toggle}
                 className="mr-2"
               />
+            </div>
+            
+            {/* Debug: Also show when isMobile is true (for testing) */}
+            {isMobile && (
+              <div className="hidden md:block text-xs text-red-500 p-1">
+                Mobile detected
+              </div>
             )}
 
             {/* Logo Section */}

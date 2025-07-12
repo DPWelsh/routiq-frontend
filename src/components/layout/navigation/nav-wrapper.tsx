@@ -246,14 +246,16 @@ function ResponsiveDashboardNav() {
       {/* Desktop Navigation */}
       {DesktopNav}
 
-      {/* Mobile Navigation Drawer */}
-      <MobileNavDrawer 
-        isOpen={isOpen && isMobile} 
-        onClose={close}
-        className="bg-white"
-      >
-        {MobileNavContent}
-      </MobileNavDrawer>
+      {/* Mobile Navigation Drawer - Show on small screens regardless of isMobile state */}
+      <div className="md:hidden">
+        <MobileNavDrawer 
+          isOpen={isOpen} 
+          onClose={close}
+          className="bg-white"
+        >
+          {MobileNavContent}
+        </MobileNavDrawer>
+      </div>
     </>
   )
 }
