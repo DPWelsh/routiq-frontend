@@ -13,6 +13,13 @@
     --routiq-cloud: 123 162 224; /* #7ba2e0 - airy sky blue */
     --routiq-energy: 237 237 235; /* #ededeb - soft grey (highlight only) */
     
+    /* Mobile fallback colors */
+    --fallback-routiq-core: #1a1c12;
+    --fallback-routiq-blackberry: #472424;
+    --fallback-routiq-prompt: #7d312d;
+    --fallback-routiq-cloud: #7ba2e0;
+    --fallback-routiq-energy: #ededeb;
+    
     /* Updated theme colors using correct brand palette */
     --background: 255 255 255;
     --foreground: 26 28 18;
@@ -133,8 +140,32 @@ input,
 textarea,
 select,
 [role="button"],
+[role="tab"],
+[role="menuitem"],
+[role="option"],
+[role="checkbox"],
+[role="radio"],
+[role="switch"],
+[role="slider"],
+[role="link"],
+[role="textbox"],
 [tabindex],
-.clickable {
+.clickable,
+div[onclick],
+span[onclick],
+li[onclick],
+tr[onclick],
+td[onclick],
+th[onclick],
+[data-state],
+[data-radix-collection-item],
+.cursor-pointer,
+.hover\\:bg-,
+[class*="hover:"],
+[class*="focus:"],
+[class*="active:"],
+[class*="data-state"],
+[class*="cursor-pointer"] {
   -webkit-tap-highlight-color: transparent !important;
   -webkit-touch-callout: none !important;
   -webkit-user-select: none !important;
@@ -149,16 +180,104 @@ select,
 *::after {
   -webkit-tap-highlight-color: transparent !important;
   -webkit-focus-ring-color: transparent !important;
+  -webkit-user-drag: none !important;
+}
+
+/* Target all possible interactive pseudo-elements */
+*:hover,
+*:focus,
+*:active,
+*:focus-visible,
+*:focus-within,
+*[data-state="open"],
+*[data-state="closed"],
+*[data-state="checked"],
+*[data-state="unchecked"],
+*[aria-expanded],
+*[aria-selected],
+*[aria-pressed] {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Target framework-specific interactive elements */
+[class*="radix"],
+[class*="shadcn"],
+[class*="ui-"],
+[data-radix-collection-item],
+[data-radix-menu-item],
+[data-radix-dropdown-item],
+[data-radix-select-item],
+[data-clerk],
+[class*="cl-"] {
+  -webkit-tap-highlight-color: transparent !important;
 }
 
 /* Fix for iOS Safari button styling */
 input[type="button"],
 input[type="submit"],
 input[type="reset"],
+input[type="file"],
+input[type="image"],
 button {
   -webkit-appearance: none !important;
   -moz-appearance: none !important;
   appearance: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Target all possible button and link variants */
+button[type],
+button[role],
+a[href],
+a[role],
+label[for],
+summary,
+details > summary,
+[contenteditable],
+[draggable],
+.btn,
+.button,
+.link,
+.nav-link,
+.dropdown-item,
+.menu-item {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+}
+
+/* Handle card components and containers that might be clickable */
+.card,
+.card-header,
+.card-content,
+.card-footer,
+[class*="card"],
+[class*="modal"],
+[class*="dialog"],
+[class*="dropdown"],
+[class*="popover"],
+[class*="tooltip"],
+[class*="tab"],
+[class*="menu"],
+[class*="nav"],
+[class*="badge"],
+[class*="chip"],
+[class*="tag"] {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+/* Aggressive targeting for any element that could potentially be interactive */
+[onclick*=""],
+[onmousedown*=""],
+[onmouseup*=""],
+[ontouchstart*=""],
+[ontouchend*=""],
+[class*="clickable"],
+[class*="interactive"],
+[class*="selectable"],
+[style*="cursor: pointer"],
+[style*="cursor:pointer"] {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
 }
 
 /* Prevent overscroll glow on webkit browsers */
@@ -197,23 +316,118 @@ button {
 
 /* Routiq Brand Utilities */
 @layer utilities {
-  .text-routiq-core { color: rgb(var(--routiq-core)); }
-  .text-routiq-blackberry { color: rgb(var(--routiq-blackberry)); }
-  .text-routiq-energy { color: rgb(var(--routiq-energy)); }
-  .text-routiq-prompt { color: rgb(var(--routiq-prompt)); }
-  .text-routiq-cloud { color: rgb(var(--routiq-cloud)); }
+  /* Routiq Brand Colors - with mobile fallbacks */
+  .text-routiq-core { 
+    color: var(--fallback-routiq-core); 
+    color: rgb(var(--routiq-core)); 
+  }
+  .text-routiq-blackberry { 
+    color: var(--fallback-routiq-blackberry); 
+    color: rgb(var(--routiq-blackberry)); 
+  }
+  .text-routiq-energy { 
+    color: var(--fallback-routiq-energy); 
+    color: rgb(var(--routiq-energy)); 
+  }
+  .text-routiq-prompt { 
+    color: var(--fallback-routiq-prompt); 
+    color: rgb(var(--routiq-prompt)); 
+  }
+  .text-routiq-cloud { 
+    color: var(--fallback-routiq-cloud); 
+    color: rgb(var(--routiq-cloud)); 
+  }
+
+  .bg-routiq-core { 
+    background-color: var(--fallback-routiq-core); 
+    background-color: rgb(var(--routiq-core)); 
+  }
+  .bg-routiq-blackberry { 
+    background-color: var(--fallback-routiq-blackberry); 
+    background-color: rgb(var(--routiq-blackberry)); 
+  }
+  .bg-routiq-energy { 
+    background-color: var(--fallback-routiq-energy); 
+    background-color: rgb(var(--routiq-energy)); 
+  }
+  .bg-routiq-prompt { 
+    background-color: var(--fallback-routiq-prompt); 
+    background-color: rgb(var(--routiq-prompt)); 
+  }
+  .bg-routiq-cloud { 
+    background-color: var(--fallback-routiq-cloud); 
+    background-color: rgb(var(--routiq-cloud)); 
+  }
+
+  .border-routiq-core { 
+    border-color: var(--fallback-routiq-core); 
+    border-color: rgb(var(--routiq-core)); 
+  }
+  .border-routiq-blackberry { 
+    border-color: var(--fallback-routiq-blackberry); 
+    border-color: rgb(var(--routiq-blackberry)); 
+  }
+  .border-routiq-energy { 
+    border-color: var(--fallback-routiq-energy); 
+    border-color: rgb(var(--routiq-energy)); 
+  }
+  .border-routiq-prompt { 
+    border-color: var(--fallback-routiq-prompt); 
+    border-color: rgb(var(--routiq-prompt)); 
+  }
+  .border-routiq-cloud { 
+    border-color: var(--fallback-routiq-cloud); 
+    border-color: rgb(var(--routiq-cloud)); 
+  }
   
-  .bg-routiq-core { background-color: rgb(var(--routiq-core)); }
-  .bg-routiq-blackberry { background-color: rgb(var(--routiq-blackberry)); }
-  .bg-routiq-energy { background-color: rgb(var(--routiq-energy)); }
-  .bg-routiq-prompt { background-color: rgb(var(--routiq-prompt)); }
-  .bg-routiq-cloud { background-color: rgb(var(--routiq-cloud)); }
+  /* Routiq Brand Colors with Opacity - Mobile Safe */
+  .bg-routiq-energy\/30 { 
+    background-color: rgba(237, 237, 235, 0.3); 
+    background-color: rgb(var(--routiq-energy) / 0.3); 
+  }
+  .bg-routiq-cloud\/30 { 
+    background-color: rgba(123, 162, 224, 0.3); 
+    background-color: rgb(var(--routiq-cloud) / 0.3); 
+  }
+  .bg-routiq-core\/30 { 
+    background-color: rgba(26, 28, 18, 0.3); 
+    background-color: rgb(var(--routiq-core) / 0.3); 
+  }
+  .bg-routiq-prompt\/30 { 
+    background-color: rgba(125, 49, 45, 0.3); 
+    background-color: rgb(var(--routiq-prompt) / 0.3); 
+  }
+  .bg-routiq-blackberry\/30 { 
+    background-color: rgba(71, 36, 36, 0.3); 
+    background-color: rgb(var(--routiq-blackberry) / 0.3); 
+  }
+
+  .bg-routiq-energy\/5 { 
+    background-color: rgba(237, 237, 235, 0.05); 
+    background-color: rgb(var(--routiq-energy) / 0.05); 
+  }
+  .bg-routiq-cloud\/5 { 
+    background-color: rgba(123, 162, 224, 0.05); 
+    background-color: rgb(var(--routiq-cloud) / 0.05); 
+  }
+  .bg-routiq-core\/5 { 
+    background-color: rgba(26, 28, 18, 0.05); 
+    background-color: rgb(var(--routiq-core) / 0.05); 
+  }
   
-  .border-routiq-core { border-color: rgb(var(--routiq-core)); }
-  .border-routiq-blackberry { border-color: rgb(var(--routiq-blackberry)); }
-  .border-routiq-energy { border-color: rgb(var(--routiq-energy)); }
-  .border-routiq-prompt { border-color: rgb(var(--routiq-prompt)); }
-  .border-routiq-cloud { border-color: rgb(var(--routiq-cloud)); }
+  /* Routiq Brand Colors with Opacity - 10% */
+  .bg-routiq-energy\/10 { 
+    background-color: rgba(237, 237, 235, 0.1); 
+    background-color: rgb(var(--routiq-energy) / 0.1); 
+  }
+  .bg-routiq-cloud\/10 { 
+    background-color: rgba(123, 162, 224, 0.1); 
+    background-color: rgb(var(--routiq-cloud) / 0.1); 
+  }
+  .bg-routiq-core\/10 { 
+    background-color: rgba(26, 28, 18, 0.1); 
+    background-color: rgb(var(--routiq-core) / 0.1); 
+  }
   
   /* Responsive Container Utilities */
   .routiq-container {
