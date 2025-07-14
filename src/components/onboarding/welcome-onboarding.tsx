@@ -25,7 +25,7 @@ interface OnboardingStep {
   id: string
   title: string
   description: string
-  icon: React.ComponentType<any>
+  icon: React.ComponentType<{className?: string}>
   features: string[]
   gradient: string
 }
@@ -42,7 +42,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Automated engagement workflows',
       'Integrated healthcare tools'
     ],
-    gradient: 'from-routiq-cloud/20 to-routiq-energy/20'
+    gradient: 'from-blue-50 to-gray-50'
   },
   {
     id: 'dashboard',
@@ -55,7 +55,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Revenue analytics',
       'Performance indicators'
     ],
-    gradient: 'from-blue-500/20 to-blue-600/20'
+    gradient: 'from-blue-50 to-blue-100'
   },
   {
     id: 'insights',
@@ -68,7 +68,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Churn risk scoring',
       'Engagement metrics'
     ],
-    gradient: 'from-green-500/20 to-emerald-600/20'
+    gradient: 'from-green-50 to-green-100'
   },
   {
     id: 'automation',
@@ -81,7 +81,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Personalized messaging',
       'ROI tracking'
     ],
-    gradient: 'from-purple-500/20 to-violet-600/20'
+    gradient: 'from-purple-50 to-purple-100'
   },
   {
     id: 'integrations',
@@ -94,7 +94,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Calendar integrations',
       'Data synchronization'
     ],
-    gradient: 'from-orange-500/20 to-red-600/20'
+    gradient: 'from-orange-50 to-orange-100'
   }
 ]
 
@@ -126,8 +126,8 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
   const step = onboardingSteps[currentStep]
 
   return (
-    <div className="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm">
-      <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 bg-white/95 backdrop-blur-sm overflow-y-auto">
+      <div className="min-h-screen flex items-center justify-center p-4 py-8">
         <div className="w-full max-w-4xl">
           {/* Progress bar */}
           <div className="mb-8">
@@ -139,7 +139,7 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                 variant="ghost" 
                 size="sm"
                 onClick={onSkip}
-                className="text-routiq-core/60 hover:text-routiq-core"
+                className="text-routiq-core/60 hover:text-routiq-core touch-manipulation"
               >
                 Skip tour
               </Button>
@@ -155,8 +155,8 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <Card className={`p-8 bg-gradient-to-br ${step.gradient} border-routiq-core/10`}>
-                <div className="grid md:grid-cols-2 gap-8 items-center">
+              <Card className={`p-6 md:p-8 bg-gradient-to-br ${step.gradient} border-routiq-core/10`}>
+                <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-center">
                   {/* Content */}
                   <div className="space-y-6">
                     <div className="space-y-4">
@@ -169,11 +169,11 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                         </Badge>
                       </div>
                       
-                      <h1 className="text-3xl font-bold text-routiq-core">
+                      <h1 className="text-2xl md:text-3xl font-bold text-routiq-core">
                         {step.title}
                       </h1>
                       
-                      <p className="text-lg text-routiq-core/80 leading-relaxed">
+                      <p className="text-base md:text-lg text-routiq-core/80 leading-relaxed">
                         {step.description}
                       </p>
                     </div>
@@ -189,7 +189,7 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                           className="flex items-center gap-3"
                         >
                           <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                          <span className="text-routiq-core/90">{feature}</span>
+                          <span className="text-routiq-core/90 text-sm md:text-base">{feature}</span>
                         </motion.div>
                       ))}
                     </div>
@@ -201,7 +201,7 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.2, duration: 0.5, ease: "easeOut" }}
-                      className="bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-xl border border-white/20"
+                      className="bg-white/90 backdrop-blur-sm rounded-2xl p-4 md:p-6 shadow-xl border border-white/20"
                     >
                       {currentStep === 0 && <WelcomePreview />}
                       {currentStep === 1 && <DashboardPreview />}
@@ -213,12 +213,12 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                 </div>
 
                 {/* Navigation */}
-                <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/20">
+                <div className="flex items-center justify-between mt-6 md:mt-8 pt-4 md:pt-6 border-t border-white/20">
                   <Button
                     variant="outline"
                     onClick={handlePrevious}
                     disabled={currentStep === 0}
-                    className="bg-white/60 border-white/40 hover:bg-white/80"
+                    className="bg-white/60 border-white/40 hover:bg-white/80 touch-manipulation min-h-[44px] px-4"
                   >
                     Previous
                   </Button>
@@ -227,7 +227,7 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                     {onboardingSteps.map((_, index) => (
                       <div
                         key={index}
-                        className={`h-2 w-8 rounded-full transition-all duration-300 ${
+                        className={`h-2 w-6 md:w-8 rounded-full transition-all duration-300 ${
                           index <= currentStep 
                             ? 'bg-routiq-cloud' 
                             : 'bg-white/40'
@@ -242,7 +242,7 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                         <Button
                           variant="outline"
                           onClick={onStartInteractiveTour}
-                          className="bg-white/60 border-white/40 hover:bg-white/80"
+                          className="bg-white/60 border-white/40 hover:bg-white/80 touch-manipulation min-h-[44px] px-4 hidden md:flex"
                         >
                           <Target className="mr-2 h-4 w-4" />
                           Interactive Tour
@@ -250,7 +250,7 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                       )}
                       <Button
                         onClick={handleNext}
-                        className="bg-routiq-cloud hover:bg-routiq-cloud/90 text-white shadow-lg"
+                        className="bg-routiq-cloud hover:bg-routiq-cloud/90 text-white shadow-lg touch-manipulation min-h-[44px] px-6"
                       >
                         Get Started
                         <Sparkles className="ml-2 h-4 w-4" />
@@ -259,7 +259,7 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                   ) : (
                     <Button
                       onClick={handleNext}
-                      className="bg-routiq-cloud hover:bg-routiq-cloud/90 text-white shadow-lg"
+                      className="bg-routiq-cloud hover:bg-routiq-cloud/90 text-white shadow-lg touch-manipulation min-h-[44px] px-6"
                     >
                       Next
                       <ArrowRight className="ml-2 h-4 w-4" />
