@@ -132,7 +132,7 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                             <Button variant="outline" size="sm" onClick={() => {
                               setSelectedStepForAction(step.id)
                               setShowAddPatientModal(true)
-                            }}">
+                            }}>
                               <Plus className="h-4 w-4 mr-1" />
                               Add Patient
                             </Button>
@@ -166,7 +166,7 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                                 <Button variant="ghost" size="sm" className="w-full hover:bg-[#7BA2E0]/80 hover:text-white transition-all duration-200" onClick={() => {
                                   setSelectedStepForAction(step.id)
                                   setShowPatientModal(true)
-                                }}">
+                                }}>
                                   <Eye className="h-4 w-4 mr-2" />
                                   View all {step.patientCount} patients
                                 </Button>
