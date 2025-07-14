@@ -89,7 +89,7 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
               {sequence.steps.map((step, index) => (
                 <div key={step.id}>
                   <div
-                    className={`relative p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                    className={`relative p-3 rounded-lg border-2 transition-all cursor-pointer ${
                       selectedStep === step.id 
                         ? 'border-routiq-cloud bg-blue-50' 
                         : 'border-routiq-prompt/20 hover:border-routiq-cloud/50'
@@ -107,9 +107,14 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                     </div>
                     
                     <div className="flex-1">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-medium text-routiq-core">{step.title}</h4>
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-start justify-between mb-1">
+                        <div className="flex-1 pr-2">
+                          <h4 className="font-medium text-routiq-core mb-1">{step.title}</h4>
+                          <p className="text-sm text-routiq-core/70">
+                            &quot;{step.message}&quot;
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1.5 flex-shrink-0">
                           <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 border-blue-200">
                             <Clock className="h-3 w-3 mr-1" />
                             {step.timing}
@@ -125,10 +130,6 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                           </div>
                         </div>
                       </div>
-                      
-                      <p className="text-sm text-routiq-core/70 mb-3">
-                        &quot;{step.message}&quot;
-                      </p>
                     </div>
                   </div>
                   </div>
