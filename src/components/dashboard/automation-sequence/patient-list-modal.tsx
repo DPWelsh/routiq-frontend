@@ -24,7 +24,14 @@ interface AutomationSequence {
   status: string
   patientCount: number
   color: string
-  steps: any[]
+  steps: {
+    id: string
+    title: string
+    timing: string
+    message: string
+    type: string
+    patientCount: number
+  }[]
 }
 
 interface PatientListModalProps {
@@ -61,7 +68,7 @@ export function PatientListModal({ isOpen, onClose, sequence, patients }: Patien
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[80vh] overflow-hidden">
+      <DialogContent className="max-w-[95vw] max-h-[90vh] overflow-hidden mx-2 w-full sm:max-w-2xl md:max-w-4xl sm:mx-4">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
             <div className={`w-4 h-4 rounded-full ${sequence.color}`} />
@@ -69,9 +76,9 @@ export function PatientListModal({ isOpen, onClose, sequence, patients }: Patien
           </DialogTitle>
         </DialogHeader>
 
-        <div className="flex flex-col gap-4 overflow-hidden">
+        <div className="flex flex-col gap-4 h-full">
           {/* Search */}
-          <div className="relative">
+          <div className="relative flex-shrink-0">
             <Search className="absolute left-3 top-3 h-4 w-4 text-routiq-core/60" />
             <Input
               placeholder="Search patients by name or email..."
@@ -82,7 +89,7 @@ export function PatientListModal({ isOpen, onClose, sequence, patients }: Patien
           </div>
 
           {/* Current Patients in Sequence */}
-          <div className="bg-routiq-energy/20 rounded-lg p-4">
+          <div className="bg-gray-100 rounded-lg p-4 flex-shrink-0">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-medium text-routiq-core">
                 Current Patients in Sequence ({sequence.patientCount})
@@ -93,7 +100,7 @@ export function PatientListModal({ isOpen, onClose, sequence, patients }: Patien
             </div>
             
             {sequence.patientCount > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 gap-2">
                 {patients.slice(0, sequence.patientCount).map((patient) => (
                   <div
                     key={patient.id}
@@ -136,7 +143,7 @@ export function PatientListModal({ isOpen, onClose, sequence, patients }: Patien
           </div>
 
           {/* Available Patients */}
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden min-h-0">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-medium text-routiq-core">
                 Available Patients ({filteredPatients.length})
@@ -147,7 +154,7 @@ export function PatientListModal({ isOpen, onClose, sequence, patients }: Patien
               </Button>
             </div>
 
-            <div className="overflow-y-auto max-h-64 space-y-2">
+            <div className="overflow-y-auto h-full max-h-[200px] space-y-2">
               {filteredPatients.map((patient) => (
                 <div
                   key={patient.id}
@@ -221,18 +228,13 @@ export function PatientListModal({ isOpen, onClose, sequence, patients }: Patien
           </div>
 
           {/* Actions */}
-          <div className="flex justify-between pt-4 border-t">
+          <div className="flex justify-between pt-4 border-t flex-shrink-0">
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            <div className="flex gap-2">
-              <Button variant="outline">
-                Export List
-              </Button>
-              <Button className="bg-routiq-cloud hover:bg-routiq-cloud/90">
-                Save Changes
-              </Button>
-            </div>
+            <Button className="bg-routiq-cloud hover:bg-routiq-cloud/90">
+              Save Changes
+            </Button>
           </div>
         </div>
       </DialogContent>

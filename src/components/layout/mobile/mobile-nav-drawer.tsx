@@ -91,7 +91,7 @@ export function MobileNavDrawer({
           top: 0,
           left: 0,
           height: '100vh',
-          width: '320px',
+          width: '213px',
           maxWidth: '85vw',
           backgroundColor: '#ffffff',
           borderRight: '1px solid rgb(237, 237, 235)', // --routiq-energy
