@@ -704,7 +704,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
               <div className="text-sm text-gray-600">
                 Showing {filteredPatients.length} of {totalPatients} patients
                 {activeFilter !== 'all' && (
-                  <Badge variant="secondary" className="ml-2">
+                  <Badge variant="secondary" className="ml-2 bg-blue-100 text-blue-800 border-blue-200">
                     {activeFilter.replace('-', ' ')}
                   </Badge>
                 )}

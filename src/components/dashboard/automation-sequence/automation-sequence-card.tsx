@@ -109,11 +109,11 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium text-routiq-core">{step.title}</h4>
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 border-blue-200">
                             <Clock className="h-3 w-3 mr-1" />
                             {step.timing}
                           </Badge>
-                          <Badge variant="outline" className="text-xs">
+                          <Badge variant="outline" className="text-xs border-gray-300 text-gray-700 bg-white">
                             {step.patientCount} patients
                           </Badge>
                         </div>

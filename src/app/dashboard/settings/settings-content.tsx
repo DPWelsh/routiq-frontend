@@ -186,7 +186,7 @@ export default function SettingsContent() {
                 <CardContent className="space-y-4">
                   {/* Clinic Logo Upload Placeholder */}
                   <div className="flex items-center gap-4 p-4 border-2 border-dashed border-routiq-cloud/30 rounded-lg">
-                    <div className="h-16 w-16 rounded-lg bg-gradient-to-br from-routiq-core to-routiq-energy flex items-center justify-center text-white font-bold text-xl">
+                    <div className="h-16 w-16 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-xl">
                       {user?.firstName?.[0] || 'C'}
                     </div>
                     <div className="flex-1">
@@ -277,7 +277,7 @@ export default function SettingsContent() {
                   {/* Current User */}
                   <div className="flex items-center justify-between p-3 border border-routiq-cloud/20 rounded-lg bg-routiq-cloud/5">
                     <div className="flex items-center gap-3">
-                      <div className="h-10 w-10 rounded-full bg-gradient-to-r from-routiq-core to-routiq-energy flex items-center justify-center text-white text-sm font-semibold">
+                      <div className="h-10 w-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold">
                         {user?.firstName?.[0] || user?.emailAddresses[0]?.emailAddress[0]?.toUpperCase()}
                       </div>
                       <div>
@@ -400,7 +400,7 @@ export default function SettingsContent() {
                       <h4 className="font-medium text-routiq-core">WhatsApp Business</h4>
                       <p className="text-sm text-routiq-blackberry/60">Direct patient messaging</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <div className="h-2 w-2 bg-yellow-500 rounded-full"></div>
+                        <div className="h-2 w-2 bg-green-500 rounded-full"></div>
                         <span className="text-xs text-yellow-700">Setup required</span>
                       </div>
                     </div>
@@ -664,7 +664,7 @@ export default function SettingsContent() {
                   <h4 className="font-medium text-routiq-core mb-3">Interactive Tours & Help</h4>
                   
                   {/* Smart Contextual Tours - NEW! */}
-                  <div className="flex items-center justify-between p-3 border-2 border-routiq-cloud/40 rounded-lg bg-gradient-to-r from-routiq-cloud/10 to-routiq-energy/10">
+                  <div className="flex items-center justify-between p-3 border-2 border-blue-300 rounded-lg bg-blue-50">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <h5 className="font-medium text-routiq-core">Smart Section Tours</h5>
@@ -676,7 +676,7 @@ export default function SettingsContent() {
                       variant="outline" 
                       size="sm"
                       onClick={() => handleStartTour('navigation-discovery')}
-                      className="bg-gradient-to-r from-routiq-cloud to-routiq-energy text-white border-none hover:opacity-90"
+                      className="bg-blue-600 text-white border-none hover:bg-blue-700">
                     >
                       <Sparkles className="h-4 w-4 mr-1" />
                       Overview
@@ -693,7 +693,7 @@ export default function SettingsContent() {
                       variant="outline" 
                       size="sm"
                       onClick={handleShowOnboarding}
-                      className="bg-routiq-energy/20 border-routiq-energy/40 text-routiq-core hover:bg-routiq-energy/30"
+                      className="bg-gray-100 border-gray-300 text-gray-700 hover:bg-gray-200"
                     >
                       <Sparkles className="h-4 w-4 mr-1" />
                       Start Tour

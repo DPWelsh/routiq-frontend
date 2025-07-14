@@ -325,9 +325,9 @@ export default function IntegrationsPage() {
                   Connect WhatsApp Business API to enable direct patient communication and automated responses.
                 </p>
                 <div className="flex flex-wrap gap-1 md:gap-2">
-                  <Badge variant="secondary" className="text-xs">Messaging</Badge>
-                  <Badge variant="secondary" className="text-xs">Automation</Badge>
-                  <Badge variant="secondary" className="text-xs">Media</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200" className="text-xs bg-blue-100 text-blue-800 border-blue-200">Messaging</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200" className="text-xs bg-blue-100 text-blue-800 border-blue-200">Automation</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200" className="text-xs bg-blue-100 text-blue-800 border-blue-200">Media</Badge>
                 </div>
                 <Button className="w-full bg-routiq-core hover:bg-routiq-core/90 min-h-[44px] text-sm">
                   Connect WhatsApp
@@ -353,9 +353,9 @@ export default function IntegrationsPage() {
                   Manage Instagram Direct Messages and engage with patients through social media.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Social</Badge>
-                  <Badge variant="secondary">DMs</Badge>
-                  <Badge variant="secondary">Stories</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Social</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">DMs</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Stories</Badge>
                 </div>
                 <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
                   Connect Instagram
@@ -381,9 +381,9 @@ export default function IntegrationsPage() {
                   Process patient payments, manage subscriptions, and handle billing automatically.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Payments</Badge>
-                  <Badge variant="secondary">Invoicing</Badge>
-                  <Badge variant="secondary">Subscriptions</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Payments</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Invoicing</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Subscriptions</Badge>
                 </div>
                 <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
                   Connect Stripe
@@ -409,9 +409,9 @@ export default function IntegrationsPage() {
                   Secure patient communication through Telegram with bot automation support.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Encrypted</Badge>
-                  <Badge variant="secondary">Bots</Badge>
-                  <Badge variant="secondary">Files</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Encrypted</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Bots</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Files</Badge>
                 </div>
                 <Button className="w-full" variant="outline">
                   Coming Soon
@@ -437,9 +437,9 @@ export default function IntegrationsPage() {
                   Sync appointment bookings and manage patient scheduling automatically.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Scheduling</Badge>
-                  <Badge variant="secondary">Calendar</Badge>
-                  <Badge variant="secondary">Reminders</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Scheduling</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Calendar</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Reminders</Badge>
                 </div>
                 <Button className="w-full" variant="outline">
                   Coming Soon
@@ -465,9 +465,9 @@ export default function IntegrationsPage() {
                   Accept payments, process cards, and manage transactions at your clinic.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Payments</Badge>
-                  <Badge variant="secondary">Card Terminal</Badge>
-                  <Badge variant="secondary">Receipts</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Payments</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Card Terminal</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Receipts</Badge>
                 </div>
                 <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
                   Connect Square
@@ -493,9 +493,9 @@ export default function IntegrationsPage() {
                   Prescribe exercises, track patient compliance, and monitor progress.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Exercise Library</Badge>
-                  <Badge variant="secondary">Patient Portal</Badge>
-                  <Badge variant="secondary">Compliance</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Exercise Library</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Patient Portal</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Compliance</Badge>
                 </div>
                 <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
                   Connect Physitrack
@@ -521,9 +521,9 @@ export default function IntegrationsPage() {
                   Sync appointments with Google Calendar for seamless scheduling.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Sync</Badge>
-                  <Badge variant="secondary">Reminders</Badge>
-                  <Badge variant="secondary">Shared Calendars</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Sync</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Reminders</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Shared Calendars</Badge>
                 </div>
                 <Button className="w-full bg-routiq-core hover:bg-routiq-core/90">
                   Connect Google
@@ -549,9 +549,9 @@ export default function IntegrationsPage() {
                   Submit Medicare and DVA claims directly from your practice management system.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">Medicare</Badge>
-                  <Badge variant="secondary">DVA</Badge>
-                  <Badge variant="secondary">Bulk Billing</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Medicare</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">DVA</Badge>
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">Bulk Billing</Badge>
                 </div>
                 <Button className="w-full" variant="outline">
                   Coming Soon

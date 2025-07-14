@@ -13,10 +13,10 @@ const SettingsContent = dynamicImport(() => import('./settings-content'), {
     <div className="min-h-screen bg-white flex items-center justify-center">
       <div className="relative">
         {/* Outer spinning ring */}
-        <div className="absolute inset-0 w-20 h-20 border-4 border-gray-200 border-t-routiq-energy rounded-full animate-routiq-spin"></div>
+        <div className="absolute inset-0 w-20 h-20 border-4 border-gray-200 border-t-gray-400 rounded-full animate-routiq-spin"></div>
         
         {/* Inner pulsing ring */}
-        <div className="absolute inset-2 w-16 h-16 border-2 border-routiq-cloud/30 rounded-full animate-routiq-pulse"></div>
+        <div className="absolute inset-2 w-16 h-16 border-2 border-blue-300 rounded-full animate-routiq-pulse"></div>
         
         {/* Routiq Logo */}
         <div className="w-20 h-20 flex items-center justify-center animate-routiq-fade-in">
