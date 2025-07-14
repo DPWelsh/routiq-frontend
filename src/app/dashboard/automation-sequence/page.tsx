@@ -136,7 +136,7 @@ export default function AutomationSequencePage() {
   }
 
   return (
-    <div className="min-h-screen bg-routiq-cloud/5">
+    <div className="min-h-screen bg-blue-50 automation-sequence-page">
       <div className="max-w-8xl mx-auto space-y-6 p-6">
         {/* Header */}
         <div className="space-y-4 bg-white p-6 rounded-lg">
@@ -158,7 +158,7 @@ export default function AutomationSequencePage() {
             {automationSequences.map((sequence, index) => (
               <div key={sequence.id}>
                 <Card 
-                  className={`cursor-pointer transition-all ${
+                  className={`cursor-pointer transition-all bg-white border-gray-200 ${
                     selectedSequence === sequence.id 
                       ? 'ring-2 ring-routiq-cloud shadow-lg' 
                       : 'hover:shadow-md'

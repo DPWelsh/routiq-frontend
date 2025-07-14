@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 
 // Enhanced Card with mobile-responsive variants
 const cardVariants = cva(
-  "rounded-xl border bg-card text-card-foreground shadow",
+  "rounded-xl border border-gray-200 bg-white text-gray-900 shadow",
   {
     variants: {
       // Mobile-responsive padding variants
@@ -18,8 +18,8 @@ const cardVariants = cva(
       // Touch interaction variants
       interaction: {
         none: "",
-        touch: "touch-manipulation cursor-pointer hover:bg-accent/5 transition-colors active:scale-[0.98]",
-        button: "touch-manipulation cursor-pointer hover:bg-accent/10 focus-visible:ring-2 focus-visible:ring-ring transition-all active:scale-[0.98]",
+        touch: "touch-manipulation cursor-pointer hover:bg-gray-50 transition-colors active:scale-[0.98]",
+        button: "touch-manipulation cursor-pointer hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-blue-500 transition-all active:scale-[0.98]",
       }
     },
     defaultVariants: {
@@ -94,7 +94,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-sm text-gray-600", className)}
     {...props}
   />
 ))
@@ -177,7 +177,7 @@ const TouchCard = React.forwardRef<HTMLDivElement, TouchCardProps>(
         // Selected state
         isSelected && [
           "border-routiq-core shadow-md",
-          "bg-routiq-core/5"
+          "bg-blue-50"
         ],
         className
       )}

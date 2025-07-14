@@ -47,7 +47,7 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
 
   return (
     <>
-      <Card className="h-full">
+      <Card className="h-full bg-white border-gray-200">
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">

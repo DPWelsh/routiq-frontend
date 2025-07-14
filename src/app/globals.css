@@ -831,3 +831,15 @@ div[role="tooltip"] {
 .recharts-tooltip-wrapper .recharts-tooltip-content [style*="--tremor-color-violet"] {
   color: #8b5cf6 !important;
 }
+
+/* Force Card components to have white backgrounds - prevents yellow fallback from CSS variables */
+div[class*="rounded-xl"][class*="border"][class*="shadow"]:not([class*="bg-"]) {
+  background-color: white !important;
+  border-color: #e5e7eb !important;
+}
+
+/* Specific fix for automation sequence cards */
+.automation-sequence-page div[class*="rounded-xl"] {
+  background-color: white !important;
+  border-color: #e5e7eb !important;
+}
