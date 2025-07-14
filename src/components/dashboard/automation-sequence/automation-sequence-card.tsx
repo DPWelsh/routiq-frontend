@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Users, Clock, Plus, X, Eye, Edit } from 'lucide-react'
+import { Users, Clock, Plus, X, Eye, Edit, ChevronDown } from 'lucide-react'
 import { PatientListModal } from './patient-list-modal'
 
 interface AutomationStep {
@@ -36,7 +36,6 @@ interface AutomationSequenceCardProps {
 export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequenceCardProps) {
   const [selectedStep, setSelectedStep] = useState<string | null>(null)
   const [showPatientModal, setShowPatientModal] = useState(false)
-  const [showAddPatientModal, setShowAddPatientModal] = useState(false)
   const [selectedStepForAction, setSelectedStepForAction] = useState<string | null>(null)
 
   const mockPatients = [
@@ -88,19 +87,19 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
             
             <div className="space-y-3">
               {sequence.steps.map((step, index) => (
-                <div
-                  key={step.id}
-                  className={`relative p-4 rounded-lg border-2 transition-all cursor-pointer ${
-                    selectedStep === step.id 
-                      ? 'border-routiq-cloud bg-blue-50' 
-                      : 'border-routiq-prompt/20 hover:border-routiq-cloud/50'
-                  }`}
-                  onClick={() => setSelectedStep(selectedStep === step.id ? null : step.id)}
-                >
-                  {/* Step connector line */}
-                  {index < sequence.steps.length - 1 && (
-                    <div className="absolute left-6 top-12 w-0.5 h-8 bg-routiq-prompt/20" />
-                  )}
+                <div key={step.id}>
+                  <div
+                    className={`relative p-4 rounded-lg border-2 transition-all cursor-pointer ${
+                      selectedStep === step.id 
+                        ? 'border-routiq-cloud bg-blue-50' 
+                        : 'border-routiq-prompt/20 hover:border-routiq-cloud/50'
+                    }`}
+                    onClick={() => setSelectedStep(selectedStep === step.id ? null : step.id)}
+                  >
+                    {/* Step connector line */}
+                    {index < sequence.steps.length - 1 && selectedStep !== step.id && (
+                      <div className="absolute left-6 top-12 w-0.5 h-8 bg-routiq-prompt/20" />
+                    )}
                   
                   <div className="flex items-start gap-3">
                     <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
@@ -118,70 +117,84 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                           <Badge variant="outline" className="text-xs border-gray-300 text-gray-700 bg-white">
                             {step.patientCount} patients
                           </Badge>
+                          {/* Expand/Collapse indicator */}
+                          <div className={`transition-transform duration-200 ${
+                            selectedStep === step.id ? 'rotate-180' : ''
+                          }`}>
+                            <ChevronDown className="h-4 w-4 text-gray-500" />
+                          </div>
                         </div>
                       </div>
                       
                       <p className="text-sm text-routiq-core/70 mb-3">
-                        "{step.message}"
+                        &quot;{step.message}&quot;
                       </p>
-                      
-                      {selectedStep === step.id && (
+                    </div>
+                  </div>
+                  </div>
+                  
+                  {/* Expanded content now appears below the step card */}
+                  {selectedStep === step.id && (
                         <div className="mt-3 p-3 bg-white rounded-lg border border-routiq-prompt/20">
                           <div className="flex items-center justify-between mb-3">
                             <h5 className="font-medium text-sm">Patients in this step</h5>
                             <Button variant="outline" size="sm" onClick={() => {
                               setSelectedStepForAction(step.id)
-                              setShowAddPatientModal(true)
+                              setShowPatientModal(true)
                             }}>
                               <Plus className="h-4 w-4 mr-1" />
                               Add Patient
                             </Button>
                           </div>
                           
-                          {step.patientCount > 0 ? (
-                            <div className="space-y-2">
-                              {mockPatients.slice(0, step.patientCount).map((patient) => (
-                                <div 
-                                  key={patient.id}
-                                  className="flex items-center justify-between p-2 bg-gray-50 rounded"
-                                >
-                                  <div className="flex items-center gap-2">
-                                    <Avatar className="h-6 w-6">
-                                      <AvatarFallback className="text-xs">
-                                        {patient.name.split(' ').map(n => n[0]).join('')}
-                                      </AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                      <p className="text-sm font-medium">{patient.name}</p>
-                                      <p className="text-xs text-routiq-core/60">{patient.email}</p>
-                                    </div>
-                                  </div>
-                                  <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                                    <X className="h-3 w-3" />
-                                  </Button>
+                      {step.patientCount > 0 ? (
+                        <div className="space-y-2">
+                          {mockPatients.slice(0, step.patientCount).map((patient) => (
+                            <div 
+                              key={patient.id}
+                              className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                            >
+                              <div className="flex items-center gap-2">
+                                <Avatar className="h-6 w-6">
+                                  <AvatarFallback className="text-xs">
+                                    {patient.name.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="text-sm font-medium">{patient.name}</p>
+                                  <p className="text-xs text-routiq-core/60">{patient.email}</p>
                                 </div>
-                              ))}
-                              
-                              {step.patientCount > 3 && (
-                                <Button variant="ghost" size="sm" className="w-full hover:bg-[#7BA2E0]/80 hover:text-white transition-all duration-200" onClick={() => {
-                                  setSelectedStepForAction(step.id)
-                                  setShowPatientModal(true)
-                                }}>
-                                  <Eye className="h-4 w-4 mr-2" />
-                                  View all {step.patientCount} patients
-                                </Button>
-                              )}
+                              </div>
+                              <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                <X className="h-3 w-3" />
+                              </Button>
                             </div>
-                          ) : (
-                            <div className="text-center py-4 text-routiq-core/60">
-                              <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                              <p className="text-sm">No patients in this step yet</p>
-                            </div>
+                          ))}
+                          
+                          {step.patientCount > 3 && (
+                            <Button variant="ghost" size="sm" className="w-full hover:bg-[#7BA2E0]/80 hover:text-white transition-all duration-200" onClick={(e) => {
+                              e.stopPropagation()
+                              setSelectedStepForAction(step.id)
+                              setShowPatientModal(true)
+                            }}>
+                              <Eye className="h-4 w-4 mr-2" />
+                              View all {step.patientCount} patients
+                            </Button>
                           )}
+                        </div>
+                      ) : (
+                        <div className="text-center py-4 text-routiq-core/60">
+                          <Users className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">No patients in this step yet</p>
                         </div>
                       )}
                     </div>
-                  </div>
+                  )}
+                  
+                  {/* Extended connector line for expanded content */}
+                  {index < sequence.steps.length - 1 && selectedStep === step.id && (
+                    <div className="ml-6 w-0.5 h-4 bg-routiq-prompt/20" />
+                  )}
                 </div>
               ))}
             </div>
@@ -197,39 +210,6 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
         patients={mockPatients}
       />
 
-      {/* Add Patient Modal */}
-      {showAddPatientModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-96 bg-white">
-            <CardHeader>
-              <CardTitle>Add Patient to Step</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-4">
-                This feature will allow you to add patients to specific automation steps.
-              </p>
-              <div className="flex gap-2">
-                <Button 
-                  variant="outline" 
-                  onClick={() => setShowAddPatientModal(false)}
-                  className="flex-1"
-                >
-                  Cancel
-                </Button>
-                <Button 
-                  onClick={() => {
-                    alert('Add patient functionality will be implemented here')
-                    setShowAddPatientModal(false)
-                  }}
-                  className="flex-1"
-                >
-                  Add Patient
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
     </>
   )
 }
