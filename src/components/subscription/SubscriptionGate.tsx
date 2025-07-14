@@ -20,7 +20,7 @@ export function SubscriptionGate({ children, fallback }: SubscriptionGateProps) 
       {fallback || (
         <Card className="max-w-md mx-auto">
           <CardHeader className="text-center">
-            <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <Crown className="h-6 w-6 text-white" />
             </div>
             <CardTitle className="flex items-center justify-center gap-2">

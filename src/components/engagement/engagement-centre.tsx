@@ -402,7 +402,7 @@ export function EngagementCentre() {
         <h2 className="text-xl font-semibold text-gray-900 mb-6">Top Priorities This Week</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* 🔴 Urgent Patients to Rebook */}
-          <Card className="border border-red-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-gradient-to-br from-red-50 to-red-100/50">
+          <Card className="border border-red-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-red-50">
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -432,7 +432,7 @@ export function EngagementCentre() {
           </Card>
 
           {/* 🔶 Patients Uncontacted 14+ Days */}
-          <Card className="border border-orange-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-gradient-to-br from-orange-50 to-orange-100/50">
+          <Card className="border border-orange-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-orange-50">
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -462,7 +462,7 @@ export function EngagementCentre() {
           </Card>
 
           {/* 🟡 Low Engagement but High LTV */}
-          <Card className="border border-amber-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-gradient-to-br from-amber-50 to-amber-100/50">
+          <Card className="border border-amber-200 shadow-sm hover:shadow-md transition-shadow duration-200 bg-amber-50">
             <CardContent className="p-6">
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
@@ -505,7 +505,7 @@ export function EngagementCentre() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* 📞 Avg. First Reply Time */}
-            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-gradient-to-br from-slate-50/30 to-white overflow-hidden relative">
+            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-slate-50 overflow-hidden relative">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -530,7 +530,7 @@ export function EngagementCentre() {
             </Card>
 
             {/* ✅ Outreach Success Rate */}
-            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-gradient-to-br from-slate-50/40 to-white overflow-hidden relative">
+            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-slate-50 overflow-hidden relative">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -556,7 +556,7 @@ export function EngagementCentre() {
             </Card>
 
             {/* 🗓️ Weekly Engagements */}
-            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-gradient-to-br from-slate-50/50 to-white overflow-hidden relative">
+            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-slate-50 overflow-hidden relative">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -590,7 +590,7 @@ export function EngagementCentre() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* ❌ Missed Rebookings */}
-            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-gradient-to-br from-gray-50/30 to-white overflow-hidden relative">
+            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-gray-50 overflow-hidden relative">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
@@ -615,7 +615,7 @@ export function EngagementCentre() {
             </Card>
 
             {/* 🧭 Active Pipeline */}
-            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-gradient-to-br from-gray-50/40 to-white overflow-hidden relative">
+            <Card className="border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 bg-gray-50 overflow-hidden relative">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">

@@ -9,7 +9,7 @@ const AuthProvider = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="min-h-screen bg-gradient-to-br from-routiq-cloud/20 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-routiq-cloud/20 flex items-center justify-center">
         <div className="text-center space-y-4">
           <LoadingSpinner size="lg" />
           <p className="text-sm text-routiq-blackberry/60">Initializing Routiq Hub...</p>

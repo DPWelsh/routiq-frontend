@@ -42,7 +42,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Automated engagement workflows',
       'Integrated healthcare tools'
     ],
-    gradient: 'from-blue-50 to-gray-50'
+    gradient: 'bg-blue-50'
   },
   {
     id: 'dashboard',
@@ -55,7 +55,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Revenue analytics',
       'Performance indicators'
     ],
-    gradient: 'from-blue-50 to-blue-100'
+    gradient: 'bg-blue-50'
   },
   {
     id: 'insights',
@@ -68,7 +68,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Churn risk scoring',
       'Engagement metrics'
     ],
-    gradient: 'from-green-50 to-green-100'
+    gradient: 'bg-green-50'
   },
   {
     id: 'automation',
@@ -81,7 +81,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Personalized messaging',
       'ROI tracking'
     ],
-    gradient: 'from-purple-50 to-purple-100'
+    gradient: 'bg-purple-50'
   },
   {
     id: 'integrations',
@@ -94,7 +94,7 @@ const onboardingSteps: OnboardingStep[] = [
       'Calendar integrations',
       'Data synchronization'
     ],
-    gradient: 'from-orange-50 to-orange-100'
+    gradient: 'bg-orange-50'
   }
 ]
 
@@ -155,7 +155,7 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
               exit={{ opacity: 0, x: -50 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <Card className={`p-6 md:p-8 bg-gradient-to-br ${step.gradient} border-routiq-core/10`}>
+              <Card className={`p-6 md:p-8 ${step.gradient} border-routiq-core/10`}>
                 <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-center">
                   {/* Content */}
                   <div className="space-y-6">
@@ -286,16 +286,16 @@ function WelcomePreview() {
         <span className="font-semibold text-routiq-core">Routiq Dashboard</span>
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <div className="h-16 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-lg flex items-center justify-center">
+        <div className="h-16 bg-blue-500/20 rounded-lg flex items-center justify-center">
           <BarChart3 className="h-6 w-6 text-blue-600" />
         </div>
-        <div className="h-16 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-lg flex items-center justify-center">
+        <div className="h-16 bg-green-500/20 rounded-lg flex items-center justify-center">
           <TrendingUp className="h-6 w-6 text-green-600" />
         </div>
-        <div className="h-16 bg-gradient-to-r from-purple-500/20 to-violet-600/20 rounded-lg flex items-center justify-center">
+        <div className="h-16 bg-purple-500/20 rounded-lg flex items-center justify-center">
           <Bot className="h-6 w-6 text-purple-600" />
         </div>
-        <div className="h-16 bg-gradient-to-r from-orange-500/20 to-red-600/20 rounded-lg flex items-center justify-center">
+        <div className="h-16 bg-orange-500/20 rounded-lg flex items-center justify-center">
           <Zap className="h-6 w-6 text-orange-600" />
         </div>
       </div>

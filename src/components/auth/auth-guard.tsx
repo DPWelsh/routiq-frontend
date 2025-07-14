@@ -29,7 +29,7 @@ export function AuthGuard({
   if (!isLoaded) {
     console.log('🔄 AUTH GUARD: Showing loading spinner - Clerk not loaded yet')
     return fallback || (
-      <div className="min-h-screen bg-gradient-to-br from-routiq-cloud/20 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-routiq-cloud/20 flex items-center justify-center">
         <div className="text-center space-y-4">
           <LoadingSpinner size="lg" text="Loading..." />
         </div>
@@ -41,7 +41,7 @@ export function AuthGuard({
   if (!isSignedIn) {
     console.log('🔄 AUTH GUARD: Showing loading spinner - Redirecting to sign-in')
     return fallback || (
-      <div className="min-h-screen bg-gradient-to-br from-routiq-cloud/20 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-routiq-cloud/20 flex items-center justify-center">
         <div className="text-center space-y-4">
           <LoadingSpinner size="lg" text="Redirecting to sign-in..." />
         </div>

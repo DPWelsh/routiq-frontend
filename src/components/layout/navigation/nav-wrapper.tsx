@@ -269,7 +269,7 @@ function ResponsiveDashboardNav() {
 
 // Keep the original loading fallback
 const LoadingNav = (
-  <nav className="w-64 bg-gradient-to-b from-white via-routiq-cloud/20 to-white border-r border-routiq-cloud/50 min-h-screen">
+  <nav className="w-64 bg-white border-r border-routiq-cloud/50 min-h-screen">
     <div className="p-6">
       <div className="space-y-4">
         <div className="h-4 bg-routiq-cloud/60 rounded-full animate-pulse"></div>

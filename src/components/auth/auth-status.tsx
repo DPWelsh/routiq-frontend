@@ -23,7 +23,7 @@ export function AuthStatus() {
 
   if (!isLoaded) {
     return (
-      <div className="p-6 bg-gradient-to-r from-routiq-cloud/20 to-routiq-prompt/10 rounded-xl border border-routiq-cloud/30">
+      <div className="p-6 bg-routiq-cloud/20 rounded-xl border border-routiq-cloud/30">
         <div className="flex items-center space-x-3">
           <div className="w-5 h-5 border-2 border-routiq-prompt border-t-transparent rounded-full animate-spin"></div>
           <p className="text-routiq-core font-medium">Loading authentication...</p>
@@ -34,7 +34,7 @@ export function AuthStatus() {
 
   if (!isSignedIn) {
     return (
-      <div className="p-6 bg-gradient-to-r from-routiq-prompt/10 to-routiq-energy/10 rounded-xl border border-routiq-prompt/20">
+      <div className="p-6 bg-routiq-prompt/10 rounded-xl border border-routiq-prompt/20">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-routiq-prompt/20 rounded-lg">
@@ -56,7 +56,7 @@ export function AuthStatus() {
   }
 
   return (
-    <div className="p-6 bg-gradient-to-r from-routiq-prompt/10 to-routiq-energy/10 rounded-xl border border-routiq-prompt/20">
+    <div className="p-6 bg-routiq-prompt/10 rounded-xl border border-routiq-prompt/20">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="p-2 bg-routiq-prompt/20 rounded-lg">

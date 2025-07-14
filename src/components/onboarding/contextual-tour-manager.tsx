@@ -37,7 +37,7 @@ const sectionMappings: SectionInfo[] = [
     description: 'Dashboard analytics',
     tourId: 'dashboard-contextual',
     icon: BarChart3,
-    color: 'from-blue-500 to-blue-600'
+    color: 'bg-blue-500'
   },
   {
     path: '/dashboard/patient-insights',
@@ -45,7 +45,7 @@ const sectionMappings: SectionInfo[] = [
     description: 'Patient journey tracking',
     tourId: 'patient-insights-contextual',
     icon: Users,
-    color: 'from-green-500 to-emerald-600'
+    color: 'bg-green-500'
   },
   {
     path: '/dashboard/inbox',
@@ -53,7 +53,7 @@ const sectionMappings: SectionInfo[] = [
     description: 'Traditional message inbox',
     tourId: 'inbox-contextual',
     icon: Mail,
-    color: 'from-purple-500 to-violet-600'
+    color: 'bg-purple-500'
   },
   {
     path: '/dashboard/automation-sequence',
@@ -61,7 +61,7 @@ const sectionMappings: SectionInfo[] = [
     description: 'Patient engagement flows',
     tourId: 'automation-contextual',
     icon: Bot,
-    color: 'from-orange-500 to-red-600'
+    color: 'bg-orange-500'
   },
   {
     path: '/dashboard/integrations',
@@ -69,7 +69,7 @@ const sectionMappings: SectionInfo[] = [
     description: 'Connected services',
     tourId: 'integrations-contextual',
     icon: Zap,
-    color: 'from-indigo-500 to-purple-600'
+    color: 'bg-indigo-500'
   },
   {
     path: '/dashboard/settings',
@@ -77,7 +77,7 @@ const sectionMappings: SectionInfo[] = [
     description: 'System configuration',
     tourId: 'settings-contextual',
     icon: Settings,
-    color: 'from-gray-500 to-gray-600'
+    color: 'bg-gray-500'
   }
 ]
 
@@ -167,7 +167,7 @@ export function ContextualTourManager() {
             {/* Header */}
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg bg-gradient-to-r ${currentSection.color} text-white`}>
+                <div className={`p-2 rounded-lg ${currentSection.color} text-white`}>
                   <Icon className="h-5 w-5" />
                 </div>
                 <div>

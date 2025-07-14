@@ -32,7 +32,7 @@ const tourOptions: TourOption[] = [
     name: 'App Overview',
     description: 'Quick introduction to Routiq sections',
     icon: Sparkles,
-    color: 'bg-gradient-to-r from-routiq-cloud to-routiq-energy',
+    color: 'bg-routiq-cloud',
     duration: '2 min'
   },
   {
