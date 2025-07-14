@@ -36,6 +36,8 @@ interface AutomationSequenceCardProps {
 export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequenceCardProps) {
   const [selectedStep, setSelectedStep] = useState<string | null>(null)
   const [showPatientModal, setShowPatientModal] = useState(false)
+  const [showAddPatientModal, setShowAddPatientModal] = useState(false)
+  const [selectedStepForAction, setSelectedStepForAction] = useState<string | null>(null)
 
   const mockPatients = [
     { id: '1', name: 'Sarah Johnson', email: 'sarah.j@email.com', phone: '+1 (555) 123-4567', lastAppointment: '2024-01-15' },
@@ -127,7 +129,10 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                         <div className="mt-3 p-3 bg-white rounded-lg border border-routiq-prompt/20">
                           <div className="flex items-center justify-between mb-3">
                             <h5 className="font-medium text-sm">Patients in this step</h5>
-                            <Button variant="outline" size="sm">
+                            <Button variant="outline" size="sm" onClick={() => {
+                              setSelectedStepForAction(step.id)
+                              setShowAddPatientModal(true)
+                            }}">
                               <Plus className="h-4 w-4 mr-1" />
                               Add Patient
                             </Button>
@@ -158,7 +163,10 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                               ))}
                               
                               {step.patientCount > 3 && (
-                                <Button variant="ghost" size="sm" className="w-full hover:bg-[#7BA2E0]/80 hover:text-white transition-all duration-200">
+                                <Button variant="ghost" size="sm" className="w-full hover:bg-[#7BA2E0]/80 hover:text-white transition-all duration-200" onClick={() => {
+                                  setSelectedStepForAction(step.id)
+                                  setShowPatientModal(true)
+                                }}">
                                   <Eye className="h-4 w-4 mr-2" />
                                   View all {step.patientCount} patients
                                 </Button>
@@ -188,6 +196,40 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
         sequence={sequence}
         patients={mockPatients}
       />
+
+      {/* Add Patient Modal */}
+      {showAddPatientModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <Card className="w-96 bg-white">
+            <CardHeader>
+              <CardTitle>Add Patient to Step</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-600 mb-4">
+                This feature will allow you to add patients to specific automation steps.
+              </p>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowAddPatientModal(false)}
+                  className="flex-1"
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={() => {
+                    alert('Add patient functionality will be implemented here')
+                    setShowAddPatientModal(false)
+                  }}
+                  className="flex-1"
+                >
+                  Add Patient
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </>
   )
 }
