@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
 import { 
   BarChart3, 
   TrendingUp, 
@@ -144,7 +143,13 @@ export function WelcomeOnboarding({ onComplete, onSkip, onStartInteractiveTour }
                 Skip tour
               </Button>
             </div>
-            <Progress value={progress} className="h-2" />
+            {/* Simple, reliable progress bar */}
+            <div className="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+              <div 
+                className="h-full bg-blue-500 transition-all duration-300 ease-out rounded-full"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
           </div>
 
           <AnimatePresence mode="wait">
