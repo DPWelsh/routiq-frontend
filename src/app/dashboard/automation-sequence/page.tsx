@@ -53,7 +53,7 @@ export default function AutomationSequencePage() {
       goal: 'Win back casual patients who have drifted',
       status: 'planned',
       patientCount: 0,
-      color: 'bg-yellow-500',
+      color: 'bg-orange-500',
       steps: [
         {
           id: 'miss-you-email',

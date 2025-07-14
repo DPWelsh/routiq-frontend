@@ -214,7 +214,7 @@ export function ContextualTourManager() {
                 variant="outline"
                 size="sm"
                 onClick={handleMaybeLater}
-                className="flex-shrink-0"
+                className="flex-shrink-0 border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-400"
               >
                 Later
               </Button>

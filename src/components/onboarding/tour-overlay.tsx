@@ -480,7 +480,7 @@ export function TourOverlay({
                   onClick={handlePrevious}
                   disabled={step === 0}
                   size="sm"
-                  className="text-routiq-core border-routiq-cloud/30"
+                  className="text-gray-700 border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400 disabled:opacity-50"
                 >
                   <ArrowLeft className="h-4 w-4 mr-1" />
                   Previous
@@ -518,7 +518,7 @@ export function TourOverlay({
           <Button
             variant="outline"
             onClick={handleSkip}
-            className="bg-white/90 backdrop-blur-sm border-white/40 text-routiq-core hover:bg-white"
+            className="bg-white/90 backdrop-blur-sm border-gray-300 text-gray-700 hover:bg-white hover:border-gray-400"
           >
             Skip Tour
           </Button>

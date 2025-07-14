@@ -373,8 +373,8 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
         )
       case 'Dormant':
         return (
-          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-yellow-100 to-amber-100 text-yellow-800 shadow-sm border border-yellow-200">
-            <div className="w-2 h-2 bg-yellow-500 rounded-full mr-1.5"></div>
+          <span className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 shadow-sm border border-amber-200">
+            <div className="w-2 h-2 bg-amber-500 rounded-full mr-1.5"></div>
             Dormant
           </span>
         )
@@ -542,7 +542,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                 <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
                   activeFilter === 'all' 
                     ? 'bg-gradient-to-br from-slate-400 to-slate-500 shadow-lg' 
-                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                    : 'bg-gray-100'
                 }`}>
                   <Users className={`h-6 w-6 ${activeFilter === 'all' ? 'text-white' : 'text-gray-500'}`} />
                 </div>
@@ -572,7 +572,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                 <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
                   activeFilter === 'active' 
                     ? 'bg-gradient-to-br from-emerald-400 to-green-500 shadow-lg' 
-                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                    : 'bg-gray-100'
                 }`}>
                   <TrendingUp className={`h-6 w-6 ${activeFilter === 'active' ? 'text-white' : 'text-gray-500'}`} />
                 </div>
@@ -595,8 +595,8 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
           <Card 
             className={`cursor-pointer transition-all duration-300 border transform hover:scale-105 ${
               activeFilter === 'dormant' 
-                ? 'border-amber-200 bg-gradient-to-br from-amber-50 via-yellow-50 to-amber-50 shadow-lg shadow-amber-100' 
-                : 'border-gray-200 bg-gradient-to-br from-gray-50 to-white hover:bg-gradient-to-br hover:from-amber-25 hover:to-yellow-25 hover:border-amber-200 hover:shadow-md hover:shadow-amber-50'
+                ? 'border-amber-200 bg-amber-50 shadow-lg shadow-amber-100' 
+                : 'border-gray-200 bg-gray-50 hover:bg-amber-25 hover:border-amber-200 hover:shadow-md hover:shadow-amber-50'
             }`}
             onClick={() => setActiveFilter('dormant')}
           >
@@ -604,8 +604,8 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
               <div className="flex items-center gap-3">
                 <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
                   activeFilter === 'dormant' 
-                    ? 'bg-gradient-to-br from-amber-300 to-yellow-400 shadow-lg' 
-                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                    ? 'bg-amber-400 shadow-lg' 
+                    : 'bg-gray-100'
                 }`}>
                   <UserCheck className={`h-6 w-6 ${activeFilter === 'dormant' ? 'text-white' : 'text-gray-500'}`} />
                 </div>
@@ -638,7 +638,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                 <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
                   activeFilter === 'at-risk' 
                     ? 'bg-gradient-to-br from-red-400 to-rose-500 shadow-lg' 
-                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                    : 'bg-gray-100'
                 }`}>
                   <AlertTriangle className={`h-6 w-6 ${activeFilter === 'at-risk' ? 'text-white' : 'text-gray-500'}`} />
                 </div>
@@ -671,7 +671,7 @@ export function AllPatientsTab({ searchTerm }: AllPatientsTabProps) {
                 <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
                   activeFilter === 'top-opportunities' 
                     ? 'bg-gradient-to-br from-orange-400 to-amber-500 shadow-lg' 
-                    : 'bg-gradient-to-br from-gray-100 to-gray-200'
+                    : 'bg-gray-100'
                 }`}>
                   <Star className={`h-6 w-6 ${activeFilter === 'top-opportunities' ? 'text-white' : 'text-gray-500'}`} />
                 </div>

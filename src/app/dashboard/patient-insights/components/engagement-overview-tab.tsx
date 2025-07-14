@@ -50,7 +50,7 @@ export function EngagementOverviewTab() {
 
   const riskDistribution = [
     { status: 'Low Risk', count: 189, percentage: 76.5, color: 'bg-green-500' },
-    { status: 'Medium Risk', count: 35, percentage: 14.2, color: 'bg-yellow-500' },
+    { status: 'Medium Risk', count: 35, percentage: 14.2, color: 'bg-orange-500' },
     { status: 'High Risk', count: 23, percentage: 9.3, color: 'bg-red-500' }
   ]
 

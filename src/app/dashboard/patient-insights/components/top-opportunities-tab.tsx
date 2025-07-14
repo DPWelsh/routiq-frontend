@@ -191,7 +191,7 @@ export function TopOpportunitiesTab() {
       case 'at-risk':
         return 'border-l-red-500 bg-red-50'
       case 'dormant':
-        return 'border-l-yellow-500 bg-yellow-50'
+        return 'border-l-orange-500 bg-orange-50'
       default:
         return 'border-l-gray-500 bg-gray-50'
     }
@@ -256,7 +256,7 @@ export function TopOpportunitiesTab() {
       <Card className="border-routiq-cloud/20 bg-white/60">
         <CardContent className="p-3">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 bg-routiq-energy/20 rounded-lg">
+            <div className="p-1.5 bg-gray-100 rounded-lg">
               <TrendingUp className="h-4 w-4 text-routiq-energy" />
             </div>
             <div>

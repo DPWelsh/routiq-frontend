@@ -73,7 +73,7 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
               </Button>
             </div>
           </div>
-          <div className="mt-3 p-3 bg-routiq-energy/30 rounded-lg">
+          <div className="mt-3 p-3 bg-gray-100 rounded-lg">
             <p className="text-sm text-routiq-core/80">
               <span className="font-medium">Goal:</span> {sequence.goal}
             </p>
@@ -90,7 +90,7 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                   key={step.id}
                   className={`relative p-4 rounded-lg border-2 transition-all cursor-pointer ${
                     selectedStep === step.id 
-                      ? 'border-routiq-cloud bg-routiq-cloud/5' 
+                      ? 'border-routiq-cloud bg-blue-50' 
                       : 'border-routiq-prompt/20 hover:border-routiq-cloud/50'
                   }`}
                   onClick={() => setSelectedStep(selectedStep === step.id ? null : step.id)}
@@ -101,7 +101,7 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                   )}
                   
                   <div className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-routiq-cloud/10 flex items-center justify-center">
+                    <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                       {getTypeIcon(step.type)}
                     </div>
                     
@@ -138,7 +138,7 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                               {mockPatients.slice(0, step.patientCount).map((patient) => (
                                 <div 
                                   key={patient.id}
-                                  className="flex items-center justify-between p-2 bg-routiq-energy/20 rounded"
+                                  className="flex items-center justify-between p-2 bg-gray-50 rounded"
                                 >
                                   <div className="flex items-center gap-2">
                                     <Avatar className="h-6 w-6">
