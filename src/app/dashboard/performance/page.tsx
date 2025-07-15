@@ -163,7 +163,7 @@ export default function RoutiqAgentPerformancePage() {
       <div className="flex items-center justify-between bg-white p-6 rounded-lg">
         <div>
           <div className="mb-2">
-            <h1 className="text-3xl font-bold text-routiq-core">Routiq Agent Performance</h1>
+            <h1 className="text-xl md:text-3xl font-bold text-routiq-core">Routiq Agent Performance</h1>
           </div>
           <p className="text-routiq-blackberry/70">AI assistant ROI metrics and healthcare automation insights</p>
         </div>

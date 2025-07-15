@@ -98,8 +98,8 @@ export default function SettingsContent() {
         <div className="space-y-4 bg-white p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-routiq-core">Settings</h1>
-              <p className="text-routiq-blackberry/70 text-lg">Manage your clinic and system preferences</p>
+              <h1 className="text-xl md:text-3xl font-bold text-routiq-core">Settings</h1>
+              <p className="text-routiq-blackberry/70 text-base md:text-lg">Manage your clinic and system preferences</p>
             </div>
           
           {/* Settings Search */}

@@ -207,8 +207,8 @@ export default function PatientsPage() {
         <div className="space-y-4 bg-white p-6 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-routiq-core">Patient Management</h1>
-              <p className="text-routiq-blackberry/70 text-lg">Manage patient engagement and appointments</p>
+              <h1 className="text-xl md:text-3xl font-bold text-routiq-core">Patient Management</h1>
+              <p className="text-routiq-blackberry/70 text-base md:text-lg">Manage patient engagement and appointments</p>
             </div>
             {patientsError && (
               <Alert className="max-w-md border-red-200 bg-red-50">

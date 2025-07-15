@@ -544,14 +544,8 @@ export default function InboxPage() {
       if (conversation) {
         fetchChatMessages(selectedPhone)
       }
-    } else if (!selectedPhone && conversations.length > 0) {
-      // Auto-select the first conversation if none is selected
-      const firstConversation = conversations[0]
-      if (firstConversation) {
-        router.push(`/dashboard/inbox?phone=${encodeURIComponent(firstConversation.phone)}`)
-      }
     }
-  }, [selectedPhone, conversations, router])
+  }, [selectedPhone, conversations])
 
   useEffect(() => {
     scrollToBottom()
@@ -823,42 +817,22 @@ export default function InboxPage() {
 
   return (
     <div className="h-[calc(100vh-4rem)] bg-routiq-cloud/5 flex flex-col">
-      {/* Mobile Not Supported Message */}
-      <div className="md:hidden flex-1 flex items-center justify-center p-6">
-        <div className="text-center max-w-sm mx-auto">
-          <MessageCircle className="h-16 w-16 text-routiq-blackberry/40 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-routiq-core mb-3">
-            Mobile View Coming Soon
-          </h2>
-          <p className="text-routiq-blackberry/70 mb-4 leading-relaxed">
-            The inbox experience is optimized for desktop and tablets. Please use a larger screen to access patient conversations.
-          </p>
-          <div className="bg-routiq-energy/30 rounded-lg p-4 border border-routiq-energy">
-            <p className="text-sm text-routiq-blackberry/60">
-              💡 <strong>Tip:</strong> You can still access patient data and analytics from other sections of the mobile app.
-            </p>
+      {/* Header */}
+      <div className="flex-shrink-0 px-6 pt-6 pb-3">
+        <div className="max-w-8xl mx-auto">
+          <div className="flex items-center justify-between bg-white p-6 rounded-lg">
+            <div>
+              <h1 className="text-xl md:text-3xl font-bold text-routiq-core">Inbox</h1>
+              <p className="text-routiq-blackberry/70 text-base md:text-lg">Manage patient conversations and communication</p>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Desktop Content */}
-      <div className="hidden md:block md:h-full">
-        {/* Header */}
-        <div className="flex-shrink-0 px-6 pt-6 pb-3">
-          <div className="max-w-8xl mx-auto">
-            <div className="flex items-center justify-between bg-white p-6 rounded-lg">
-              <div>
-                <h1 className="text-3xl font-bold text-routiq-core">Inbox</h1>
-                <p className="text-routiq-blackberry/70 text-lg">Manage patient conversations and communication</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
       {/* Inbox Interface */}
       <div className="flex-1 px-6 pb-6 min-h-0">
         <div className="max-w-8xl mx-auto h-full">
-          <div className="flex overflow-hidden rounded-lg border border-routiq-cloud/30 bg-white h-full" data-tour="inbox-content">
+          <div className="flex overflow-hidden rounded-lg border border-routiq-cloud/30 bg-white h-full">
           {/* Sidebar - Conversation List */}
           <div className="w-[500px] bg-white border-r border-routiq-cloud/30 flex flex-col h-full">
             {/* Search and Filters Header */}
@@ -868,7 +842,7 @@ export default function InboxPage() {
               </div>
           
           {/* Platform Filter Buttons */}
-          <div className="mb-3" data-tour="message-filters">
+          <div className="mb-3">
             <div className="flex items-center gap-2 mb-2">
               <MessageCircle className="h-3 w-3 text-routiq-blackberry/50" />
               <span className="text-xs text-routiq-blackberry/60 font-medium">Platform</span>
@@ -1227,7 +1201,7 @@ export default function InboxPage() {
 
             {/* Right Sidebar - Patient Info */}
             {selectedChat && selectedChat.conversation && (
-              <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full" data-tour="conversation-context">
+              <div className="w-96 bg-white border-l border-routiq-cloud/30 flex flex-col h-full">
                 <ConversationPerformancePanel 
                   conversation={selectedChat.conversation}
                   messages={selectedChat.messages}
@@ -1236,7 +1210,6 @@ export default function InboxPage() {
             )}
           </div>
         </div>
-      </div>
       </div>
     </div>
   )

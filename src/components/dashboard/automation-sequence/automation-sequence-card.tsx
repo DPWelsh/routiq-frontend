@@ -50,15 +50,15 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
     <>
       <Card className="h-full bg-white border-gray-200">
         <CardHeader>
-          <div className="flex items-start justify-between">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className={`w-4 h-4 rounded-full ${sequence.color}`} />
-              <div>
+              <div className="flex-1">
                 <CardTitle className="text-lg">{sequence.title}</CardTitle>
                 <CardDescription className="mt-1">{sequence.definition}</CardDescription>
               </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 md:flex-shrink-0">
               <Button 
                 variant="outline" 
                 size="sm"
@@ -107,14 +107,17 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                     </div>
                     
                     <div className="flex-1">
-                      <div className="flex items-start justify-between mb-1">
-                        <div className="flex-1 pr-2">
-                          <h4 className="font-medium text-routiq-core mb-1">{step.title}</h4>
-                          <p className="text-sm text-routiq-core/70">
-                            &quot;{step.message}&quot;
-                          </p>
+                      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-1">
+                        <div className="flex items-center justify-between md:hidden">
+                          <h4 className="font-medium text-routiq-core">{step.title}</h4>
+                          <div className={`transition-transform duration-200 ${
+                            selectedStep === step.id ? 'rotate-180' : ''
+                          }`}>
+                            <ChevronDown className="h-4 w-4 text-gray-500" />
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1.5 flex-shrink-0">
+                        
+                        <div className="flex items-center gap-1.5 md:hidden">
                           <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 border-blue-200">
                             <Clock className="h-3 w-3 mr-1" />
                             {step.timing}
@@ -122,7 +125,23 @@ export function AutomationSequenceCard({ sequence, getTypeIcon }: AutomationSequ
                           <Badge variant="outline" className="text-xs border-gray-300 text-gray-700 bg-white">
                             {step.patientCount} patients
                           </Badge>
-                          {/* Expand/Collapse indicator */}
+                        </div>
+                        
+                        <div className="md:flex-1 md:pr-2">
+                          <h4 className="hidden md:block font-medium text-routiq-core mb-1">{step.title}</h4>
+                          <p className="text-sm text-routiq-core/70">
+                            &quot;{step.message}&quot;
+                          </p>
+                        </div>
+                        
+                        <div className="hidden md:flex items-center gap-1.5 flex-shrink-0">
+                          <Badge variant="secondary" className="text-xs bg-blue-100 text-blue-800 border-blue-200">
+                            <Clock className="h-3 w-3 mr-1" />
+                            {step.timing}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs border-gray-300 text-gray-700 bg-white">
+                            {step.patientCount} patients
+                          </Badge>
                           <div className={`transition-transform duration-200 ${
                             selectedStep === step.id ? 'rotate-180' : ''
                           }`}>

@@ -29,8 +29,8 @@ export default function PatientInsightsPage() {
         {/* Header */}
         <div className="space-y-4 bg-white p-6 rounded-lg">
           <div>
-            <h1 className="text-3xl font-bold text-routiq-core">Patient Overview</h1>
-            <p className="text-routiq-blackberry/70 text-lg">
+            <h1 className="text-xl md:text-3xl font-bold text-routiq-core">Patient Overview</h1>
+            <p className="text-routiq-blackberry/70 text-base md:text-lg">
               Comprehensive patient database with smart filtering and insights
             </p>
           </div>

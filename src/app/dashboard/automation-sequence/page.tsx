@@ -142,8 +142,8 @@ export default function AutomationSequencePage() {
         <div className="space-y-4 bg-white p-6 rounded-lg">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-routiq-core">Automation Sequences</h1>
-              <p className="text-routiq-blackberry/70 text-lg">Manage patient communication workflows and automation sequences</p>
+              <h1 className="text-xl md:text-3xl font-bold text-routiq-core">Automation Sequences</h1>
+              <p className="text-routiq-blackberry/70 text-base md:text-lg">Manage patient communication workflows and automation sequences</p>
             </div>
             <Button className="hidden md:flex bg-routiq-core hover:bg-routiq-core/90">
               <Plus className="h-4 w-4 mr-2" />
@@ -171,17 +171,19 @@ export default function AutomationSequencePage() {
                         <div className={`w-3 h-3 rounded-full ${sequence.color}`} />
                         <div>
                           <CardTitle className="text-sm font-medium">{sequence.title}</CardTitle>
-                          <Badge 
-                            variant="secondary" 
-                            className={`text-xs mt-1 ${getStatusColor(sequence.status)}`}
-                          >
-                            {sequence.status}
-                          </Badge>
                         </div>
                       </div>
-                      <div className="flex items-center gap-1 text-routiq-core/60">
-                        <Users className="h-4 w-4" />
-                        <span className="text-sm">{sequence.patientCount}</span>
+                      <div className="flex items-center gap-2">
+                        <Badge 
+                          variant="secondary" 
+                          className={`text-xs ${getStatusColor(sequence.status)}`}
+                        >
+                          {sequence.status}
+                        </Badge>
+                        <div className="flex items-center gap-1 text-routiq-core/60">
+                          <Users className="h-4 w-4" />
+                          <span className="text-sm">{sequence.patientCount}</span>
+                        </div>
                       </div>
                     </div>
                   </CardHeader>
