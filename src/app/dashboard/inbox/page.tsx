@@ -544,8 +544,14 @@ export default function InboxPage() {
       if (conversation) {
         fetchChatMessages(selectedPhone)
       }
+    } else if (!selectedPhone && conversations.length > 0) {
+      // Auto-select the first conversation if none is selected
+      const firstConversation = conversations[0]
+      if (firstConversation) {
+        router.push(`/dashboard/inbox?phone=${encodeURIComponent(firstConversation.phone)}`)
+      }
     }
-  }, [selectedPhone, conversations])
+  }, [selectedPhone, conversations, router])
 
   useEffect(() => {
     scrollToBottom()
